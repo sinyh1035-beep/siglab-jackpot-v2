@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGVIEW 잭팟 도구 시즌2 v1.7 | 외인 매집 포착</title>
-<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 외인 매집 추적 + 강화 차트 (4프레임, 줌/팬, 로그/선형 전환).">
+<title>SIGVIEW 잭팟 도구 시즌2 | 외인 매집 포착</title>
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 외인 매집 추적 도구.">
 <meta name="robots" content="index, follow">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
@@ -122,36 +122,24 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .error { color: #c0392b; }
 .empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
 
-/* ===== 모달 ===== */
+/* 모달 */
 .modal-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
 .modal-backdrop.open { display: flex; }
-.modal { background: var(--bg); border-radius: 12px; max-width: 1100px; width: 100%; max-height: 96vh; overflow-y: auto; padding: 20px; position: relative; }
+.modal { background: var(--bg); border-radius: 12px; max-width: 1000px; width: 100%; max-height: 95vh; overflow-y: auto; padding: 20px; position: relative; }
 .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 26px; color: var(--text-secondary); cursor: pointer; z-index: 2; }
-.modal-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; padding-right: 30px; flex-wrap: wrap; }
-.modal h2 { font-size: 19px; }
-.modal-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
+.modal h2 { font-size: 19px; padding-right: 30px; }
+.modal-sub { font-size: 12px; color: var(--text-secondary); margin: 4px 0 14px; }
 .frame-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-.tab-btn { flex: 1; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-primary); }
+.tab-btn { flex: 1; padding: 10px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-primary); font-weight: 500; }
 .tab-btn.active { background: var(--text-primary); color: var(--bg); }
-.tab-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.layer-toggles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; align-items: center; }
-.layer-btn { padding: 4px 10px; border: 1px solid var(--border); background: var(--bg); border-radius: 12px; font-size: 11px; cursor: pointer; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 4px; }
-.layer-btn.on { background: var(--text-primary); color: var(--bg); border-color: var(--text-primary); }
-.layer-btn::before { content: '○'; font-size: 12px; }
-.layer-btn.on::before { content: '●'; }
-.layer-btn.log-btn { border-color: #D4A017; }
-.layer-btn.log-btn.on { background: #D4A017; border-color: #D4A017; }
-.zoom-controls { display: flex; gap: 4px; margin-left: auto; }
-.zoom-btn { padding: 4px 10px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--text-primary); }
-.zoom-btn:hover { background: var(--bg-tertiary); }
-.chart-wrap { height: 540px; position: relative; }
-.zoom-hint { font-size: 10px; color: var(--text-tertiary); text-align: center; margin-top: 4px; }
-.modal-info { margin-top: 14px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
+.chart-controls { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; justify-content: flex-end; }
+.ctrl-btn { padding: 5px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--text-primary); }
+.ctrl-btn.on { background: #D4A017; color: white; border-color: #D4A017; }
+.ctrl-btn:hover { opacity: 0.85; }
+.chart-wrap { height: 500px; position: relative; }
+.zoom-hint { font-size: 10px; color: var(--text-tertiary); text-align: center; margin-top: 6px; }
+.modal-info { margin-top: 14px; padding: 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.9; }
 .modal-info strong { color: var(--text-primary); }
-.legend-explainer { margin-top: 10px; padding: 10px 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 11px; color: var(--text-secondary); line-height: 1.7; }
-.legend-item { display: inline-flex; align-items: center; gap: 4px; margin-right: 12px; }
-.legend-dot { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
-.legend-dot.dashed { background-image: repeating-linear-gradient(90deg, currentColor 0, currentColor 3px, transparent 3px, transparent 6px); height: 2px; }
 
 @media (max-width: 480px) {
   .container { padding: 16px 14px 60px; }
@@ -160,22 +148,19 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
   .stat-card { padding: 8px 4px; }
   .stat-value { font-size: 16px; }
   .signals-grid { grid-template-columns: 1fr; }
-  .chart-wrap { height: 420px; }
-  .modal { padding: 14px; max-height: 96vh; }
+  .chart-wrap { height: 400px; }
+  .modal { padding: 14px; }
   .modal h2 { font-size: 16px; }
-  .layer-toggles { gap: 4px; }
-  .layer-btn { font-size: 10px; padding: 3px 7px; }
-  .zoom-controls { width: 100%; margin-left: 0; justify-content: center; margin-top: 4px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v1.7.1</div>
+  <div class="brand">SIGVIEW · JACKPOT v2.0</div>
   <h1>잭팟 도구 시즌2</h1>
-  <div class="subtitle">외인 매집 포착 · 4프레임 차트 (일/주/월/연봉, 줌/팬 지원)</div>
-  <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (휠로 확대/축소, 드래그로 이동)"</div>
+  <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + NAVER 외인 보유율</div>
+  <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (휠 확대/드래그 이동)"</div>
   <div class="updated" id="updated">데이터 불러오는 중...</div>
 </header>
 <div class="notice" id="data-notice" style="display:none;"></div>
@@ -188,7 +173,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <div id="content"><div class="loading">데이터 불러오는 중...</div></div>
 <div class="disclaimer">
   <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
-  4차함수 패턴 + NAVER 외인 보유율 + 20일선 횡단 분석. 모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
+  4차함수 c자리 + NAVER 외인 보유율 + 20일선 횡단 분석. 투자 판단과 책임은 본인.<br><br>
   <span id="algo-info"></span>
 </div>
 </div>
@@ -197,45 +182,28 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
-    <div class="modal-header">
-      <h2 id="modal-title"></h2>
-    </div>
+    <h2 id="modal-title"></h2>
     <div class="modal-sub" id="modal-sub"></div>
-    
     <div class="frame-tabs" id="frame-tabs"></div>
-    
-    <div class="layer-toggles">
-      <button class="layer-btn log-btn on" data-layer="log" onclick="toggleLayer(this, 'log')">로그</button>
-      <button class="layer-btn on" data-layer="ma20" onclick="toggleLayer(this, 'ma20')">20일선</button>
-      <button class="layer-btn on" data-layer="trend" onclick="toggleLayer(this, 'trend')">추세선</button>
-      <button class="layer-btn on" data-layer="channel" onclick="toggleLayer(this, 'channel')">채널</button>
-      <button class="layer-btn on" data-layer="hi52w" onclick="toggleLayer(this, 'hi52w')">52주신고</button>
-      <button class="layer-btn on" data-layer="lo52w" onclick="toggleLayer(this, 'lo52w')">52주신저</button>
-      <div class="zoom-controls">
-        <button class="zoom-btn" onclick="zoomReset()">↺ 리셋</button>
-      </div>
+    <div class="chart-controls">
+      <button class="ctrl-btn on" id="btn-log" onclick="toggleLog()">로그 스케일</button>
+      <button class="ctrl-btn" onclick="zoomReset()">↺ 줌 리셋</button>
     </div>
-    
     <div class="chart-wrap"><canvas id="chart-canvas"></canvas></div>
-    <div class="zoom-hint">💡 마우스 휠 = 확대/축소 · 드래그 = 좌우 이동 · 모바일은 핀치 줌</div>
-    
-    <div class="legend-explainer" id="legend-explainer"></div>
+    <div class="zoom-hint">💡 마우스 휠 = 확대/축소 · 드래그 = 좌우 이동 · 모바일 핀치 줌</div>
     <div class="modal-info" id="modal-info"></div>
   </div>
 </div>
 
 <script>
-// Chart.js zoom 플러그인 등록
-if (window.Chart && window.ChartZoom) {
-  Chart.register(window.ChartZoom);
-}
+if (window.Chart && window.ChartZoom) Chart.register(window.ChartZoom);
 
 const JSON_URL = './jackpot-v2.json';
 let DATA = null;
 let currentChart = null;
 let currentStock = null;
 let currentFrame = 'daily';
-let layerState = { log: true, ma20: true, channel: true, hi52w: true, lo52w: true, trend: true };
+let useLog = true;
 
 function phaseToColor(phase) {
   return ({
@@ -253,24 +221,6 @@ function trendLabel(trend) {
     'no_data': '⚫ 없음',
   })[trend] || '⚪';
 }
-function formatRatio(pct) {
-  if (pct === null || pct === undefined) return '-';
-  return `${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%`;
-}
-
-function renderFrames(stock) {
-  const labels = { daily: '일봉', weekly: '주봉', monthly: '월봉' };
-  const lines = [];
-  for (const key of ['daily', 'weekly', 'monthly']) {
-    const f = stock.frames?.[key];
-    if (!f) continue;
-    lines.push(`<div class="signal-row">
-      <span class="signal-label">${labels[key]}</span>
-      <span class="signal-value">${formatRatio(f.ratio_pct)}</span>
-    </div>`);
-  }
-  return lines.join('');
-}
 
 function renderSignals(stock) {
   const s = stock.signals || {};
@@ -286,7 +236,6 @@ function renderSignals(stock) {
       <div class="signal-row"><span class="signal-label">📈 30일 변화</span><span class="signal-value">${change30}</span></div>
       <div class="signal-row"><span class="signal-label">📅 데이터 일수</span><span class="signal-value">${s.foreign_data_points || 0}일</span></div>
       <div class="signal-row"><span class="signal-label">📈 20일선 횡단</span><span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span></div>
-      <div class="signal-row"><span class="signal-label">📉 가격 변동폭</span><span class="signal-value">${(s.price_range_pct || 0).toFixed(0)}%</span></div>
     </div>
   `;
 }
@@ -306,8 +255,8 @@ function renderCard(stock) {
         <span class="stock-stars">${starStr}</span>
       </div>
       <div class="stock-sub">${stock.verdict}</div>
-      <div class="stock-meta">${renderFrames(stock)}${renderSignals(stock)}</div>
-      <div class="chart-hint">📈 클릭 → 차트 (확대/축소 가능)</div>
+      <div class="stock-meta">${renderSignals(stock)}</div>
+      <div class="chart-hint">📈 클릭 → 차트</div>
     </div>
   `;
 }
@@ -319,23 +268,22 @@ function renderSection(title, desc, stocks, emptyMsg) {
   return `<h2 class="section-title">${title}</h2><div class="section-desc">${desc}</div>${inner}`;
 }
 
-// ===== 모달 =====
+// 모달
 function openChart(code) {
   const stock = DATA.stocks.find(s => s.code === code);
   if (!stock) return;
   currentStock = stock;
   document.getElementById('modal-title').textContent = `${stock.name} (${stock.code})`;
-  document.getElementById('modal-sub').textContent = 
-    `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}`;
+  document.getElementById('modal-sub').textContent =
+    `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}점`;
   
-  const availableFrames = [];
   const di = stock.data_info || {};
+  const availableFrames = [];
   if (stock.chart?.daily) availableFrames.push(['daily', `일봉 ${di.daily_years || 5}년`]);
   if (stock.chart?.weekly) availableFrames.push(['weekly', `주봉 ${di.weekly_years || 8}년`]);
-  if (stock.chart?.monthly) availableFrames.push(['monthly', `월봉 ${di.monthly_years || 15}년`]);
-  if (stock.chart?.yearly) availableFrames.push(['yearly', `연봉 ${di.yearly_years || 20}년`]);
+  if (stock.chart?.monthly) availableFrames.push(['monthly', `월봉 ${di.monthly_years || 20}년`]);
   
-  document.getElementById('frame-tabs').innerHTML = availableFrames.map(([key, label]) => 
+  document.getElementById('frame-tabs').innerHTML = availableFrames.map(([key, label]) =>
     `<button class="tab-btn ${currentFrame === key ? 'active' : ''}" onclick="switchFrame('${key}')">${label}</button>`
   ).join('');
   
@@ -353,117 +301,74 @@ function switchFrame(frameKey) {
   renderChartFor(frameKey);
 }
 
-function toggleLayer(btn, layer) {
-  layerState[layer] = !layerState[layer];
-  btn.classList.toggle('on');
+function toggleLog() {
+  useLog = !useLog;
+  document.getElementById('btn-log').classList.toggle('on', useLog);
   renderChartFor(currentFrame);
 }
 
 function zoomReset() {
-  if (currentChart && currentChart.resetZoom) {
-    currentChart.resetZoom();
-  }
+  if (currentChart && currentChart.resetZoom) currentChart.resetZoom();
 }
 
 function renderChartFor(frameKey) {
   if (!currentStock) return;
   const chartData = currentStock.chart?.[frameKey];
-  if (!chartData) {
-    document.getElementById('modal-info').innerHTML = '차트 데이터 없음';
-    return;
-  }
+  if (!chartData) return;
   if (currentChart) { currentChart.destroy(); currentChart = null; }
   
   const labels = chartData.dates;
   const closes = chartData.closes;
   const ma20 = chartData.ma20;
-  const chUp = chartData.channel_upper;
-  const chLo = chartData.channel_lower;
-  const hi52 = chartData.high_52w;
-  const lo52 = chartData.low_52w;
   
-  const datasets = [];
-  
-  // 채널 (먼저)
-  if (layerState.channel && chUp && chLo) {
-    datasets.push({
-      label: '채널 상단', data: chUp,
-      borderColor: 'rgba(155,79,199,0.35)', backgroundColor: 'rgba(155,79,199,0.05)',
-      borderWidth: 1, pointRadius: 0, borderDash: [4, 4], fill: '+1', tension: 0.1,
-    });
-    datasets.push({
-      label: '채널 하단', data: chLo,
-      borderColor: 'rgba(155,79,199,0.35)', backgroundColor: 'rgba(155,79,199,0.05)',
-      borderWidth: 1, pointRadius: 0, borderDash: [4, 4], fill: false, tension: 0.1,
+  // 장기 추세선 (선형 회귀, 로그 스케일일 땐 로그 회귀)
+  let trendLine = null;
+  const validPts = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (closes[i] != null && closes[i] > 0) validPts.push([i, closes[i]]);
+  }
+  if (validPts.length >= 5) {
+    const xs = validPts.map(p => p[0]);
+    const ys = validPts.map(p => useLog ? Math.log(p[1]) : p[1]);
+    const n = xs.length;
+    const sumX = xs.reduce((a, b) => a + b, 0);
+    const sumY = ys.reduce((a, b) => a + b, 0);
+    const sumXY = xs.reduce((acc, x, i) => acc + x * ys[i], 0);
+    const sumXX = xs.reduce((acc, x) => acc + x * x, 0);
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    trendLine = labels.map((_, i) => {
+      const y = slope * i + intercept;
+      return useLog ? Math.exp(y) : y;
     });
   }
   
-  // 종가 (메인)
-  datasets.push({
-    label: '주가', data: closes,
-    borderColor: '#1a1a1a', backgroundColor: 'rgba(26,26,26,0.05)',
-    borderWidth: 1.7, pointRadius: 0, tension: 0.1, fill: false,
-  });
-  
-  // 20일선
-  if (layerState.ma20 && ma20) {
-    datasets.push({
-      label: '20일선', data: ma20,
-      borderColor: '#378ADD', backgroundColor: 'transparent',
+  const datasets = [
+    {
+      label: '주가',
+      data: closes,
+      borderColor: '#1a1a1a',
+      backgroundColor: 'rgba(26,26,26,0.05)',
+      borderWidth: 1.8, pointRadius: 0, tension: 0.1, fill: false,
+    },
+    {
+      label: '20일선',
+      data: ma20,
+      borderColor: '#378ADD',
+      backgroundColor: 'transparent',
       borderWidth: 1.3, pointRadius: 0, tension: 0.2, fill: false,
-    });
-  }
-  
-  // 52주 신고/신저 (수평선)
-  if (layerState.hi52w && hi52) {
+    },
+  ];
+  if (trendLine) {
     datasets.push({
-      label: `52주 신고가 ${hi52.toLocaleString()}원`,
-      data: new Array(labels.length).fill(hi52),
-      borderColor: 'rgba(192,57,43,0.55)', backgroundColor: 'transparent',
-      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
+      label: '장기 추세선',
+      data: trendLine,
+      borderColor: '#E91E63',
+      backgroundColor: 'transparent',
+      borderWidth: 1.5, pointRadius: 0, borderDash: [6, 4], fill: false, tension: 0,
     });
   }
-  if (layerState.lo52w && lo52) {
-    datasets.push({
-      label: `52주 신저가 ${lo52.toLocaleString()}원`,
-      data: new Array(labels.length).fill(lo52),
-      borderColor: 'rgba(99,153,34,0.55)', backgroundColor: 'transparent',
-      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
-    });
-  }
-  
-  // 장기 추세선 (선형 회귀, 로그 스케일에서는 로그 회귀)
-  if (layerState.trend) {
-    const validPts = [];
-    for (let i = 0; i < closes.length; i++) {
-      if (closes[i] != null && closes[i] > 0) validPts.push([i, closes[i]]);
-    }
-    if (validPts.length >= 5) {
-      // 로그 스케일일 때는 log(y)로 회귀
-      const useLog = layerState.log;
-      const xs = validPts.map(p => p[0]);
-      const ys = validPts.map(p => useLog ? Math.log(p[1]) : p[1]);
-      const n = xs.length;
-      const sumX = xs.reduce((a, b) => a + b, 0);
-      const sumY = ys.reduce((a, b) => a + b, 0);
-      const sumXY = xs.reduce((acc, x, i) => acc + x * ys[i], 0);
-      const sumXX = xs.reduce((acc, x) => acc + x * x, 0);
-      const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-      const intercept = (sumY - slope * sumX) / n;
-      const trendData = labels.map((_, i) => {
-        const y = slope * i + intercept;
-        return useLog ? Math.exp(y) : y;
-      });
-      datasets.push({
-        label: '장기 추세선',
-        data: trendData,
-        borderColor: '#E91E63', backgroundColor: 'transparent',
-        borderWidth: 1.5, pointRadius: 0, borderDash: [6, 4], fill: false, tension: 0,
-      });
-    }
-  }
-
-  // 현재 위치 마커 (마지막 점)
+  // 현재가 마커
   const nowData = labels.map((_, i) => i === labels.length - 1 ? closes[i] : null);
   datasets.push({
     label: `현재가 ${closes[closes.length-1].toLocaleString()}원`,
@@ -472,22 +377,20 @@ function renderChartFor(frameKey) {
     pointRadius: 8, pointStyle: 'circle', showLine: false,
   });
   
-  // Y축 스케일
-  const yScaleConfig = layerState.log ? {
+  const yScale = useLog ? {
     type: 'logarithmic',
-    title: { display: false },
-    ticks: { 
+    ticks: {
       font: { size: 10 },
-      callback: function(value) {
-        const log = Math.log10(value);
-        if (log === Math.floor(log)) return value.toLocaleString() + '원';
-        if (Math.floor(log * 2) === log * 2) return value.toLocaleString();
+      callback: (v) => {
+        const log = Math.log10(v);
+        if (log === Math.floor(log)) return v.toLocaleString();
+        if (Math.floor(log * 2) === log * 2) return v.toLocaleString();
         return '';
       },
     },
   } : {
     type: 'linear',
-    ticks: { font: { size: 10 }, callback: (v) => v.toLocaleString() + '원' },
+    ticks: { font: { size: 10 }, callback: (v) => v.toLocaleString() },
   };
   
   const ctx = document.getElementById('chart-canvas').getContext('2d');
@@ -498,10 +401,7 @@ function renderChartFor(frameKey) {
       responsive: true, maintainAspectRatio: false,
       interaction: { intersect: false, mode: 'index' },
       plugins: {
-        legend: { 
-          display: true, position: 'top', 
-          labels: { font: { size: 10 }, boxWidth: 14, padding: 8 } 
-        },
+        legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 14, padding: 8 } },
         tooltip: {
           callbacks: {
             label: (ctx) => {
@@ -511,59 +411,34 @@ function renderChartFor(frameKey) {
           },
         },
         zoom: {
-          pan: { enabled: true, mode: 'x', modifierKey: null },
+          pan: { enabled: true, mode: 'x' },
           zoom: {
             wheel: { enabled: true, speed: 0.1 },
             pinch: { enabled: true },
             mode: 'x',
           },
-          limits: { x: { min: 'original', max: 'original' } },
         },
       },
       scales: {
         x: { 
           ticks: { maxTicksLimit: 10, font: { size: 10 } },
-          // 우측 5% 여백 (현재가 마커 잘림 방지)
-          afterFit: function(scale) {
-            scale.paddingRight = 20;
-          },
+          afterFit: (scale) => { scale.paddingRight = 20; },
         },
-        y: yScaleConfig,
+        y: yScale,
       },
     },
   });
 
-  // 범례 설명 (한글)
-  document.getElementById('legend-explainer').innerHTML = `
-    <span class="legend-item"><span class="legend-dot" style="background:#1a1a1a"></span>주가</span>
-    <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>20일 평균선 (단기 추세)</span>
-    <span class="legend-item"><span class="legend-dot dashed" style="color:#E91E63"></span>장기 추세선</span>
-    <span class="legend-item"><span class="legend-dot dashed" style="color:rgba(155,79,199,0.7)"></span>채널 (변동 범위)</span>
-    <span class="legend-item"><span class="legend-dot dashed" style="color:#C0392B"></span>52주 신고가</span>
-    <span class="legend-item"><span class="legend-dot dashed" style="color:#639922"></span>52주 신저가</span>
-    <span class="legend-item"><span class="legend-dot" style="background:#4169E1; width:8px; height:8px; border-radius:50%"></span>현재가</span>
-  `;
-
   // 자연어 설명
-  const f = currentStock.frames?.[frameKey];
-  let info = '';
-  if (f) {
-    const phase = currentStock.phase;
-    const direction = f.ratio_pct >= 30 ? '이미 폭발한 자리' : 
-                     f.ratio_pct >= 10 ? '막 깨고 올라온 자리' : 
-                     f.ratio_pct >= -15 ? '매집 진행 중' : '아직 더 떨어진 자리';
-    info = `
-      <strong>📊 이 종목 분석 요약</strong><br>
-      ${currentStock.name}은(는) <strong>${currentStock.verdict}</strong> 상태입니다.<br>
-      ${currentStock.is_china_play ? '🇨🇳 중국 경기 회복 시 수혜 종목으로 분류됨.<br>' : ''}
-      현재 매집점수는 <strong>${currentStock.accumulation_score}점/100점</strong>입니다.<br><br>
-      <strong>외인 동향:</strong> ${trendLabel(currentStock.signals?.foreign_trend)} 
-      (보유율 ${currentStock.signals?.foreign_latest_ratio?.toFixed(1) || '-'}%)<br>
-      <strong>20일선 횡단:</strong> 최근 1년간 ${currentStock.signals?.ma20_crossings || 0}회 
-      ${currentStock.signals?.ma20_stealth ? '(스텔스 매집 패턴 ✓)' : ''}<br>
-      <strong>가격 변동폭:</strong> ${currentStock.signals?.price_range_pct?.toFixed(0) || 0}%
-    `;
-  }
+  const s = currentStock.signals || {};
+  let info = `
+    <strong>📊 ${currentStock.name} 분석 요약</strong><br>
+    상태: <strong>${currentStock.verdict}</strong> · 매집점수 <strong>${currentStock.accumulation_score}/100점</strong><br>
+    ${currentStock.is_china_play ? '🇨🇳 <strong>중국 경기 회복 시 수혜 종목</strong><br>' : ''}
+    <br>
+    <strong>외인 동향:</strong> ${trendLabel(s.foreign_trend)} (보유율 ${s.foreign_latest_ratio?.toFixed(1) || '-'}%)<br>
+    <strong>20일선 횡단:</strong> 최근 1년 ${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '<strong>(스텔스 매집 패턴 ✓)</strong>' : ''}
+  `;
   document.getElementById('modal-info').innerHTML = info;
 }
 
@@ -580,14 +455,15 @@ async function loadAndRender() {
     DATA = await res.json();
     const dt = new Date(DATA.generated_at);
     document.getElementById('updated').textContent =
-      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '1.7'})`;
+      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '2.0'})`;
     const summary = DATA.summary || {};
     document.getElementById('stat-stealth').textContent = summary.stealth_accumulation || 0;
     document.getElementById('stat-quiet').textContent = summary.quiet_accumulation || 0;
     document.getElementById('stat-likely').textContent = summary.likely_accumulation || 0;
     document.getElementById('stat-china').textContent = summary.china_plays || 0;
     document.getElementById('algo-info').textContent =
-      `${DATA.algorithm?.name || 'MFAS v1.7'} · ${DATA.algorithm?.description || ''}`;
+      `${DATA.algorithm?.name || 'SIGVIEW 시즌2 v2.0'} · ${DATA.algorithm?.description || ''}`;
+    
     let totalDataPoints = 0;
     (DATA.stocks || []).forEach(s => { totalDataPoints = Math.max(totalDataPoints, s.signals?.foreign_data_points || 0); });
     if (totalDataPoints < 30) {
@@ -600,6 +476,7 @@ async function loadAndRender() {
         (오늘 ${fd.fetch_success_today || 0}/${DATA.n_scanned}개 수집, ${fd.new_records_today || 0}건 신규)
       `;
     }
+    
     const stocks = DATA.stocks || [];
     const stealth = stocks.filter(s => s.phase === 'stealth_accumulation');
     const quiet = stocks.filter(s => s.phase === 'quiet_accumulation');
@@ -608,15 +485,17 @@ async function loadAndRender() {
     const progress = stocks.filter(s => s.phase === 'in_progress');
     const verified = stocks.filter(s => s.phase === 'already_run');
     const risky = stocks.filter(s => s.phase === 'risky');
+    
     const content =
-      renderSection('🎯 외인 매집 확정', 'NAVER 외인 보유율 ↑ + 가격 횡보 + 20일선 횡단. <strong>최우선.</strong>', stealth, '아직 없음. 외인 데이터 누적되면 여기 나타나요.') +
+      renderSection('🎯 외인 매집 확정', '외인 보유율 ↑ + 가격 횡보 + 20일선 횡단. <strong>최우선.</strong>', stealth, '아직 없음. 외인 데이터 30일+ 누적 시 등장.') +
       renderSection('🐢 외인 조용한 매집', '외인 보유율 ↑ + 가격 횡보.', quiet, '없음') +
-      renderSection('🔍 매집 추정 (데이터 부족)', '가격 횡보 + 20일선 ✓. 외인 데이터 누적되면 확정.', likely, '없음') +
-      renderSection('🌱 막 깨고 나오는 중', '저점 통과 후 +10~30% 초기.', breakout, '없음') +
+      renderSection('🔍 매집 추정 (데이터 부족)', '가격 횡보 + 20일선 횡단 ✓.', likely, '없음') +
+      renderSection('🌱 막 깨고 나오는 중', 'c자리 통과 후 +10~30% 초기.', breakout, '없음') +
       renderSection('🇨🇳 중국 회복 베팅', '철강·화학·조선·해운·중공업 등.', stocks.filter(s => s.is_china_play).slice(0, 10), '없음') +
-      renderSection('⚪ 진행 중 (+30~60%)', '추격 부담, 눌림목 대기.', progress.slice(0, 5), '없음') +
+      renderSection('⚪ 진행 중', '추격 부담. 눌림목 대기.', progress.slice(0, 5), '없음') +
       renderSection('🔥 이미 폭발 (검증)', '알고리즘 적중 입증용. 진입 X.', verified.slice(0, 5), '없음') +
       (risky.length > 0 ? renderSection('⚠️ 외인 매도중', '회피 권장.', risky.slice(0, 5), '없음') : '');
+    
     document.getElementById('content').innerHTML = content;
   } catch (e) {
     document.getElementById('content').innerHTML = `<div class="error">데이터 로드 실패: ${e.message}</div>`;
