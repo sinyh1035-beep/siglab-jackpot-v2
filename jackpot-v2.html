@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGVIEW 잭팟 도구 시즌2 | 경기민감주 다중 프레임 c자리</title>
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 다중 프레임 검출로 경기민감주 매집-폭발 패턴 자동 분석. 일·주·월봉 시간 일치 잭팟 후보 발굴.">
+<meta name="robots" content="index, follow">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f7f6f1;
+  --bg-tertiary: #f1efe8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5f5e5a;
+  --text-tertiary: #888780;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --color-amber-bg: #FAEEDA;
+  --color-amber-border: #BA7517;
+  --color-amber-text: #633806;
+  --color-amber-sub: #854F0B;
+  --color-green-bg: #EAF3DE;
+  --color-green-border: #639922;
+  --color-green-text: #27500A;
+  --color-green-sub: #3B6D11;
+  --color-blue-bg: #E6F1FB;
+  --color-blue-border: #378ADD;
+  --color-blue-text: #042C53;
+  --color-blue-sub: #185FA5;
+  --color-purple-bg: #EEEDFE;
+  --color-purple-border: #7F77DD;
+  --color-purple-text: #3C3489;
+  --color-purple-sub: #534AB7;
+  --color-gray-bg: #F1EFE8;
+  --color-gray-border: #B4B2A9;
+  --color-gray-text: #2C2C2A;
+  --color-gray-sub: #5F5E5A;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --bg-secondary: #242422;
+    --bg-tertiary: #2c2c2a;
+    --text-primary: #f1efe8;
+    --text-secondary: #b4b2a9;
+    --text-tertiary: #888780;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+.header { margin-bottom: 24px; }
+.brand { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; margin-bottom: 4px; }
+h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+.subtitle { font-size: 14px; color: var(--text-secondary); }
+.updated { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 28px; }
+.stat-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px 12px; }
+.stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 600; }
+
+.section-title { font-size: 16px; font-weight: 600; margin: 28px 0 4px; display: flex; align-items: center; gap: 8px; }
+.section-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
+.section-title .icon { font-size: 20px; }
+
+.stock-card {
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid;
+}
+.stock-card.amber { background: var(--color-amber-bg); border-color: var(--color-amber-border); }
+.stock-card.green { background: var(--color-green-bg); border-color: var(--color-green-border); }
+.stock-card.blue { background: var(--color-blue-bg); border-color: var(--color-blue-border); }
+.stock-card.purple { background: var(--color-purple-bg); border-color: var(--color-purple-border); }
+.stock-card.gray { background: var(--color-gray-bg); border-color: var(--color-gray-border); }
+
+.stock-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.stock-name { font-weight: 600; font-size: 15px; }
+.amber .stock-name, .amber .stock-text { color: var(--color-amber-text); }
+.amber .stock-sub, .amber .stock-stars { color: var(--color-amber-sub); }
+.green .stock-name, .green .stock-text { color: var(--color-green-text); }
+.green .stock-sub, .green .stock-stars { color: var(--color-green-sub); }
+.blue .stock-name, .blue .stock-text { color: var(--color-blue-text); }
+.blue .stock-sub, .blue .stock-stars { color: var(--color-blue-sub); }
+.purple .stock-name, .purple .stock-text { color: var(--color-purple-text); }
+.purple .stock-sub, .purple .stock-stars { color: var(--color-purple-sub); }
+.gray .stock-name, .gray .stock-text { color: var(--color-gray-text); }
+.gray .stock-sub, .gray .stock-stars { color: var(--color-gray-sub); }
+
+.stock-stars { font-size: 13px; font-weight: 500; }
+.stock-sub { font-size: 12px; margin-bottom: 8px; }
+.stock-frames { font-size: 12px; line-height: 1.7; }
+.stock-frames .frame-line { display: flex; justify-content: space-between; }
+.frame-label { opacity: 0.85; }
+
+.disclaimer {
+  margin-top: 32px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.disclaimer strong { font-weight: 600; color: var(--text-secondary); }
+
+.loading, .error {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.error { color: #c0392b; }
+
+@media (max-width: 480px) {
+  .container { padding: 16px 14px 60px; }
+  h1 { font-size: 20px; }
+  .stats { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .stat-card { padding: 10px 8px; }
+  .stat-value { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="header">
+  <div class="brand">SIGVIEW · JACKPOT v2.0</div>
+  <h1>잭팟 도구 시즌2</h1>
+  <div class="subtitle">경기민감주 다중 프레임 c자리 검출</div>
+  <div class="updated" id="updated">데이터 불러오는 중...</div>
+</header>
+
+<div class="stats" id="stats">
+  <div class="stat-card"><div class="stat-label">★★★★★</div><div class="stat-value" id="stat-5">-</div></div>
+  <div class="stat-card"><div class="stat-label">★★★★</div><div class="stat-value" id="stat-4">-</div></div>
+  <div class="stat-card"><div class="stat-label">★★★</div><div class="stat-value" id="stat-3">-</div></div>
+</div>
+
+<div id="content">
+  <div class="loading">데이터 불러오는 중...</div>
+</div>
+
+<div class="disclaimer">
+  <strong>투자 권유 X · 패턴 매칭 분석 도구</strong><br>
+  본 데이터는 4차함수 패턴 매칭 분석 결과이며 특정 종목에 대한 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
+  <span id="algo-info"></span>
+</div>
+
+</div>
+
+<script>
+const JSON_URL = './jackpot-v2.json';
+
+function phaseEmoji(phase) {
+  return ({
+    'exploded': '🚀',
+    'early_rise': '🟢',
+    'accumulating': '🟡',
+  })[phase] || '⚪';
+}
+
+function phaseLabel(phase) {
+  return ({
+    'exploded': '폭발',
+    'early_rise': '초기상승',
+    'accumulating': '매집중',
+  })[phase] || '평';
+}
+
+function cardColor(stock) {
+  if (stock.verdict === '현재 진입 후보') {
+    return stock.phase === 'accumulating' ? 'amber' : 'green';
+  }
+  if (stock.verdict === '검증 케이스') return 'blue';
+  if (stock.verdict === '신규 따끈한 신호') return 'purple';
+  return 'gray';
+}
+
+function formatRatio(pct) {
+  if (pct === null || pct === undefined) return '-';
+  const sign = pct >= 0 ? '+' : '';
+  return `${sign}${pct.toFixed(0)}%`;
+}
+
+function formatPrice(p) {
+  if (p === null || p === undefined) return '-';
+  return p.toLocaleString('ko-KR');
+}
+
+function renderFrames(stock) {
+  const frames = stock.frames || {};
+  const labels = { daily: '일봉', weekly: '주봉', monthly: '월봉' };
+  const lines = [];
+  for (const key of ['daily', 'weekly', 'monthly']) {
+    const f = frames[key];
+    if (!f) continue;
+    lines.push(`<div class="frame-line">
+      <span class="frame-label">${labels[key]} c=${f.c_date} R²=${f.r2}</span>
+      <span>${formatRatio(f.ratio_pct)}</span>
+    </div>`);
+  }
+  return lines.join('');
+}
+
+function renderCard(stock) {
+  const color = cardColor(stock);
+  const starStr = '★'.repeat(stock.stars);
+  const phaseStr = phaseEmoji(stock.phase) + ' ' + phaseLabel(stock.phase);
+  const timeDiff = stock.time_diff_months !== undefined && stock.time_diff_months !== null
+    ? `시간차 ${stock.time_diff_months}m · `
+    : '';
+  return `
+    <div class="stock-card ${color}">
+      <div class="stock-head">
+        <span class="stock-name">${stock.name}</span>
+        <span class="stock-stars">${starStr}</span>
+      </div>
+      <div class="stock-sub">${stock.type} · ${timeDiff}${phaseStr}</div>
+      <div class="stock-frames">${renderFrames(stock)}</div>
+    </div>
+  `;
+}
+
+function renderSection(title, iconName, desc, stocks) {
+  if (!stocks || stocks.length === 0) return '';
+  const cards = stocks.map(renderCard).join('');
+  return `
+    <h2 class="section-title"><span class="icon">${iconName}</span>${title}</h2>
+    <div class="section-desc">${desc}</div>
+    ${cards}
+  `;
+}
+
+async function loadAndRender() {
+  try {
+    const res = await fetch(JSON_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('JSON 로드 실패');
+    const data = await res.json();
+
+    // 상단
+    const dt = new Date(data.generated_at);
+    document.getElementById('updated').textContent = 
+      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${data.n_matched}/${data.n_scanned} 종목 매칭`;
+    document.getElementById('stat-5').textContent = data.summary.five_stars;
+    document.getElementById('stat-4').textContent = data.summary.four_stars;
+    document.getElementById('stat-3').textContent = data.summary.three_stars;
+
+    // 알고리즘 정보
+    document.getElementById('algo-info').textContent = 
+      `알고리즘: ${data.algorithm.name} · 4차함수 c자리 (일/주/월 다중 프레임 시간 일치) · R² ≥ ${data.algorithm.r2_min}`;
+
+    // 분류
+    const stocks = data.stocks || [];
+    const enterCandidates = stocks.filter(s => s.verdict === '현재 진입 후보');
+    const verifiedCases = stocks.filter(s => s.verdict === '검증 케이스');
+    const freshSignals = stocks.filter(s => s.verdict === '신규 따끈한 신호');
+    const others = stocks.filter(s => 
+      !['현재 진입 후보', '검증 케이스', '신규 따끈한 신호'].includes(s.verdict)
+    );
+
+    const content = 
+      renderSection('현재 진입 후보', '🎯', '★★★★ 중 아직 폭발 안 한 종목', enterCandidates) +
+      renderSection('신규 따끈한 신호', '⚡', 'c가 최근 6개월 이내', freshSignals) +
+      renderSection('검증 케이스', '🚀', '★★★★ 중 이미 폭발 (알고리즘 적중 입증)', verifiedCases) +
+      renderSection('★★★ 단일 프레임', '⭐', '보조 신호', others);
+
+    document.getElementById('content').innerHTML = content;
+  } catch (e) {
+    document.getElementById('content').innerHTML = `<div class="error">데이터 로드 실패: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+loadAndRender();
+</script>
+</body>
+</html>

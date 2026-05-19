@@ -1,0 +1,371 @@
+{
+  "version": "2.0",
+  "season": 2,
+  "generated_at": "2026-05-19T00:00:00+09:00",
+  "scan_universe": "cyclical_korea",
+  "n_scanned": 40,
+  "n_matched": 26,
+  "algorithm": {
+    "name": "MFAS v2",
+    "description": "Multi-Frame Alignment Score - 4차함수 c자리 다중 프레임 시간 일치 검출",
+    "frames": ["daily", "weekly", "monthly"],
+    "r2_min": 0.60,
+    "time_constraints_months": {
+      "daily_weekly_max": 6,
+      "weekly_monthly_max": 12,
+      "all_three_max": 12
+    },
+    "c_position_range": [0.65, 0.95]
+  },
+  "summary": {
+    "five_stars": 0,
+    "four_stars": 9,
+    "three_stars": 17
+  },
+  "stocks": [
+    {
+      "rank": 1,
+      "code": "010140",
+      "name": "현대제철",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 1.1,
+      "phase": "accumulating",
+      "verdict": "현재 진입 후보",
+      "frames": {
+        "daily":   { "c_date": "2022-11-01", "c_price": 26080, "r2": 0.85, "latest_price": 29769, "ratio_pct": 14.1 },
+        "weekly":  { "c_date": "2022-12-05", "c_price": 29818, "r2": 0.78, "latest_price": 29769, "ratio_pct": -0.2 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 2,
+      "code": "005490",
+      "name": "POSCO홀딩스",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 1.2,
+      "phase": "early_rise",
+      "verdict": "현재 진입 후보",
+      "frames": {
+        "daily":   { "c_date": "2022-09-05", "c_price": 228178, "r2": 0.67, "latest_price": 307597, "ratio_pct": 34.8 },
+        "weekly":  { "c_date": "2022-10-10", "c_price": 224272, "r2": 0.83, "latest_price": 305054, "ratio_pct": 36.0 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 3,
+      "code": "042700",
+      "name": "한미반도체",
+      "stars": 4,
+      "type": "주+월",
+      "time_diff_months": 5.6,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   null,
+        "weekly":  { "c_date": "2022-07-18", "c_price": 13947, "r2": 0.94, "latest_price": 123218, "ratio_pct": 783.5 },
+        "monthly": { "c_date": "2022-02-01", "c_price": 16151, "r2": 0.93, "latest_price": 123218, "ratio_pct": 663.0 }
+      }
+    },
+    {
+      "rank": 4,
+      "code": "086520",
+      "name": "에코프로",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 1.3,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   { "c_date": "2022-06-03", "c_price": 14972, "r2": 0.82, "latest_price": 84415, "ratio_pct": 463.8 },
+        "weekly":  { "c_date": "2022-04-25", "c_price": 15897, "r2": 0.90, "latest_price": 84415, "ratio_pct": 431.0 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 5,
+      "code": "042660",
+      "name": "한화오션",
+      "stars": 4,
+      "type": "주+월",
+      "time_diff_months": 3.7,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   null,
+        "weekly":  { "c_date": "2023-06-19", "c_price": 32722, "r2": 0.75, "latest_price": 107800, "ratio_pct": 229.4 },
+        "monthly": { "c_date": "2023-03-01", "c_price": 21293, "r2": 0.83, "latest_price": 107800, "ratio_pct": 406.3 }
+      }
+    },
+    {
+      "rank": 6,
+      "code": "000660",
+      "name": "SK하이닉스",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 1.3,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   { "c_date": "2022-12-23", "c_price": 75386, "r2": 0.63, "latest_price": 529024, "ratio_pct": 601.8 },
+        "weekly":  { "c_date": "2023-01-30", "c_price": 89688, "r2": 0.78, "latest_price": 528645, "ratio_pct": 489.4 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 7,
+      "code": "103140",
+      "name": "풍산",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 0.0,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   { "c_date": "2022-08-30", "c_price": 26611, "r2": 0.75, "latest_price": 97355, "ratio_pct": 265.8 },
+        "weekly":  { "c_date": "2022-08-29", "c_price": 25861, "r2": 0.62, "latest_price": 97355, "ratio_pct": 276.5 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 8,
+      "code": "000720",
+      "name": "현대건설",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 3.0,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   { "c_date": "2023-01-02", "c_price": 32259, "r2": 0.73, "latest_price": 66648, "ratio_pct": 106.6 },
+        "weekly":  { "c_date": "2023-04-03", "c_price": 37060, "r2": 0.67, "latest_price": 66648, "ratio_pct": 79.8 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 9,
+      "code": "010130",
+      "name": "고려아연",
+      "stars": 4,
+      "type": "일+주",
+      "time_diff_months": 2.2,
+      "phase": "exploded",
+      "verdict": "검증 케이스",
+      "frames": {
+        "daily":   { "c_date": "2023-11-08", "c_price": 463213, "r2": 0.63, "latest_price": 1321162, "ratio_pct": 185.2 },
+        "weekly":  { "c_date": "2023-09-04", "c_price": 513098, "r2": 0.66, "latest_price": 1321162, "ratio_pct": 157.5 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 10,
+      "code": "247540",
+      "name": "에코프로비엠",
+      "stars": 3,
+      "type": "주",
+      "phase": "early_rise",
+      "verdict": "신규 따끈한 신호",
+      "frames": {
+        "daily":   null,
+        "weekly":  { "c_date": "2025-05-19", "c_price": null, "r2": 0.79, "ratio_pct": 79.0 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 11,
+      "code": "003670",
+      "name": "포스코퓨처엠",
+      "stars": 3,
+      "type": "주",
+      "phase": "early_rise",
+      "verdict": "신규 따끈한 신호",
+      "frames": {
+        "daily":   null,
+        "weekly":  { "c_date": "2025-04-28", "c_price": null, "r2": 0.84, "ratio_pct": 65.0 },
+        "monthly": null
+      }
+    },
+    {
+      "rank": 12,
+      "code": "010140",
+      "name": "삼성중공업",
+      "stars": 3,
+      "type": "월",
+      "phase": "exploded",
+      "verdict": "월봉 단독",
+      "frames": {
+        "monthly": { "c_date": "2021-10-01", "r2": 0.92, "ratio_pct": 286.0 }
+      }
+    },
+    {
+      "rank": 13,
+      "code": "028670",
+      "name": "팬오션",
+      "stars": 3,
+      "type": "월",
+      "phase": "accumulating",
+      "verdict": "월봉 매집중",
+      "frames": {
+        "monthly": { "c_date": "2021-02-01", "r2": 0.84, "ratio_pct": -27.0 }
+      }
+    },
+    {
+      "rank": 14,
+      "code": "011170",
+      "name": "롯데케미칼",
+      "stars": 3,
+      "type": "월",
+      "phase": "accumulating",
+      "verdict": "월봉 매집중",
+      "frames": {
+        "monthly": { "c_date": "2020-04-01", "r2": 0.83, "ratio_pct": -60.0 }
+      }
+    },
+    {
+      "rank": 15,
+      "code": "006360",
+      "name": "GS건설",
+      "stars": 3,
+      "type": "주",
+      "phase": "accumulating",
+      "verdict": "주봉 매집중",
+      "frames": {
+        "weekly": { "c_date": "2023-05-15", "r2": 0.80, "ratio_pct": -7.0 }
+      }
+    },
+    {
+      "rank": 16,
+      "code": "096770",
+      "name": "SK이노베이션",
+      "stars": 3,
+      "type": "주",
+      "phase": "accumulating",
+      "verdict": "주봉 매집중",
+      "frames": {
+        "weekly": { "c_date": "2022-12-19", "r2": 0.76, "ratio_pct": -23.0 }
+      }
+    },
+    {
+      "rank": 17,
+      "code": "047810",
+      "name": "한국항공우주",
+      "stars": 3,
+      "type": "월",
+      "phase": "exploded",
+      "verdict": "월봉 단독",
+      "frames": {
+        "monthly": { "c_date": "2020-04-01", "r2": 0.75, "ratio_pct": 340.0 }
+      }
+    },
+    {
+      "rank": 18,
+      "code": "047040",
+      "name": "대우건설",
+      "stars": 3,
+      "type": "주",
+      "phase": "accumulating",
+      "verdict": "주봉 매집중",
+      "frames": {
+        "weekly": { "c_date": "2023-04-03", "r2": 0.75, "ratio_pct": -15.0 }
+      }
+    },
+    {
+      "rank": 19,
+      "code": "005930",
+      "name": "삼성전자",
+      "stars": 3,
+      "type": "주",
+      "phase": "early_rise",
+      "verdict": "주봉 단독",
+      "frames": {
+        "weekly": { "c_date": "2022-11-14", "r2": 0.74, "ratio_pct": 74.0 }
+      }
+    },
+    {
+      "rank": 20,
+      "code": "003490",
+      "name": "대한항공",
+      "stars": 3,
+      "type": "월",
+      "phase": "early_rise",
+      "verdict": "월봉 단독",
+      "frames": {
+        "monthly": { "c_date": "2020-05-01", "r2": 0.74, "ratio_pct": 71.0 }
+      }
+    },
+    {
+      "rank": 21,
+      "code": "039030",
+      "name": "이오테크닉스",
+      "stars": 3,
+      "type": "주",
+      "phase": "exploded",
+      "verdict": "주봉 단독",
+      "frames": {
+        "weekly": { "c_date": "2022-11-14", "r2": 0.74, "ratio_pct": 280.0 }
+      }
+    },
+    {
+      "rank": 22,
+      "code": "052690",
+      "name": "한전기술",
+      "stars": 3,
+      "type": "월",
+      "phase": "exploded",
+      "verdict": "월봉 단독",
+      "frames": {
+        "monthly": { "c_date": "2020-02-01", "r2": 0.73, "ratio_pct": 436.0 }
+      }
+    },
+    {
+      "rank": 23,
+      "code": "009540",
+      "name": "HD한국조선해양",
+      "stars": 3,
+      "type": "주",
+      "phase": "exploded",
+      "verdict": "주봉 단독",
+      "frames": {
+        "weekly": { "c_date": "2023-05-01", "r2": 0.69, "ratio_pct": 413.0 }
+      }
+    },
+    {
+      "rank": 24,
+      "code": "012330",
+      "name": "현대모비스",
+      "stars": 3,
+      "type": "주",
+      "phase": "early_rise",
+      "verdict": "주봉 단독",
+      "frames": {
+        "weekly": { "c_date": "2024-08-12", "r2": 0.65, "ratio_pct": 44.0 }
+      }
+    },
+    {
+      "rank": 25,
+      "code": "010950",
+      "name": "S-Oil",
+      "stars": 3,
+      "type": "일",
+      "phase": "early_rise",
+      "verdict": "일봉 단독",
+      "frames": {
+        "daily": { "c_date": "2024-06-04", "r2": 0.65, "ratio_pct": 13.0 }
+      }
+    },
+    {
+      "rank": 26,
+      "code": "051910",
+      "name": "LG화학",
+      "stars": 3,
+      "type": "주",
+      "phase": "accumulating",
+      "verdict": "주봉 단독",
+      "frames": {
+        "weekly": { "c_date": "2022-08-01", "r2": 0.64, "ratio_pct": -40.0 }
+      }
+    }
+  ],
+  "disclaimer": "본 데이터는 4차함수 패턴 매칭 분석 결과이며 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다."
+}
