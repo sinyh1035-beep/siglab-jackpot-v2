@@ -1,0 +1,46 @@
+name: jackpot-v2-update
+
+on:
+  schedule:
+    # 한국 시간 매일 자정 (UTC 15:00 = KST 00:00)
+    - cron: '0 15 * * *'
+  workflow_dispatch: {}  # 수동 트리거 가능
+
+permissions:
+  contents: write
+
+jobs:
+  scan-and-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pykrx pandas numpy scipy
+
+      - name: Run jackpot v2 backend scan
+        run: python jackpot_v2_backend.py
+        env:
+          TZ: Asia/Seoul
+
+      - name: Commit updated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add jackpot-v2.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "auto: update jackpot-v2.json $(date +'%Y-%m-%d')"
+            git push
+          fi
