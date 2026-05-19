@@ -172,7 +172,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <body>
 <div class="container">
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v1.7</div>
+  <div class="brand">SIGVIEW · JACKPOT v1.7.1</div>
   <h1>잭팟 도구 시즌2</h1>
   <div class="subtitle">외인 매집 포착 · 4프레임 차트 (일/주/월/연봉, 줌/팬 지원)</div>
   <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (휠로 확대/축소, 드래그로 이동)"</div>
@@ -207,6 +207,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
     <div class="layer-toggles">
       <button class="layer-btn log-btn on" data-layer="log" onclick="toggleLayer(this, 'log')">로그</button>
       <button class="layer-btn on" data-layer="ma20" onclick="toggleLayer(this, 'ma20')">20일선</button>
+      <button class="layer-btn on" data-layer="trend" onclick="toggleLayer(this, 'trend')">추세선</button>
       <button class="layer-btn on" data-layer="channel" onclick="toggleLayer(this, 'channel')">채널</button>
       <button class="layer-btn on" data-layer="hi52w" onclick="toggleLayer(this, 'hi52w')">52주신고</button>
       <button class="layer-btn on" data-layer="lo52w" onclick="toggleLayer(this, 'lo52w')">52주신저</button>
@@ -234,7 +235,7 @@ let DATA = null;
 let currentChart = null;
 let currentStock = null;
 let currentFrame = 'daily';
-let layerState = { log: true, ma20: true, channel: true, hi52w: true, lo52w: true };
+let layerState = { log: true, ma20: true, channel: true, hi52w: true, lo52w: true, trend: true };
 
 function phaseToColor(phase) {
   return ({
@@ -431,6 +432,37 @@ function renderChartFor(frameKey) {
     });
   }
   
+  // 장기 추세선 (선형 회귀, 로그 스케일에서는 로그 회귀)
+  if (layerState.trend) {
+    const validPts = [];
+    for (let i = 0; i < closes.length; i++) {
+      if (closes[i] != null && closes[i] > 0) validPts.push([i, closes[i]]);
+    }
+    if (validPts.length >= 5) {
+      // 로그 스케일일 때는 log(y)로 회귀
+      const useLog = layerState.log;
+      const xs = validPts.map(p => p[0]);
+      const ys = validPts.map(p => useLog ? Math.log(p[1]) : p[1]);
+      const n = xs.length;
+      const sumX = xs.reduce((a, b) => a + b, 0);
+      const sumY = ys.reduce((a, b) => a + b, 0);
+      const sumXY = xs.reduce((acc, x, i) => acc + x * ys[i], 0);
+      const sumXX = xs.reduce((acc, x) => acc + x * x, 0);
+      const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+      const trendData = labels.map((_, i) => {
+        const y = slope * i + intercept;
+        return useLog ? Math.exp(y) : y;
+      });
+      datasets.push({
+        label: '장기 추세선',
+        data: trendData,
+        borderColor: '#E91E63', backgroundColor: 'transparent',
+        borderWidth: 1.5, pointRadius: 0, borderDash: [6, 4], fill: false, tension: 0,
+      });
+    }
+  }
+
   // 현재 위치 마커 (마지막 점)
   const nowData = labels.map((_, i) => i === labels.length - 1 ? closes[i] : null);
   datasets.push({
@@ -489,7 +521,13 @@ function renderChartFor(frameKey) {
         },
       },
       scales: {
-        x: { ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+        x: { 
+          ticks: { maxTicksLimit: 10, font: { size: 10 } },
+          // 우측 5% 여백 (현재가 마커 잘림 방지)
+          afterFit: function(scale) {
+            scale.paddingRight = 20;
+          },
+        },
         y: yScaleConfig,
       },
     },
@@ -499,6 +537,7 @@ function renderChartFor(frameKey) {
   document.getElementById('legend-explainer').innerHTML = `
     <span class="legend-item"><span class="legend-dot" style="background:#1a1a1a"></span>주가</span>
     <span class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>20일 평균선 (단기 추세)</span>
+    <span class="legend-item"><span class="legend-dot dashed" style="color:#E91E63"></span>장기 추세선</span>
     <span class="legend-item"><span class="legend-dot dashed" style="color:rgba(155,79,199,0.7)"></span>채널 (변동 범위)</span>
     <span class="legend-item"><span class="legend-dot dashed" style="color:#C0392B"></span>52주 신고가</span>
     <span class="legend-item"><span class="legend-dot dashed" style="color:#639922"></span>52주 신저가</span>
