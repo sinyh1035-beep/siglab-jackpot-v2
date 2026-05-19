@@ -1,11 +1,10 @@
 """
 jackpot_v2_backend.py
 ==========================================
-SIGVIEW 잭팟 도구 시즌2 v2.0 — "본질만"
-- 4차함수 c자리 검출 (3프레임)
-- NAVER 외인 보유율 추세 (누적 캐싱)
-- 20일선 횡단 패턴
-- 차트: 가격 + 20일선 + 장기 추세선 (3프레임: 일/주/월)
+SIGVIEW 잭팟 도구 시즌2 v2.1
+- pykrx 자동 종목 빌더 (시총 1조+ cyclical)
+- 약 80개 종목 자동 발굴 (41개 시드 + 자동 추가)
+- 매일 시총 변화 자동 반영
 """
 import json
 import os
@@ -35,7 +34,10 @@ NAVER_HEADERS = {
 
 FOREIGN_HISTORY_FILE = 'foreign-history.json'
 
-CYCLICAL = {
+# ============================================================
+# 시드 종목 (항상 포함 - 보험)
+# ============================================================
+SEED_STOCKS = {
     '005930': '삼성전자', '000660': 'SK하이닉스', '042700': '한미반도체',
     '058470': '리노공업', '039030': '이오테크닉스',
     '373220': 'LG에너지솔루션', '006400': '삼성SDI', '051910': 'LG화학',
@@ -54,6 +56,7 @@ CYCLICAL = {
     '267250': 'HD현대', '329180': 'HD현대중공업',
 }
 
+# 중국 수혜 종목 (직접)
 CHINA_DIRECT = {
     '005490', '004020', '010130', '103140',
     '011170', '009830', '011780', '096770', '010950',
@@ -61,6 +64,82 @@ CHINA_DIRECT = {
     '011200', '028670',
     '267250', '329180', '034020',
     '003490',
+}
+
+# Cyclical 키워드 (종목명 기반 분류)
+CYCLICAL_KEYWORDS = [
+    # 반도체
+    '반도체', '하이닉스', '디스플레이', '실리콘', '에스앤에스텍', 'DB하이텍',
+    # 2차전지/소재
+    '에코프로', '엘앤에프', '코스모신소재', '포스코퓨처엠',
+    # 자동차
+    '현대차', '기아', '모비스', '만도', '한국타이어', '넥센타이어', '한라', 'HL',
+    # 조선
+    '조선', '중공업', '오션', '미포', 'HD한국',
+    # 철강/비철
+    '제철', '철강', '세아', '동국', '고려아연', '풍산', 'POSCO', '포스코',
+    # 화학/정유
+    '케미칼', '화학', '석유', '에너지', 'OCI', 'SK이노베이션', 'S-Oil', '에쓰오일',
+    # 건설/건자재
+    '건설', '시멘트', '쌍용씨앤이', 'HDC', '대우건설', '대림', 'DL',
+    # 운송
+    'HMM', '팬오션', '대한항공', '아시아나', '진에어', '제주항공', '한진',
+    # 방산/항공
+    '에어로스페이스', '한화시스템', 'LIG넥스원', '한국항공우주', '풍산',
+    # 원자력/유틸리티
+    '한전', '두산에너빌리티', '씨에스윈드', '두산',
+    # 종합상사
+    'LX인터내셔널', 'GS글로벌', '삼성물산', '포스코인터내셔널',
+    # 기계
+    '두산밥캣', '한온시스템', '현대건설기계',
+]
+
+# Cyclical 직접 매핑 (종목명 → 카테고리 + 중국 여부)
+CYCLICAL_DIRECT_MAP = {
+    # 종목코드: (카테고리, 중국 수혜 여부)
+    # 추가 cyclical 후보들 (시총 1조+ 추정)
+    '010620': ('조선', True),     # 현대미포조선
+    '010060': ('화학', False),    # OCI홀딩스
+    '001230': ('철강', True),     # 동국홀딩스
+    '008060': ('전자', False),    # 대덕전자
+    '012630': ('건설', False),    # HDC
+    '001120': ('상사', True),     # LX인터내셔널
+    '011790': ('화학', False),    # SKC
+    '003030': ('철강', True),     # 세아제강지주
+    '003410': ('시멘트', False),  # 쌍용씨앤이
+    '001250': ('상사', True),     # GS글로벌
+    '002990': ('건설', False),    # 금호건설
+    '005010': ('철강', True),     # 휴스틸
+    '028050': ('건설', False),    # 삼성E&A
+    '000150': ('자동차', False),  # 두산
+    '241560': ('기계', False),    # 두산밥캣
+    '267260': ('기계', False),    # HD현대일렉트릭
+    '329180': ('조선', True),     # HD현대중공업
+    '042700': ('반도체', False),  # 한미반도체
+    '161390': ('자동차', False),  # 한국타이어
+    '000240': ('자동차', False),  # 한라
+    '004990': ('상사', False),    # 롯데지주
+    '120110': ('화학', False),    # 코오롱인더
+    '000880': ('상사', False),    # 한화
+    '012450': ('방산', False),    # 한화에어로스페이스
+    '014820': ('자동차', False),  # 동원시스템즈
+    '298050': ('화학', False),    # 효성첨단소재
+    '298040': ('화학', False),    # 효성중공업
+    '004800': ('상사', False),    # 효성
+    '298000': ('화학', False),    # 효성화학
+    '002380': ('철강', True),     # KCC
+    '001530': ('철강', True),     # DI동일
+    '083420': ('철강', True),     # 그린플러스
+    '006650': ('화학', False),    # 대한유화
+    '120030': ('화학', False),    # 조선내화
+    '000390': ('자동차', False),  # 삼화페인트
+    '004990': ('상사', False),    # 롯데지주
+    '009830': ('화학', False),    # 한화솔루션 (중복)
+    '002030': ('철강', True),     # 아세아
+    '000370': ('자동차', False),  # 한화손해보험 (사실 금융이라 제외)
+    '011210': ('화학', False),    # 현대위아
+    '241560': ('기계', False),    # 두산밥캣
+    '042660': ('조선', True),     # 한화오션
 }
 
 
@@ -86,7 +165,92 @@ def to_native(obj):
 
 
 # ============================================================
-# NAVER 외인 데이터
+# ★ v2.1 핵심 - 자동 종목 빌더
+# ============================================================
+def is_cyclical_name(name):
+    """종목명으로 cyclical 여부 추정"""
+    if not name:
+        return False
+    for kw in CYCLICAL_KEYWORDS:
+        if kw in name:
+            return True
+    return False
+
+
+def build_universe(min_cap_eok=10000):
+    """
+    pykrx로 시총 N억 이상 cyclical 종목 자동 빌드
+    - SEED_STOCKS (41개) 항상 포함
+    - 시총 1조+ 중 cyclical 키워드 매칭 종목 추가
+    
+    min_cap_eok: 최소 시총 (억원). 10000 = 1조
+    """
+    universe = dict(SEED_STOCKS)  # 시드 복사
+    china_set = set(CHINA_DIRECT)
+    
+    print(f'  종목 풀 빌드 시작 (시드 {len(universe)}개)')
+    
+    # 어제 날짜로 시총 조회 (오늘 장 안 끝났을 수 있음)
+    yesterday = TODAY - timedelta(days=1)
+    # 주말이면 금요일로
+    while yesterday.weekday() >= 5:
+        yesterday -= timedelta(days=1)
+    cap_date = yesterday.strftime('%Y%m%d')
+    
+    added = 0
+    skipped = 0
+    
+    for market in ['KOSPI', 'KOSDAQ']:
+        try:
+            cap_df = stock.get_market_cap_by_ticker(cap_date, market=market)
+            if cap_df is None or len(cap_df) == 0:
+                print(f'    {market}: 시총 데이터 없음')
+                continue
+            
+            # 시총 1조+ 필터 (시총 컬럼명: '시가총액')
+            cap_col = '시가총액' if '시가총액' in cap_df.columns else cap_df.columns[0]
+            min_cap = min_cap_eok * 1e8  # 억 → 원
+            big_caps = cap_df[cap_df[cap_col] >= min_cap]
+            
+            print(f'    {market} 시총 {min_cap_eok/10000:.0f}조+: {len(big_caps)}개')
+            
+            for code in big_caps.index:
+                if code in universe:
+                    continue
+                
+                try:
+                    name = stock.get_market_ticker_name(code)
+                    if not name:
+                        continue
+                    
+                    # cyclical 판정: 키워드 매칭 OR 직접 매핑
+                    is_cyc = False
+                    if code in CYCLICAL_DIRECT_MAP:
+                        is_cyc = True
+                        _, is_china = CYCLICAL_DIRECT_MAP[code]
+                        if is_china:
+                            china_set.add(code)
+                    elif is_cyclical_name(name):
+                        is_cyc = True
+                    
+                    if is_cyc:
+                        universe[code] = name
+                        added += 1
+                    else:
+                        skipped += 1
+                except Exception as e:
+                    continue
+        except Exception as e:
+            print(f'    {market} 조회 실패: {e}')
+            continue
+    
+    print(f'  ✓ 자동 발굴: {added}개 추가, {skipped}개 비-cyclical 제외')
+    print(f'  ✓ 최종 종목 풀: {len(universe)}개')
+    return universe, china_set
+
+
+# ============================================================
+# NAVER 외인
 # ============================================================
 def fetch_naver_foreign(code, retry=2):
     url = f'https://m.stock.naver.com/api/stock/{code}/integration'
@@ -187,15 +351,13 @@ def analyze_foreign_from_history(history, code):
     else:
         trend = 'flat'
     return {
-        'trend': trend,
-        'latest_ratio': round(latest_ratio, 2),
-        'change_30d': change_30d,
-        'data_points': n,
+        'trend': trend, 'latest_ratio': round(latest_ratio, 2),
+        'change_30d': change_30d, 'data_points': n,
     }
 
 
 # ============================================================
-# 4차함수 c자리 검출
+# 4차함수 c자리
 # ============================================================
 def quartic(x, k, a, b, c):
     return k * (x - a) * (x - b) * (x - c) ** 2
@@ -403,11 +565,7 @@ def resample_to_monthly(df_daily):
     }).dropna()
 
 
-# ============================================================
-# 차트 데이터 - 본질만 (가격 + 20일선)
-# ============================================================
 def extract_chart_data(df, max_points=300):
-    """차트 데이터 - 가격 + 20일선만"""
     if df is None or len(df) == 0:
         return None
     ma20 = df['종가'].rolling(20).mean()
@@ -425,7 +583,7 @@ def extract_chart_data(df, max_points=300):
     }
 
 
-def analyze_stock(code, name, foreign_history):
+def analyze_stock(code, name, foreign_history, china_set):
     df_d_5y = get_daily(code, 5)
     if df_d_5y is None or len(df_d_5y) < 250:
         return None
@@ -463,7 +621,7 @@ def analyze_stock(code, name, foreign_history):
     
     phase = determine_phase(avg_ratio, ma20_data['is_stealth'], foreign_data['trend'])
     verdict = determine_verdict(alignment['stars'], phase)
-    is_china = code in CHINA_DIRECT
+    is_china = code in china_set
     accum_score = calc_score(alignment['stars'], phase, ma20_data, foreign_data, is_china)
 
     chart_data = {
@@ -499,11 +657,17 @@ def analyze_stock(code, name, foreign_history):
 
 
 def main():
-    print(f'[SIGVIEW 잭팟 시즌2 v2.0] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
-    print(f'경기민감주 풀: {len(CYCLICAL)}개')
-    print(f'데이터: 일봉 5년 / 주봉~8년 / 월봉~20년')
+    print(f'[SIGVIEW 잭팟 시즌2 v2.1] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
+    print(f'자동 종목 빌더 + NAVER 외인 + 4차함수 c자리')
     print()
     
+    # ★ Step 0: 자동 종목 빌드
+    print('[Step 0] 종목 풀 자동 빌드')
+    print('-' * 60)
+    universe, china_set = build_universe(min_cap_eok=10000)  # 1조+
+    print()
+    
+    # Step 1: 외인 히스토리 로드
     foreign_history = load_foreign_history()
     print(f'외인 히스토리: {len(foreign_history)}개 종목 기록')
     
@@ -511,40 +675,41 @@ def main():
     print('-' * 60)
     fetch_success = 0
     total_new_records = 0
-    for code, name in CYCLICAL.items():
+    for code, name in universe.items():
         new_data = fetch_naver_foreign(code)
         if new_data:
             added = update_foreign_history(foreign_history, code, new_data)
             total_new_records += added
             fetch_success += 1
-        time.sleep(0.1)
+        time.sleep(0.3)  # rate limit 강화 (80개라)
     save_foreign_history(foreign_history)
-    print(f'성공: {fetch_success}/{len(CYCLICAL)}, 신규 누적: {total_new_records}건')
+    print(f'성공: {fetch_success}/{len(universe)}, 신규 누적: {total_new_records}건')
     
     print('\n[Step 2] 종목 분석')
     print('-' * 60)
     results = []
-    for i, (code, name) in enumerate(CYCLICAL.items(), 1):
+    matched_count = 0
+    for i, (code, name) in enumerate(universe.items(), 1):
         try:
-            r = analyze_stock(code, name, foreign_history)
+            r = analyze_stock(code, name, foreign_history, china_set)
             if r:
                 results.append(r)
+                matched_count += 1
                 china_tag = ' 🇨🇳' if r['is_china_play'] else ''
-                print(f'  [{i}/{len(CYCLICAL)}] {name}{china_tag} ★{r["stars"]} '
-                      f'점수{r["accumulation_score"]} {r["verdict"]}')
-            else:
-                print(f'  [{i}/{len(CYCLICAL)}] {name} - 매칭 없음')
+                if i % 10 == 0 or i <= 5 or r['accumulation_score'] >= 50:
+                    print(f'  [{i}/{len(universe)}] {name}{china_tag} ★{r["stars"]} '
+                          f'점수{r["accumulation_score"]} {r["verdict"]}')
         except Exception as e:
-            print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {str(e)[:80]}')
+            print(f'  [{i}/{len(universe)}] {name} - 에러: {str(e)[:80]}')
 
     results.sort(key=lambda x: -x['accumulation_score'])
     for i, r in enumerate(results, 1):
         r['rank'] = i
 
     output = {
-        'version': '2.0', 'season': 2, 'algo_version': '2.0',
+        'version': '2.0', 'season': 2, 'algo_version': '2.1',
         'generated_at': TODAY.isoformat(),
-        'n_scanned': len(CYCLICAL), 'n_matched': len(results),
+        'n_scanned': len(universe), 'n_matched': len(results),
         'foreign_data': {
             'source': 'NAVER mobile API',
             'total_codes_tracked': len(foreign_history),
@@ -552,8 +717,8 @@ def main():
             'new_records_today': total_new_records,
         },
         'algorithm': {
-            'name': 'SIGVIEW 시즌2 v2.0',
-            'description': '4차함수 c자리 + 외인 보유율 + 20일선 매집 패턴',
+            'name': 'SIGVIEW 시즌2 v2.1',
+            'description': '자동 종목 빌더 (시총 1조+ cyclical) + 4차함수 + 외인 매집',
         },
         'summary': {
             'five_stars': sum(1 for r in results if r['stars'] == 5),
@@ -573,7 +738,7 @@ def main():
     with open('jackpot-v2.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    print(f'\n완료: {len(results)}개 매칭')
+    print(f'\n완료: {len(results)}개 매칭 / {len(universe)}개 스캔')
 
 
 if __name__ == '__main__':
