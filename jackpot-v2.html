@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGVIEW 잭팟 도구 시즌2 v1.4 | 스마트머니 매집 포착 도구</title>
-<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + Smart Money(OBV/AD/CMF) + 20일선 패턴으로 스마트머니와 동일 포지션 매집 종목 발굴.">
+<title>SIGVIEW 잭팟 도구 시즌2 v1.5 | 외인 매집 포착 도구</title>
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + NAVER 외인 보유율 추세 + 20일선 패턴으로 외인과 동일 포지션 매집 종목 발굴.">
 <meta name="robots" content="index, follow">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
@@ -24,6 +24,10 @@
   --color-quiet-border: #BA7517;
   --color-quiet-text: #633806;
   --color-quiet-sub: #854F0B;
+  --color-likely-bg: #F4E5FA;
+  --color-likely-border: #9B4FC7;
+  --color-likely-text: #4A1D6B;
+  --color-likely-sub: #7234A0;
   --color-breakout-bg: #EAF3DE;
   --color-breakout-border: #639922;
   --color-breakout-text: #27500A;
@@ -73,6 +77,16 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .philosophy { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
 .updated { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
 
+.notice {
+  background: var(--bg-secondary);
+  border-left: 3px solid #D4A017;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-size: 12px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0; }
 .stat-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; }
 .stat-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
@@ -93,6 +107,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .stock-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 .stock-card.stealth { background: var(--color-stealth-bg); border-color: var(--color-stealth-border); }
 .stock-card.quiet { background: var(--color-quiet-bg); border-color: var(--color-quiet-border); }
+.stock-card.likely { background: var(--color-likely-bg); border-color: var(--color-likely-border); }
 .stock-card.breakout { background: var(--color-breakout-bg); border-color: var(--color-breakout-border); }
 .stock-card.progress { background: var(--color-progress-bg); border-color: var(--color-progress-border); }
 .stock-card.verified { background: var(--color-verified-bg); border-color: var(--color-verified-border); }
@@ -102,6 +117,8 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .stealth .stock-sub, .stealth .stock-stars, .stealth .stock-meta { color: var(--color-stealth-sub); }
 .quiet .stock-name { color: var(--color-quiet-text); }
 .quiet .stock-sub, .quiet .stock-stars, .quiet .stock-meta { color: var(--color-quiet-sub); }
+.likely .stock-name { color: var(--color-likely-text); }
+.likely .stock-sub, .likely .stock-stars, .likely .stock-meta { color: var(--color-likely-sub); }
 .breakout .stock-name { color: var(--color-breakout-text); }
 .breakout .stock-sub, .breakout .stock-stars, .breakout .stock-meta { color: var(--color-breakout-sub); }
 .progress .stock-name { color: var(--color-progress-text); }
@@ -136,43 +153,15 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 
 .empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
 
-/* ===== 모달 ===== */
-.modal-backdrop {
-  display: none;
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
+/* 모달 */
+.modal-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
 .modal-backdrop.open { display: flex; }
-.modal {
-  background: var(--bg);
-  border-radius: 12px;
-  max-width: 800px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
-  position: relative;
-}
-.modal-close {
-  position: absolute; top: 12px; right: 16px;
-  background: none; border: none; font-size: 24px;
-  color: var(--text-secondary); cursor: pointer;
-}
+.modal { background: var(--bg); border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 20px; position: relative; }
+.modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; }
 .modal h2 { font-size: 18px; margin-bottom: 4px; }
 .modal-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; }
 .tab-row { display: flex; gap: 6px; margin-bottom: 14px; }
-.tab-btn {
-  flex: 1; padding: 8px 12px;
-  border: 1px solid var(--border);
-  background: var(--bg-secondary);
-  border-radius: 6px;
-  font-size: 13px; cursor: pointer;
-  color: var(--text-primary);
-}
+.tab-btn { flex: 1; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-primary); }
 .tab-btn.active { background: var(--text-primary); color: var(--bg); }
 .chart-wrap { height: 320px; position: relative; }
 .modal-info { margin-top: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
@@ -195,35 +184,34 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <div class="container">
 
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v1.4</div>
+  <div class="brand">SIGVIEW · JACKPOT v1.5</div>
   <h1>잭팟 도구 시즌2</h1>
-  <div class="subtitle">스마트머니 매집 포착 · 4차함수 + OBV/AD/CMF</div>
-  <div class="philosophy">"스마트머니와 동일 포지션으로 매집기에 진입한다 · 카드 클릭 → 차트 보기"</div>
+  <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + NAVER 외인 보유율</div>
+  <div class="philosophy">"외인과 동일 포지션으로 매집기에 진입한다 · 카드 클릭 → 차트 보기"</div>
   <div class="updated" id="updated">데이터 불러오는 중...</div>
 </header>
 
+<div class="notice" id="data-notice" style="display:none;"></div>
+
 <div class="stats" id="stats">
-  <div class="stat-card"><div class="stat-label">🎯 매집중</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
+  <div class="stat-card"><div class="stat-label">🎯 외인매집</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
   <div class="stat-card"><div class="stat-label">🐢 조용매집</div><div class="stat-value" id="stat-quiet">-</div></div>
-  <div class="stat-card"><div class="stat-label">🌱 막깨고</div><div class="stat-value" id="stat-breakout">-</div></div>
+  <div class="stat-card"><div class="stat-label">🔍 추정</div><div class="stat-value" id="stat-likely">-</div></div>
   <div class="stat-card"><div class="stat-label">🇨🇳 중국</div><div class="stat-value" id="stat-china">-</div></div>
 </div>
 
-<div id="content">
-  <div class="loading">데이터 불러오는 중...</div>
-</div>
+<div id="content"><div class="loading">데이터 불러오는 중...</div></div>
 
 <div class="disclaimer">
-  <strong>스마트머니 매집 포착 도구 · 투자 권유 X</strong><br>
-  본 데이터는 4차함수 c자리 + OBV/AD/CMF 스마트머니 추적 + 20일선 횡단 + 거래량 비대칭 분석 결과입니다.
-  외국인/기관 매집 행동을 가격·거래량 패턴으로 추정하는 도구이며, 특정 종목 추천이 아닙니다.
+  <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
+  본 데이터는 4차함수 c자리 검출 + NAVER 외인 보유율 추세 + 20일선 횡단 분석 결과입니다.
+  외인과 동일 포지션으로 매집기에 진입하는 도구이며, 특정 종목 추천이 아닙니다.
   모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
   <span id="algo-info"></span>
 </div>
 
 </div>
 
-<!-- 차트 모달 -->
 <div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -246,6 +234,7 @@ function phaseToColor(phase) {
   return ({
     'stealth_accumulation': 'stealth',
     'quiet_accumulation': 'quiet',
+    'likely_accumulation': 'likely',
     'early_breakout': 'breakout',
     'in_progress': 'progress',
     'already_run': 'verified',
@@ -262,7 +251,8 @@ function trendLabel(trend) {
     'flat': '⚪ 평이',
     'slight_down': '🟡 약감소',
     'distributing': '🔴 매도중',
-    'unknown': '⚪ -',
+    'gathering_data': '⏳ 데이터수집중',
+    'no_data': '⚫ 데이터없음',
   })[trend] || '⚪';
 }
 
@@ -287,16 +277,20 @@ function renderFrames(stock) {
 
 function renderSignals(stock) {
   const s = stock.signals || {};
-  const smTrend = trendLabel(s.smart_money_trend);
-  const smScore = s.smart_money_score !== undefined && s.smart_money_score !== null
-    ? `${s.smart_money_score >= 0 ? '+' : ''}${s.smart_money_score.toFixed(0)}`
-    : '-';
+  const ft = trendLabel(s.foreign_trend);
+  const latestRatio = s.foreign_latest_ratio !== null && s.foreign_latest_ratio !== undefined
+    ? `${s.foreign_latest_ratio.toFixed(1)}%` : '-';
+  const change30 = s.foreign_change_30d !== null && s.foreign_change_30d !== undefined
+    ? `${s.foreign_change_30d >= 0 ? '+' : ''}${s.foreign_change_30d.toFixed(2)}%p` : '-';
+  const dataPoints = s.foreign_data_points || 0;
   return `
     <div class="signals-grid">
-      <div class="signal-row"><span class="signal-label">💰 스마트머니</span><span class="signal-value">${smTrend} ${smScore}</span></div>
-      <div class="signal-row"><span class="signal-label">📊 CMF(20)</span><span class="signal-value">${(s.cmf_20 || 0).toFixed(3)}</span></div>
+      <div class="signal-row"><span class="signal-label">🌐 외인 추세</span><span class="signal-value">${ft}</span></div>
+      <div class="signal-row"><span class="signal-label">📊 외인 보유율</span><span class="signal-value">${latestRatio}</span></div>
+      <div class="signal-row"><span class="signal-label">📈 30일 변화</span><span class="signal-value">${change30}</span></div>
+      <div class="signal-row"><span class="signal-label">📅 데이터 일수</span><span class="signal-value">${dataPoints}일</span></div>
       <div class="signal-row"><span class="signal-label">📈 20일선 횡단</span><span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span></div>
-      <div class="signal-row"><span class="signal-label">📦 거래량 매집</span><span class="signal-value">${(s.volume_down_up_ratio || 0).toFixed(2)} ${s.volume_accumulation ? '✓' : ''}</span></div>
+      <div class="signal-row"><span class="signal-label">📉 가격 변동폭</span><span class="signal-value">${(s.price_range_pct || 0).toFixed(0)}%</span></div>
     </div>
   `;
 }
@@ -334,31 +328,23 @@ function renderSection(title, desc, stocks, emptyMsg) {
   return `<h2 class="section-title">${title}</h2><div class="section-desc">${desc}</div>${inner}`;
 }
 
-// ===== 모달 차트 =====
 function openChart(code) {
   const stock = DATA.stocks.find(s => s.code === code);
   if (!stock) return;
   currentStock = stock;
-
   document.getElementById('modal-title').textContent = `${stock.name} (${stock.code})`;
   document.getElementById('modal-sub').textContent = 
     `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}`;
-
-  // 탭 버튼 생성
   const availableFrames = [];
   if (stock.chart?.daily) availableFrames.push(['daily', '일봉']);
   if (stock.chart?.weekly) availableFrames.push(['weekly', '주봉']);
   if (stock.chart?.monthly) availableFrames.push(['monthly', '월봉']);
-  
   document.getElementById('tab-row').innerHTML = availableFrames.map(([key, label]) => 
     `<button class="tab-btn ${currentFrame === key ? 'active' : ''}" onclick="switchFrame('${key}')">${label}</button>`
   ).join('');
-
-  // 기본 프레임 선택 (있는 것 중에서)
   if (!availableFrames.find(([k]) => k === currentFrame) && availableFrames.length > 0) {
     currentFrame = availableFrames[0][0];
   }
-
   renderChartFor(currentFrame);
   document.getElementById('modal').classList.add('open');
 }
@@ -374,68 +360,35 @@ function renderChartFor(frameKey) {
   if (!currentStock) return;
   const chartData = currentStock.chart?.[frameKey];
   const frameInfo = currentStock.frames?.[frameKey];
-  
   if (!chartData) {
     document.getElementById('modal-info').innerHTML = '차트 데이터 없음';
     return;
   }
-
-  // 기존 차트 제거
-  if (currentChart) {
-    currentChart.destroy();
-    currentChart = null;
-  }
-
-  // 차트 데이터
+  if (currentChart) { currentChart.destroy(); currentChart = null; }
   const labels = chartData.dates;
   const closes = chartData.closes;
-
-  // 4차함수 적합선 계산 (frame 정보가 있을 때만)
-  let fitLine = null;
-  let cDateIdx = null, aDateIdx = null, bDateIdx = null;
-  if (frameInfo && frameInfo.fit_k !== undefined) {
-    const { fit_k, fit_a, fit_b, fit_c, g_base, win_size, start_i } = frameInfo;
-    // chart_data가 다운샘플되었을 수 있어서 인덱스 매칭 어려움
-    // 근사적으로 c_date 기준으로 표시
-    fitLine = new Array(labels.length).fill(null);
-    // c_date, a, b 위치를 라벨에서 찾기 (정확하지 않을 수 있음)
-    cDateIdx = labels.indexOf(frameInfo.c_date);
-  }
-
-  // 마커 데이터
+  let cDateIdx = null;
+  if (frameInfo) cDateIdx = labels.indexOf(frameInfo.c_date);
   const cPointData = labels.map((d, i) => i === cDateIdx ? closes[i] : null);
 
-  const datasets = [
-    {
-      label: '종가',
-      data: closes,
-      borderColor: '#378ADD',
-      backgroundColor: 'rgba(55,138,221,0.1)',
-      borderWidth: 1.5,
-      pointRadius: 0,
-      tension: 0.1,
-      fill: false,
-    }
-  ];
+  const datasets = [{
+    label: '종가', data: closes,
+    borderColor: '#378ADD', backgroundColor: 'rgba(55,138,221,0.1)',
+    borderWidth: 1.5, pointRadius: 0, tension: 0.1, fill: false,
+  }];
   if (cDateIdx !== null && cDateIdx >= 0) {
     datasets.push({
-      label: 'c (기러기자리)',
-      data: cPointData,
-      borderColor: '#C0392B',
-      backgroundColor: '#C0392B',
-      pointRadius: 8,
-      pointStyle: 'circle',
-      showLine: false,
+      label: 'c (기러기자리)', data: cPointData,
+      borderColor: '#C0392B', backgroundColor: '#C0392B',
+      pointRadius: 8, pointStyle: 'circle', showLine: false,
     });
   }
-
   const ctx = document.getElementById('chart-canvas').getContext('2d');
   currentChart = new Chart(ctx, {
     type: 'line',
     data: { labels, datasets },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { intersect: false, mode: 'index' },
       plugins: {
         legend: { display: true, position: 'top', labels: { font: { size: 11 } } },
@@ -447,8 +400,6 @@ function renderChartFor(frameKey) {
       },
     },
   });
-
-  // 정보 표시
   let info = '';
   if (frameInfo) {
     info = `
@@ -456,8 +407,7 @@ function renderChartFor(frameKey) {
       <strong>c가격:</strong> ${frameInfo.c_price?.toLocaleString()}원 →
       <strong>현재:</strong> ${frameInfo.latest_price?.toLocaleString()}원
       (${frameInfo.ratio_pct >= 0 ? '+' : ''}${frameInfo.ratio_pct}%)<br>
-      <strong>윈도우 크기:</strong> ${frameInfo.win_size} 봉 ·
-      <strong>c 위치:</strong> ${(frameInfo.fit_c * 100).toFixed(0)}%
+      <strong>윈도우:</strong> ${frameInfo.win_size}봉 · <strong>c 위치:</strong> ${(frameInfo.c_pos * 100).toFixed(0)}%
     `;
   } else {
     info = '<em>이 프레임에서는 c자리가 검출되지 않았어요.</em>';
@@ -467,16 +417,11 @@ function renderChartFor(frameKey) {
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  if (currentChart) {
-    currentChart.destroy();
-    currentChart = null;
-  }
+  if (currentChart) { currentChart.destroy(); currentChart = null; }
 }
 
-// ESC 키로 닫기
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ===== 메인 로드 =====
 async function loadAndRender() {
   try {
     const res = await fetch(JSON_URL + '?t=' + Date.now());
@@ -485,34 +430,56 @@ async function loadAndRender() {
 
     const dt = new Date(DATA.generated_at);
     document.getElementById('updated').textContent =
-      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '1.4'})`;
+      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '1.5'})`;
 
     const summary = DATA.summary || {};
     document.getElementById('stat-stealth').textContent = summary.stealth_accumulation || 0;
     document.getElementById('stat-quiet').textContent = summary.quiet_accumulation || 0;
-    document.getElementById('stat-breakout').textContent = summary.early_breakout || 0;
+    document.getElementById('stat-likely').textContent = summary.likely_accumulation || 0;
     document.getElementById('stat-china').textContent = summary.china_plays || 0;
 
     document.getElementById('algo-info').textContent =
-      `${DATA.algorithm?.name || 'MFAS v1.4'} · ${DATA.algorithm?.description || ''}`;
+      `${DATA.algorithm?.name || 'MFAS v1.5'} · ${DATA.algorithm?.description || ''}`;
+
+    // 외인 데이터 진행률 안내
+    const fd = DATA.foreign_data || {};
+    const tracked = fd.total_codes_tracked || 0;
+    const success = fd.fetch_success_today || 0;
+    const newRec = fd.new_records_today || 0;
+    let totalDataPoints = 0;
+    (DATA.stocks || []).forEach(s => { totalDataPoints = Math.max(totalDataPoints, s.signals?.foreign_data_points || 0); });
+    if (totalDataPoints < 30) {
+      const notice = document.getElementById('data-notice');
+      notice.style.display = 'block';
+      notice.innerHTML = `
+        <strong>📅 외인 데이터 누적 진행중</strong><br>
+        현재 최대 ${totalDataPoints}일치 외인 데이터 보유. 매일 자정 자동 수집 후 누적됩니다.
+        30일 이상 모이면 외인 추세가 더 정확해져요.
+        (오늘 ${success}/${DATA.n_scanned}개 수집 성공, ${newRec}건 신규 누적)
+      `;
+    }
 
     const stocks = DATA.stocks || [];
     const stealth = stocks.filter(s => s.phase === 'stealth_accumulation');
     const quiet = stocks.filter(s => s.phase === 'quiet_accumulation');
+    const likely = stocks.filter(s => s.phase === 'likely_accumulation');
     const breakout = stocks.filter(s => s.phase === 'early_breakout');
     const progress = stocks.filter(s => s.phase === 'in_progress');
     const verified = stocks.filter(s => s.phase === 'already_run');
     const risky = stocks.filter(s => s.phase === 'risky');
 
     const content =
-      renderSection('🎯 스마트머니 매집중',
-        'OBV/CMF 우상향 + c자리 ±15% + 20일선 횡단 활발. <strong>시즌2 코어 — 최우선 후보.</strong>',
-        stealth, '아직 조건 만족 종목 없음. 스마트머니가 본격 매집 시작하면 여기 나타나요.') +
-      renderSection('🐢 조용한 매집중',
-        'OBV/CMF 양호 + 가격 횡보. 진짜 매집 가능성.',
+      renderSection('🎯 외인 매집 확정',
+        'NAVER 외인 보유율 ↑ + c자리 ±15% + 20일선 횡단 활발. <strong>최우선 후보.</strong>',
+        stealth, '아직 조건 만족 종목 없음. 외인 데이터 누적되면 여기 나타나요.') +
+      renderSection('🐢 외인 조용한 매집',
+        '외인 보유율 ↑ + 가격 횡보. 진짜 매집 가능성.',
         quiet, '없음') +
+      renderSection('🔍 매집 추정 (데이터 부족)',
+        'c자리 ±15% + 20일선 횡단 ✓. 외인 데이터 누적되면 확정될 종목.',
+        likely, '없음') +
       renderSection('🌱 막 깨고 나오는 중',
-        'c자리 통과 후 +10~30% 초기 상승. 매집기 종료, 본격 상승 시작.',
+        'c자리 통과 후 +10~30% 초기 상승.',
         breakout, '없음') +
       renderSection('🇨🇳 중국 회복 베팅 (총정리)',
         '철강·화학·조선·해운·중공업 등 중국 경기 회복 직접 수혜.',
@@ -523,8 +490,8 @@ async function loadAndRender() {
       renderSection('🔥 이미 폭발 (검증)',
         '알고리즘 적중 입증용. 진입 X.',
         verified.slice(0, 5), '없음') +
-      (risky.length > 0 ? renderSection('⚠️ 스마트머니 매도중 (회피)',
-        'OBV/CMF 하락. 회피 권장.',
+      (risky.length > 0 ? renderSection('⚠️ 외인 매도중 (회피)',
+        '외인 보유율 하락. 회피 권장.',
         risky.slice(0, 5), '없음') : '');
 
     document.getElementById('content').innerHTML = content;
