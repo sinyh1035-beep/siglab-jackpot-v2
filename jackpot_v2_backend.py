@@ -1,316 +1,381 @@
-"""
-jackpot_v2_backend.py
-==========================================
-SIGVIEW 잭팟 도구 시즌2 - 백엔드 자동 스캔 (BUG FIX v1.1)
-- pykrx로 일봉만 받고 pandas resample로 주봉/월봉 변환
-- (pykrx는 freq='w' 미지원 - 'd', 'm', 'y'만 가능)
-"""
-import json
-import warnings
-from datetime import datetime, timezone, timedelta
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGVIEW 잭팟 도구 시즌2 v1.3 | 외인 매집 포착 도구</title>
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + 외국인 매집 추세 + 20일선 횡단 패턴으로 외인과 동일 포지션 매집 종목 발굴.">
+<meta name="robots" content="index, follow">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f7f6f1;
+  --bg-tertiary: #f1efe8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5f5e5a;
+  --text-tertiary: #888780;
+  --border: rgba(0,0,0,0.08);
+  --color-stealth-bg: #FFF6E0;
+  --color-stealth-border: #D4A017;
+  --color-stealth-text: #5B4400;
+  --color-stealth-sub: #8B6914;
+  --color-quiet-bg: #FAEEDA;
+  --color-quiet-border: #BA7517;
+  --color-quiet-text: #633806;
+  --color-quiet-sub: #854F0B;
+  --color-breakout-bg: #EAF3DE;
+  --color-breakout-border: #639922;
+  --color-breakout-text: #27500A;
+  --color-breakout-sub: #3B6D11;
+  --color-progress-bg: #F1EFE8;
+  --color-progress-border: #B4B2A9;
+  --color-progress-text: #2C2C2A;
+  --color-progress-sub: #5F5E5A;
+  --color-verified-bg: #E6F1FB;
+  --color-verified-border: #378ADD;
+  --color-verified-text: #042C53;
+  --color-verified-sub: #185FA5;
+  --color-risky-bg: #FBE6E6;
+  --color-risky-border: #C0392B;
+  --color-risky-text: #531A14;
+  --color-risky-sub: #A5371F;
+  --color-china-bg: #FCE4EC;
+  --color-china-text: #B71C1C;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --bg-secondary: #242422;
+    --bg-tertiary: #2c2c2a;
+    --text-primary: #f1efe8;
+    --text-secondary: #b4b2a9;
+    --text-tertiary: #888780;
+    --border: rgba(255,255,255,0.08);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 760px; margin: 0 auto; padding: 24px 16px 80px; }
 
-import pandas as pd
-import numpy as np
-from scipy.optimize import curve_fit
-from pykrx import stock
+.header { margin-bottom: 20px; }
+.brand { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; margin-bottom: 4px; }
+h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+.philosophy { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
+.updated { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
 
-warnings.filterwarnings('ignore')
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0; }
+.stat-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; }
+.stat-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 600; }
+.stat-value.highlight { color: #D4A017; }
 
-KST = timezone(timedelta(hours=9))
-TODAY = datetime.now(KST)
-END_DATE = TODAY.strftime('%Y%m%d')
+.section-title {
+  font-size: 17px; font-weight: 600; margin: 28px 0 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
 
-CYCLICAL = {
-    '005930': '삼성전자', '000660': 'SK하이닉스', '042700': '한미반도체',
-    '058470': '리노공업', '039030': '이오테크닉스',
-    '373220': 'LG에너지솔루션', '006400': '삼성SDI', '051910': 'LG화학',
-    '003670': '포스코퓨처엠', '247540': '에코프로비엠', '086520': '에코프로',
-    '005380': '현대차', '000270': '기아', '012330': '현대모비스',
-    '009540': 'HD한국조선해양', '010140': '삼성중공업', '042660': '한화오션',
-    '005490': 'POSCO홀딩스', '004020': '현대제철', '010130': '고려아연',
-    '103140': '풍산',
-    '011170': '롯데케미칼', '009830': '한화솔루션', '011780': '금호석유',
-    '096770': 'SK이노베이션', '010950': 'S-Oil',
-    '000720': '현대건설', '006360': 'GS건설', '047040': '대우건설',
-    '011200': 'HMM', '028670': '팬오션', '003490': '대한항공',
-    '012450': '한화에어로스페이스', '047810': '한국항공우주', '079550': 'LIG넥스원',
-    '112610': '씨에스윈드', '052690': '한전기술', '051600': '한전KPS',
-    '034020': '두산에너빌리티',
-    '267250': 'HD현대', '329180': 'HD현대중공업',
+.stock-card {
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid;
+  position: relative;
+}
+.stock-card.stealth { background: var(--color-stealth-bg); border-color: var(--color-stealth-border); }
+.stock-card.quiet { background: var(--color-quiet-bg); border-color: var(--color-quiet-border); }
+.stock-card.breakout { background: var(--color-breakout-bg); border-color: var(--color-breakout-border); }
+.stock-card.progress { background: var(--color-progress-bg); border-color: var(--color-progress-border); }
+.stock-card.verified { background: var(--color-verified-bg); border-color: var(--color-verified-border); }
+.stock-card.risky { background: var(--color-risky-bg); border-color: var(--color-risky-border); }
+
+.stealth .stock-name { color: var(--color-stealth-text); }
+.stealth .stock-sub, .stealth .stock-stars, .stealth .stock-meta { color: var(--color-stealth-sub); }
+.quiet .stock-name { color: var(--color-quiet-text); }
+.quiet .stock-sub, .quiet .stock-stars, .quiet .stock-meta { color: var(--color-quiet-sub); }
+.breakout .stock-name { color: var(--color-breakout-text); }
+.breakout .stock-sub, .breakout .stock-stars, .breakout .stock-meta { color: var(--color-breakout-sub); }
+.progress .stock-name { color: var(--color-progress-text); }
+.progress .stock-sub, .progress .stock-stars, .progress .stock-meta { color: var(--color-progress-sub); }
+.verified .stock-name { color: var(--color-verified-text); }
+.verified .stock-sub, .verified .stock-stars, .verified .stock-meta { color: var(--color-verified-sub); }
+.risky .stock-name { color: var(--color-risky-text); }
+.risky .stock-sub, .risky .stock-stars, .risky .stock-meta { color: var(--color-risky-sub); }
+
+.stock-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.stock-name { font-weight: 600; font-size: 15px; }
+.stock-name-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.china-tag {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  background: var(--color-china-bg); color: var(--color-china-text);
+  padding: 1px 6px; border-radius: 3px;
+}
+.stock-stars { font-size: 13px; font-weight: 500; white-space: nowrap; }
+.stock-sub { font-size: 12px; margin-bottom: 8px; }
+.stock-meta { font-size: 11px; line-height: 1.7; opacity: 0.9; }
+.score-badge {
+  display: inline-block; font-weight: 600; font-size: 13px;
+  background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 10px;
+  margin-left: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  .score-badge { background: rgba(255,255,255,0.08); }
 }
 
+.signals-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 11px;
+}
+.signal-row { display: flex; justify-content: space-between; }
+.signal-label { opacity: 0.75; }
+.signal-value { font-weight: 500; }
 
-def quartic(x, k, a, b, c):
-    return k * (x - a) * (x - b) * (x - c) ** 2
+.disclaimer {
+  margin-top: 32px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.disclaimer strong { font-weight: 600; color: var(--text-secondary); }
 
+.loading, .error { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 14px; }
+.error { color: #c0392b; }
 
-def fit_quartic(prices, x_norm):
-    g_base = np.percentile(prices, 20)
-    h = prices - g_base
-    best, best_r2 = None, -np.inf
-    for a0, b0, c0 in [(0.10, 0.40, 0.80), (0.20, 0.50, 0.85),
-                        (0.05, 0.35, 0.75), (0.15, 0.45, 0.90)]:
-        try:
-            scale = max(h.max(), 1)
-            k0 = scale / max(abs((1 - a0) * (1 - b0) * (1 - c0) ** 2), 1e-6)
-            popt, _ = curve_fit(quartic, x_norm, h, p0=[k0, a0, b0, c0], maxfev=1500)
-            k_f, a_f, b_f, c_f = popt
-            if not (0 <= a_f < b_f < c_f <= 1) or k_f <= 0:
-                continue
-            y_fit = quartic(x_norm, *popt)
-            ss_res = np.sum((h - y_fit) ** 2)
-            ss_tot = np.sum((h - h.mean()) ** 2)
-            r2 = 1 - ss_res / ss_tot if ss_tot > 0 else -np.inf
-            if r2 > best_r2:
-                best_r2 = r2
-                best = (k_f, a_f, b_f, c_f, g_base)
-        except Exception:
-            continue
-    return best, best_r2
+.empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
 
+@media (max-width: 480px) {
+  .container { padding: 16px 14px 60px; }
+  h1 { font-size: 20px; }
+  .stats { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .stat-card { padding: 8px 4px; }
+  .stat-value { font-size: 16px; }
+  .signals-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
 
-def collect_c_candidates(df, win_sizes, step, recent_cutoff, r2_min=0.60):
-    cands = []
-    for win_size in win_sizes:
-        if len(df) < win_size:
-            continue
-        for start_i in range(0, len(df) - win_size + 1, step):
-            window = df.iloc[start_i:start_i + win_size]
-            prices = window['종가'].values.astype(float)
-            x_norm = np.linspace(0, 1, win_size)
-            fit_result, r2 = fit_quartic(prices, x_norm)
-            if fit_result is None or r2 < r2_min:
-                continue
-            k_f, a_f, b_f, c_f, g_base = fit_result
-            if not (0.65 <= c_f <= 0.95):
-                continue
-            c_idx = start_i + int(c_f * (win_size - 1))
-            c_date = df.index[c_idx]
-            if c_date < recent_cutoff:
-                continue
-            c_price = float(df['종가'].iloc[c_idx])
-            latest_price = float(df['종가'].iloc[-1])
-            cands.append({
-                'c_date': c_date.strftime('%Y-%m-%d'),
-                'c_price': c_price,
-                'r2': round(float(r2), 3),
-                'c_pos': round(float(c_f), 3),
-                'win_size': win_size,
-                'latest_price': latest_price,
-                'ratio_pct': round((latest_price / c_price - 1) * 100, 1) if c_price > 0 else 0,
-            })
-    return cands
+<header class="header">
+  <div class="brand">SIGVIEW · JACKPOT v1.3</div>
+  <h1>잭팟 도구 시즌2</h1>
+  <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + 외국인 보유율 + 20일선 패턴</div>
+  <div class="philosophy">"외인과 동일 포지션으로 매집기에 진입한다"</div>
+  <div class="updated" id="updated">데이터 불러오는 중...</div>
+</header>
 
+<div class="stats" id="stats">
+  <div class="stat-card"><div class="stat-label">🎯 외인매집</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
+  <div class="stat-card"><div class="stat-label">🐢 조용매집</div><div class="stat-value" id="stat-quiet">-</div></div>
+  <div class="stat-card"><div class="stat-label">🌱 막깨고</div><div class="stat-value" id="stat-breakout">-</div></div>
+  <div class="stat-card"><div class="stat-label">🇨🇳 중국</div><div class="stat-value" id="stat-china">-</div></div>
+</div>
 
-def find_aligned_c(daily, weekly, monthly,
-                    max_dw_m=6, max_wm_m=12, max_dwm_m=12):
-    best = None
-    best_score = -np.inf
+<div id="content">
+  <div class="loading">데이터 불러오는 중...</div>
+</div>
 
-    def date_diff_months(d1, d2):
-        a = pd.Timestamp(d1)
-        b = pd.Timestamp(d2)
-        return abs((a - b).days) / 30
+<div class="disclaimer">
+  <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
+  본 데이터는 4차함수 패턴 매칭 + 외국인 보유율 추세 + 20일선 횡단 + 거래량 비대칭 분석 결과입니다.
+  매집기에 외국인과 동일 포지션으로 진입하기 위한 도구이며, 특정 종목 추천이 아닙니다.
+  모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
+  <span id="algo-info"></span>
+</div>
 
-    for d in daily:
-        for w in weekly:
-            for m in monthly:
-                dw = date_diff_months(d['c_date'], w['c_date'])
-                wm = date_diff_months(w['c_date'], m['c_date'])
-                dm = date_diff_months(d['c_date'], m['c_date'])
-                if dw <= max_dw_m and wm <= max_wm_m and dm <= max_dwm_m:
-                    score = (d['r2'] + w['r2'] + m['r2']) - (dw + wm + dm) * 0.02
-                    if score > best_score:
-                        best_score = score
-                        best = {'stars': 5, 'type': '일+주+월',
-                                'time_diff_months': round(max(dw, wm, dm), 1),
-                                'daily': d, 'weekly': w, 'monthly': m, 'score': score}
-    if best:
-        return best
+</div>
 
-    pairs = [
-        ('일+주', daily, weekly, max_dw_m, 'daily', 'weekly'),
-        ('주+월', weekly, monthly, max_wm_m, 'weekly', 'monthly'),
-        ('일+월', daily, monthly, max_dwm_m, 'daily', 'monthly'),
-    ]
-    for type_name, frame_a, frame_b, max_m, key_a, key_b in pairs:
-        for a in frame_a:
-            for b in frame_b:
-                diff = date_diff_months(a['c_date'], b['c_date'])
-                if diff <= max_m:
-                    score = a['r2'] + b['r2'] - diff * 0.02
-                    if score > best_score:
-                        best_score = score
-                        best = {'stars': 4, 'type': type_name,
-                                'time_diff_months': round(diff, 1),
-                                key_a: a, key_b: b, 'score': score}
-    if best:
-        return best
+<script>
+const JSON_URL = './jackpot-v2.json';
 
-    all_singles = []
-    for d in daily:
-        all_singles.append(('일', 'daily', d))
-    for w in weekly:
-        all_singles.append(('주', 'weekly', w))
-    for m in monthly:
-        all_singles.append(('월', 'monthly', m))
-    if all_singles:
-        all_singles.sort(key=lambda x: -x[2]['r2'])
-        type_name, key, d = all_singles[0]
-        return {'stars': 3, 'type': type_name, key: d, 'score': d['r2']}
-    return None
+function phaseToColor(phase) {
+  return ({
+    'stealth_accumulation': 'stealth',
+    'quiet_accumulation': 'quiet',
+    'early_breakout': 'breakout',
+    'in_progress': 'progress',
+    'already_run': 'verified',
+    'risky': 'risky',
+    'failed': 'risky',
+    'neutral': 'progress',
+  })[phase] || 'progress';
+}
 
+function trendLabel(trend) {
+  return ({
+    'accumulating': '🟢 매집중',
+    'slight_up': '🟢 약매집',
+    'flat': '⚪ 평이',
+    'slight_down': '🟡 약감소',
+    'distributing': '🔴 매도중',
+    'unknown': '⚪ 데이터부족',
+    'error': '⚪ -',
+  })[trend] || '⚪';
+}
 
-def determine_phase(alignment):
-    ratios = []
-    for k in ['daily', 'weekly', 'monthly']:
-        if k in alignment and alignment[k]:
-            ratios.append(alignment[k]['ratio_pct'])
-    if not ratios:
-        return 'unknown'
-    avg = np.mean(ratios)
-    if avg > 100:
-        return 'exploded'
-    elif avg > 20:
-        return 'early_rise'
-    else:
-        return 'accumulating'
+function formatRatio(pct) {
+  if (pct === null || pct === undefined) return '-';
+  const sign = pct >= 0 ? '+' : '';
+  return `${sign}${pct.toFixed(0)}%`;
+}
 
+function renderFrames(stock) {
+  const frames = stock.frames || {};
+  const labels = { daily: '일봉', weekly: '주봉', monthly: '월봉' };
+  const lines = [];
+  for (const key of ['daily', 'weekly', 'monthly']) {
+    const f = frames[key];
+    if (!f) continue;
+    lines.push(`<div class="signal-row">
+      <span class="signal-label">${labels[key]} c=${f.c_date} R²=${f.r2}</span>
+      <span class="signal-value">${formatRatio(f.ratio_pct)}</span>
+    </div>`);
+  }
+  return lines.join('');
+}
 
-def determine_verdict(stars, phase):
-    if stars >= 4 and phase in ('accumulating', 'early_rise'):
-        return '현재 진입 후보'
-    if stars >= 4 and phase == 'exploded':
-        return '검증 케이스'
-    if stars == 3 and phase == 'early_rise':
-        return '신규 따끈한 신호'
-    return f'★{stars} 단독'
+function renderSignals(stock) {
+  const s = stock.signals || {};
+  const fiTrend = trendLabel(s.foreign_trend);
+  const fiSlope = (s.foreign_slope_per_month !== undefined && s.foreign_slope_per_month !== null)
+    ? `${s.foreign_slope_per_month >= 0 ? '+' : ''}${s.foreign_slope_per_month.toFixed(2)}%p/월`
+    : '-';
+  const fiPct = (s.foreign_latest_pct !== undefined && s.foreign_latest_pct !== null && s.foreign_latest_pct > 0)
+    ? `${s.foreign_latest_pct.toFixed(1)}%`
+    : '-';
+  return `
+    <div class="signals-grid">
+      <div class="signal-row">
+        <span class="signal-label">🌐 외인 추세</span>
+        <span class="signal-value">${fiTrend} ${fiSlope}</span>
+      </div>
+      <div class="signal-row">
+        <span class="signal-label">📊 외인 보유</span>
+        <span class="signal-value">${fiPct}</span>
+      </div>
+      <div class="signal-row">
+        <span class="signal-label">📈 20일선 횡단</span>
+        <span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span>
+      </div>
+      <div class="signal-row">
+        <span class="signal-label">📦 거래량 매집</span>
+        <span class="signal-value">${(s.volume_down_up_ratio || 0).toFixed(2)} ${s.volume_accumulation ? '✓' : ''}</span>
+      </div>
+    </div>
+  `;
+}
 
+function renderCard(stock) {
+  const color = phaseToColor(stock.phase);
+  const starStr = '★'.repeat(stock.stars);
+  const chinaTag = stock.is_china_play ? '<span class="china-tag">🇨🇳 중국</span>' : '';
+  const timeDiff = stock.time_diff_months !== undefined && stock.time_diff_months !== null
+    ? `시간차 ${stock.time_diff_months}m · `
+    : '';
+  return `
+    <div class="stock-card ${color}">
+      <div class="stock-head">
+        <div class="stock-name-row">
+          <span class="stock-name">${stock.name}</span>
+          ${chinaTag}
+          <span class="score-badge">${stock.accumulation_score}점</span>
+        </div>
+        <span class="stock-stars">${starStr}</span>
+      </div>
+      <div class="stock-sub">${stock.type} · ${timeDiff}${stock.verdict}</div>
+      <div class="stock-meta">
+        ${renderFrames(stock)}
+        ${renderSignals(stock)}
+      </div>
+    </div>
+  `;
+}
 
-# ============================================================
-# pykrx 일봉 + pandas resample (★ 버그 수정 핵심)
-# ============================================================
-def get_daily(code, years):
-    start = (TODAY - timedelta(days=years * 365)).strftime('%Y%m%d')
-    df = stock.get_market_ohlcv(start, END_DATE, code)
-    if df is None or len(df) == 0:
-        return None
-    df.index = pd.to_datetime(df.index)
-    return df
+function renderSection(title, desc, stocks, emptyMsg) {
+  let inner;
+  if (!stocks || stocks.length === 0) {
+    inner = `<div class="empty-section">${emptyMsg || '해당 조건 종목 없음'}</div>`;
+  } else {
+    inner = stocks.map(renderCard).join('');
+  }
+  return `
+    <h2 class="section-title">${title}</h2>
+    <div class="section-desc">${desc}</div>
+    ${inner}
+  `;
+}
 
+async function loadAndRender() {
+  try {
+    const res = await fetch(JSON_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('JSON 로드 실패');
+    const data = await res.json();
 
-def resample_to_weekly(df_daily):
-    if df_daily is None or len(df_daily) == 0:
-        return None
-    return df_daily.resample('W-FRI').agg({
-        '시가': 'first', '고가': 'max', '저가': 'min',
-        '종가': 'last', '거래량': 'sum',
-    }).dropna()
+    const dt = new Date(data.generated_at);
+    document.getElementById('updated').textContent =
+      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${data.n_matched}/${data.n_scanned} 매칭`;
 
+    const summary = data.summary || {};
+    document.getElementById('stat-stealth').textContent = summary.stealth_accumulation || 0;
+    document.getElementById('stat-quiet').textContent = summary.quiet_accumulation || 0;
+    document.getElementById('stat-breakout').textContent = summary.early_breakout || 0;
+    document.getElementById('stat-china').textContent = summary.china_plays || 0;
 
-def resample_to_monthly(df_daily):
-    if df_daily is None or len(df_daily) == 0:
-        return None
-    return df_daily.resample('ME').agg({
-        '시가': 'first', '고가': 'max', '저가': 'min',
-        '종가': 'last', '거래량': 'sum',
-    }).dropna()
+    document.getElementById('algo-info').textContent =
+      `알고리즘: ${data.algorithm?.name || 'MFAS v1.3'} · ${data.algorithm?.description || ''}`;
 
+    const stocks = data.stocks || [];
+    const stealth = stocks.filter(s => s.phase === 'stealth_accumulation');
+    const quiet = stocks.filter(s => s.phase === 'quiet_accumulation');
+    const breakout = stocks.filter(s => s.phase === 'early_breakout');
+    const progress = stocks.filter(s => s.phase === 'in_progress');
+    const verified = stocks.filter(s => s.phase === 'already_run');
+    const risky = stocks.filter(s => s.phase === 'risky');
 
-def analyze_stock(code, name):
-    df_d_5y = get_daily(code, 5)
-    if df_d_5y is None or len(df_d_5y) < 250:
-        return None
+    const content =
+      renderSection('🎯 진짜 외인 매집중', 
+        '외국인 보유율 상승 + c자리 ±15% + 20일선 횡단 활발. **시즌2 코어 — 최우선 후보.**',
+        stealth, '아직 조건을 만족하는 종목이 없습니다. 외인이 본격 매집 시작하면 여기 나타납니다.') +
+      renderSection('🐢 조용한 매집중', 
+        '외국인 보유율 ↑ + 가격 횡보. 20일선 패턴은 약하지만 진짜 매집 가능성.',
+        quiet, '없음') +
+      renderSection('🌱 막 깨고 나오는 중', 
+        'c자리 통과 후 +10~30% 초기 상승. 매집기 종료, 본격 상승 시작.',
+        breakout, '없음') +
+      renderSection('🇨🇳 중국 회복 베팅 (총정리)', 
+        '철강·화학·조선·해운·중공업 등 중국 경기 회복 직접 수혜 종목.',
+        stocks.filter(s => s.is_china_play).slice(0, 10), '없음') +
+      renderSection('⚪ 진행 중 (+30~60%)', 
+        '상승 진행 중. 추격 부담 있음, 눌림목 대기.',
+        progress.slice(0, 5), '없음') +
+      renderSection('🔥 이미 폭발 (검증)', 
+        '알고리즘 적중 입증용. 진입 X.',
+        verified.slice(0, 5), '없음') +
+      (risky.length > 0 ? renderSection('⚠️ 외인 매도 중 (회피)', 
+        '외국인 보유율 하락. 가짜 신호 가능성, 회피 권장.',
+        risky.slice(0, 5), '없음') : '');
 
-    df_d_long = get_daily(code, 15)
-    df_w = resample_to_weekly(df_d_long) if df_d_long is not None else None
-    df_m = resample_to_monthly(df_d_long) if df_d_long is not None else None
+    document.getElementById('content').innerHTML = content;
+  } catch (e) {
+    document.getElementById('content').innerHTML = `<div class="error">데이터 로드 실패: ${e.message}</div>`;
+    console.error(e);
+  }
+}
 
-    if df_w is None or df_m is None or len(df_w) < 100 or len(df_m) < 60:
-        return None
-
-    cutoff_d = pd.Timestamp((TODAY - timedelta(days=3 * 365)).date())
-    cutoff_w = pd.Timestamp((TODAY - timedelta(days=4 * 365)).date())
-    cutoff_m = pd.Timestamp((TODAY - timedelta(days=6 * 365)).date())
-
-    daily_c = collect_c_candidates(df_d_5y, [800, 1200], 100, cutoff_d, r2_min=0.60)
-    weekly_c = collect_c_candidates(df_w, [200, 300], 15, cutoff_w, r2_min=0.60)
-    monthly_c = collect_c_candidates(df_m, [84, 120], 12, cutoff_m, r2_min=0.60)
-
-    if not (daily_c or weekly_c or monthly_c):
-        return None
-
-    alignment = find_aligned_c(daily_c, weekly_c, monthly_c)
-    if alignment is None:
-        return None
-
-    phase = determine_phase(alignment)
-    verdict = determine_verdict(alignment['stars'], phase)
-
-    return {
-        'code': code, 'name': name,
-        'stars': alignment['stars'], 'type': alignment['type'],
-        'time_diff_months': alignment.get('time_diff_months'),
-        'phase': phase, 'verdict': verdict,
-        'frames': {
-            'daily': alignment.get('daily'),
-            'weekly': alignment.get('weekly'),
-            'monthly': alignment.get('monthly'),
-        },
-        '_score': alignment['score'],
-    }
-
-
-def main():
-    print(f'[SIGVIEW 잭팟 시즌2 v1.1] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST 스캔 시작')
-    print(f'경기민감주 풀: {len(CYCLICAL)}개')
-
-    results = []
-    for i, (code, name) in enumerate(CYCLICAL.items(), 1):
-        try:
-            r = analyze_stock(code, name)
-            if r:
-                results.append(r)
-                print(f'  [{i}/{len(CYCLICAL)}] {name} ★{r["stars"]} ({r["type"]}) {r["verdict"]}')
-            else:
-                print(f'  [{i}/{len(CYCLICAL)}] {name} - 매칭 없음')
-        except Exception as e:
-            print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {e}')
-
-    results.sort(key=lambda x: (-x['stars'], -x['_score']))
-    for i, r in enumerate(results, 1):
-        r['rank'] = i
-        r.pop('_score', None)
-
-    output = {
-        'version': '2.0', 'season': 2,
-        'generated_at': TODAY.isoformat(),
-        'scan_universe': 'cyclical_korea',
-        'n_scanned': len(CYCLICAL), 'n_matched': len(results),
-        'algorithm': {
-            'name': 'MFAS v2',
-            'description': 'Multi-Frame Alignment Score - 4차함수 c자리 다중 프레임 시간 일치 검출',
-            'frames': ['daily', 'weekly', 'monthly'],
-            'r2_min': 0.60,
-            'time_constraints_months': {
-                'daily_weekly_max': 6, 'weekly_monthly_max': 12, 'all_three_max': 12,
-            },
-            'c_position_range': [0.65, 0.95],
-        },
-        'summary': {
-            'five_stars': sum(1 for r in results if r['stars'] == 5),
-            'four_stars': sum(1 for r in results if r['stars'] == 4),
-            'three_stars': sum(1 for r in results if r['stars'] == 3),
-        },
-        'stocks': results,
-        'disclaimer': '본 데이터는 4차함수 패턴 매칭 분석 결과이며 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다.',
-    }
-
-    with open('jackpot-v2.json', 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-
-    print(f'\n완료: {len(results)}개 매칭, jackpot-v2.json 저장됨')
-
-
-if __name__ == '__main__':
-    main()
+loadAndRender();
+</script>
+</body>
+</html>
