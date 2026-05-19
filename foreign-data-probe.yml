@@ -1,0 +1,28 @@
+name: foreign-data-probe
+
+on:
+  workflow_dispatch: {}  # 수동만
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pykrx pandas numpy requests beautifulsoup4 lxml
+
+      - name: Run foreign data probe
+        run: python foreign_data_probe.py
+        env:
+          TZ: Asia/Seoul
