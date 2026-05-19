@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGVIEW 잭팟 도구 시즌2 v1.3 | 외인 매집 포착 도구</title>
-<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + 외국인 매집 추세 + 20일선 횡단 패턴으로 외인과 동일 포지션 매집 종목 발굴.">
+<title>SIGVIEW 잭팟 도구 시즌2 v1.4 | 스마트머니 매집 포착 도구</title>
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + Smart Money(OBV/AD/CMF) + 20일선 패턴으로 스마트머니와 동일 포지션 매집 종목 발굴.">
 <meta name="robots" content="index, follow">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
 :root {
   --bg: #ffffff;
@@ -78,10 +79,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .stat-value { font-size: 20px; font-weight: 600; }
 .stat-value.highlight { color: #D4A017; }
 
-.section-title {
-  font-size: 17px; font-weight: 600; margin: 28px 0 4px;
-  display: flex; align-items: center; gap: 8px;
-}
+.section-title { font-size: 17px; font-weight: 600; margin: 28px 0 4px; display: flex; align-items: center; gap: 8px; }
 .section-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
 
 .stock-card {
@@ -89,8 +87,10 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
   padding: 14px 16px;
   margin-bottom: 10px;
   border: 1px solid;
-  position: relative;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
+.stock-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
 .stock-card.stealth { background: var(--color-stealth-bg); border-color: var(--color-stealth-border); }
 .stock-card.quiet { background: var(--color-quiet-bg); border-color: var(--color-quiet-border); }
 .stock-card.breakout { background: var(--color-breakout-bg); border-color: var(--color-breakout-border); }
@@ -112,49 +112,71 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .risky .stock-sub, .risky .stock-stars, .risky .stock-meta { color: var(--color-risky-sub); }
 
 .stock-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-.stock-name { font-weight: 600; font-size: 15px; }
 .stock-name-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
-.china-tag {
-  display: inline-block; font-size: 10px; font-weight: 600;
-  background: var(--color-china-bg); color: var(--color-china-text);
-  padding: 1px 6px; border-radius: 3px;
-}
+.stock-name { font-weight: 600; font-size: 15px; }
+.china-tag { display: inline-block; font-size: 10px; font-weight: 600; background: var(--color-china-bg); color: var(--color-china-text); padding: 1px 6px; border-radius: 3px; }
 .stock-stars { font-size: 13px; font-weight: 500; white-space: nowrap; }
 .stock-sub { font-size: 12px; margin-bottom: 8px; }
 .stock-meta { font-size: 11px; line-height: 1.7; opacity: 0.9; }
-.score-badge {
-  display: inline-block; font-weight: 600; font-size: 13px;
-  background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 10px;
-  margin-left: 4px;
-}
-@media (prefers-color-scheme: dark) {
-  .score-badge { background: rgba(255,255,255,0.08); }
-}
+.score-badge { display: inline-block; font-weight: 600; font-size: 13px; background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 10px; margin-left: 4px; }
+@media (prefers-color-scheme: dark) { .score-badge { background: rgba(255,255,255,0.08); } }
 
-.signals-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 12px;
-  margin-top: 6px;
-  font-size: 11px;
-}
+.signals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 12px; margin-top: 6px; font-size: 11px; }
 .signal-row { display: flex; justify-content: space-between; }
 .signal-label { opacity: 0.75; }
 .signal-value { font-weight: 500; }
 
-.disclaimer {
-  margin-top: 32px;
-  padding: 16px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  font-size: 11px;
-  color: var(--text-tertiary);
-  line-height: 1.7;
-}
+.chart-hint { text-align: right; font-size: 10px; opacity: 0.6; margin-top: 4px; }
+
+.disclaimer { margin-top: 32px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 11px; color: var(--text-tertiary); line-height: 1.7; }
 .disclaimer strong { font-weight: 600; color: var(--text-secondary); }
 
 .loading, .error { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 14px; }
 .error { color: #c0392b; }
 
 .empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
+
+/* ===== 모달 ===== */
+.modal-backdrop {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--bg);
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 12px; right: 16px;
+  background: none; border: none; font-size: 24px;
+  color: var(--text-secondary); cursor: pointer;
+}
+.modal h2 { font-size: 18px; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; }
+.tab-row { display: flex; gap: 6px; margin-bottom: 14px; }
+.tab-btn {
+  flex: 1; padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 13px; cursor: pointer;
+  color: var(--text-primary);
+}
+.tab-btn.active { background: var(--text-primary); color: var(--bg); }
+.chart-wrap { height: 320px; position: relative; }
+.modal-info { margin-top: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
+.modal-info strong { color: var(--text-primary); }
 
 @media (max-width: 480px) {
   .container { padding: 16px 14px 60px; }
@@ -163,6 +185,9 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
   .stat-card { padding: 8px 4px; }
   .stat-value { font-size: 16px; }
   .signals-grid { grid-template-columns: 1fr; }
+  .chart-wrap { height: 260px; }
+  .modal { padding: 14px; max-height: 95vh; }
+  .modal h2 { font-size: 16px; }
 }
 </style>
 </head>
@@ -170,15 +195,15 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <div class="container">
 
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v1.3</div>
+  <div class="brand">SIGVIEW · JACKPOT v1.4</div>
   <h1>잭팟 도구 시즌2</h1>
-  <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + 외국인 보유율 + 20일선 패턴</div>
-  <div class="philosophy">"외인과 동일 포지션으로 매집기에 진입한다"</div>
+  <div class="subtitle">스마트머니 매집 포착 · 4차함수 + OBV/AD/CMF</div>
+  <div class="philosophy">"스마트머니와 동일 포지션으로 매집기에 진입한다 · 카드 클릭 → 차트 보기"</div>
   <div class="updated" id="updated">데이터 불러오는 중...</div>
 </header>
 
 <div class="stats" id="stats">
-  <div class="stat-card"><div class="stat-label">🎯 외인매집</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
+  <div class="stat-card"><div class="stat-label">🎯 매집중</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
   <div class="stat-card"><div class="stat-label">🐢 조용매집</div><div class="stat-value" id="stat-quiet">-</div></div>
   <div class="stat-card"><div class="stat-label">🌱 막깨고</div><div class="stat-value" id="stat-breakout">-</div></div>
   <div class="stat-card"><div class="stat-label">🇨🇳 중국</div><div class="stat-value" id="stat-china">-</div></div>
@@ -189,17 +214,33 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 </div>
 
 <div class="disclaimer">
-  <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
-  본 데이터는 4차함수 패턴 매칭 + 외국인 보유율 추세 + 20일선 횡단 + 거래량 비대칭 분석 결과입니다.
-  매집기에 외국인과 동일 포지션으로 진입하기 위한 도구이며, 특정 종목 추천이 아닙니다.
+  <strong>스마트머니 매집 포착 도구 · 투자 권유 X</strong><br>
+  본 데이터는 4차함수 c자리 + OBV/AD/CMF 스마트머니 추적 + 20일선 횡단 + 거래량 비대칭 분석 결과입니다.
+  외국인/기관 매집 행동을 가격·거래량 패턴으로 추정하는 도구이며, 특정 종목 추천이 아닙니다.
   모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
   <span id="algo-info"></span>
 </div>
 
 </div>
 
+<!-- 차트 모달 -->
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modal-title"></h2>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="tab-row" id="tab-row"></div>
+    <div class="chart-wrap"><canvas id="chart-canvas"></canvas></div>
+    <div class="modal-info" id="modal-info"></div>
+  </div>
+</div>
+
 <script>
 const JSON_URL = './jackpot-v2.json';
+let DATA = null;
+let currentChart = null;
+let currentStock = null;
+let currentFrame = 'daily';
 
 function phaseToColor(phase) {
   return ({
@@ -221,23 +262,20 @@ function trendLabel(trend) {
     'flat': '⚪ 평이',
     'slight_down': '🟡 약감소',
     'distributing': '🔴 매도중',
-    'unknown': '⚪ 데이터부족',
-    'error': '⚪ -',
+    'unknown': '⚪ -',
   })[trend] || '⚪';
 }
 
 function formatRatio(pct) {
   if (pct === null || pct === undefined) return '-';
-  const sign = pct >= 0 ? '+' : '';
-  return `${sign}${pct.toFixed(0)}%`;
+  return `${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%`;
 }
 
 function renderFrames(stock) {
-  const frames = stock.frames || {};
   const labels = { daily: '일봉', weekly: '주봉', monthly: '월봉' };
   const lines = [];
   for (const key of ['daily', 'weekly', 'monthly']) {
-    const f = frames[key];
+    const f = stock.frames?.[key];
     if (!f) continue;
     lines.push(`<div class="signal-row">
       <span class="signal-label">${labels[key]} c=${f.c_date} R²=${f.r2}</span>
@@ -249,31 +287,16 @@ function renderFrames(stock) {
 
 function renderSignals(stock) {
   const s = stock.signals || {};
-  const fiTrend = trendLabel(s.foreign_trend);
-  const fiSlope = (s.foreign_slope_per_month !== undefined && s.foreign_slope_per_month !== null)
-    ? `${s.foreign_slope_per_month >= 0 ? '+' : ''}${s.foreign_slope_per_month.toFixed(2)}%p/월`
-    : '-';
-  const fiPct = (s.foreign_latest_pct !== undefined && s.foreign_latest_pct !== null && s.foreign_latest_pct > 0)
-    ? `${s.foreign_latest_pct.toFixed(1)}%`
+  const smTrend = trendLabel(s.smart_money_trend);
+  const smScore = s.smart_money_score !== undefined && s.smart_money_score !== null
+    ? `${s.smart_money_score >= 0 ? '+' : ''}${s.smart_money_score.toFixed(0)}`
     : '-';
   return `
     <div class="signals-grid">
-      <div class="signal-row">
-        <span class="signal-label">🌐 외인 추세</span>
-        <span class="signal-value">${fiTrend} ${fiSlope}</span>
-      </div>
-      <div class="signal-row">
-        <span class="signal-label">📊 외인 보유</span>
-        <span class="signal-value">${fiPct}</span>
-      </div>
-      <div class="signal-row">
-        <span class="signal-label">📈 20일선 횡단</span>
-        <span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span>
-      </div>
-      <div class="signal-row">
-        <span class="signal-label">📦 거래량 매집</span>
-        <span class="signal-value">${(s.volume_down_up_ratio || 0).toFixed(2)} ${s.volume_accumulation ? '✓' : ''}</span>
-      </div>
+      <div class="signal-row"><span class="signal-label">💰 스마트머니</span><span class="signal-value">${smTrend} ${smScore}</span></div>
+      <div class="signal-row"><span class="signal-label">📊 CMF(20)</span><span class="signal-value">${(s.cmf_20 || 0).toFixed(3)}</span></div>
+      <div class="signal-row"><span class="signal-label">📈 20일선 횡단</span><span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span></div>
+      <div class="signal-row"><span class="signal-label">📦 거래량 매집</span><span class="signal-value">${(s.volume_down_up_ratio || 0).toFixed(2)} ${s.volume_accumulation ? '✓' : ''}</span></div>
     </div>
   `;
 }
@@ -283,10 +306,9 @@ function renderCard(stock) {
   const starStr = '★'.repeat(stock.stars);
   const chinaTag = stock.is_china_play ? '<span class="china-tag">🇨🇳 중국</span>' : '';
   const timeDiff = stock.time_diff_months !== undefined && stock.time_diff_months !== null
-    ? `시간차 ${stock.time_diff_months}m · `
-    : '';
+    ? `시간차 ${stock.time_diff_months}m · ` : '';
   return `
-    <div class="stock-card ${color}">
+    <div class="stock-card ${color}" onclick="openChart('${stock.code}')">
       <div class="stock-head">
         <div class="stock-name-row">
           <span class="stock-name">${stock.name}</span>
@@ -300,44 +322,181 @@ function renderCard(stock) {
         ${renderFrames(stock)}
         ${renderSignals(stock)}
       </div>
+      <div class="chart-hint">📈 클릭하면 차트 보기</div>
     </div>
   `;
 }
 
 function renderSection(title, desc, stocks, emptyMsg) {
-  let inner;
-  if (!stocks || stocks.length === 0) {
-    inner = `<div class="empty-section">${emptyMsg || '해당 조건 종목 없음'}</div>`;
-  } else {
-    inner = stocks.map(renderCard).join('');
-  }
-  return `
-    <h2 class="section-title">${title}</h2>
-    <div class="section-desc">${desc}</div>
-    ${inner}
-  `;
+  let inner = (!stocks || stocks.length === 0)
+    ? `<div class="empty-section">${emptyMsg || '없음'}</div>`
+    : stocks.map(renderCard).join('');
+  return `<h2 class="section-title">${title}</h2><div class="section-desc">${desc}</div>${inner}`;
 }
 
+// ===== 모달 차트 =====
+function openChart(code) {
+  const stock = DATA.stocks.find(s => s.code === code);
+  if (!stock) return;
+  currentStock = stock;
+
+  document.getElementById('modal-title').textContent = `${stock.name} (${stock.code})`;
+  document.getElementById('modal-sub').textContent = 
+    `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}`;
+
+  // 탭 버튼 생성
+  const availableFrames = [];
+  if (stock.chart?.daily) availableFrames.push(['daily', '일봉']);
+  if (stock.chart?.weekly) availableFrames.push(['weekly', '주봉']);
+  if (stock.chart?.monthly) availableFrames.push(['monthly', '월봉']);
+  
+  document.getElementById('tab-row').innerHTML = availableFrames.map(([key, label]) => 
+    `<button class="tab-btn ${currentFrame === key ? 'active' : ''}" onclick="switchFrame('${key}')">${label}</button>`
+  ).join('');
+
+  // 기본 프레임 선택 (있는 것 중에서)
+  if (!availableFrames.find(([k]) => k === currentFrame) && availableFrames.length > 0) {
+    currentFrame = availableFrames[0][0];
+  }
+
+  renderChartFor(currentFrame);
+  document.getElementById('modal').classList.add('open');
+}
+
+function switchFrame(frameKey) {
+  currentFrame = frameKey;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderChartFor(frameKey);
+}
+
+function renderChartFor(frameKey) {
+  if (!currentStock) return;
+  const chartData = currentStock.chart?.[frameKey];
+  const frameInfo = currentStock.frames?.[frameKey];
+  
+  if (!chartData) {
+    document.getElementById('modal-info').innerHTML = '차트 데이터 없음';
+    return;
+  }
+
+  // 기존 차트 제거
+  if (currentChart) {
+    currentChart.destroy();
+    currentChart = null;
+  }
+
+  // 차트 데이터
+  const labels = chartData.dates;
+  const closes = chartData.closes;
+
+  // 4차함수 적합선 계산 (frame 정보가 있을 때만)
+  let fitLine = null;
+  let cDateIdx = null, aDateIdx = null, bDateIdx = null;
+  if (frameInfo && frameInfo.fit_k !== undefined) {
+    const { fit_k, fit_a, fit_b, fit_c, g_base, win_size, start_i } = frameInfo;
+    // chart_data가 다운샘플되었을 수 있어서 인덱스 매칭 어려움
+    // 근사적으로 c_date 기준으로 표시
+    fitLine = new Array(labels.length).fill(null);
+    // c_date, a, b 위치를 라벨에서 찾기 (정확하지 않을 수 있음)
+    cDateIdx = labels.indexOf(frameInfo.c_date);
+  }
+
+  // 마커 데이터
+  const cPointData = labels.map((d, i) => i === cDateIdx ? closes[i] : null);
+
+  const datasets = [
+    {
+      label: '종가',
+      data: closes,
+      borderColor: '#378ADD',
+      backgroundColor: 'rgba(55,138,221,0.1)',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      tension: 0.1,
+      fill: false,
+    }
+  ];
+  if (cDateIdx !== null && cDateIdx >= 0) {
+    datasets.push({
+      label: 'c (기러기자리)',
+      data: cPointData,
+      borderColor: '#C0392B',
+      backgroundColor: '#C0392B',
+      pointRadius: 8,
+      pointStyle: 'circle',
+      showLine: false,
+    });
+  }
+
+  const ctx = document.getElementById('chart-canvas').getContext('2d');
+  currentChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: true, position: 'top', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y?.toLocaleString() || '-'}` } },
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } },
+        y: { ticks: { font: { size: 10 } } },
+      },
+    },
+  });
+
+  // 정보 표시
+  let info = '';
+  if (frameInfo) {
+    info = `
+      <strong>4차함수 적합:</strong> c=${frameInfo.c_date} R²=${frameInfo.r2}<br>
+      <strong>c가격:</strong> ${frameInfo.c_price?.toLocaleString()}원 →
+      <strong>현재:</strong> ${frameInfo.latest_price?.toLocaleString()}원
+      (${frameInfo.ratio_pct >= 0 ? '+' : ''}${frameInfo.ratio_pct}%)<br>
+      <strong>윈도우 크기:</strong> ${frameInfo.win_size} 봉 ·
+      <strong>c 위치:</strong> ${(frameInfo.fit_c * 100).toFixed(0)}%
+    `;
+  } else {
+    info = '<em>이 프레임에서는 c자리가 검출되지 않았어요.</em>';
+  }
+  document.getElementById('modal-info').innerHTML = info;
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  if (currentChart) {
+    currentChart.destroy();
+    currentChart = null;
+  }
+}
+
+// ESC 키로 닫기
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===== 메인 로드 =====
 async function loadAndRender() {
   try {
     const res = await fetch(JSON_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error('JSON 로드 실패');
-    const data = await res.json();
+    DATA = await res.json();
 
-    const dt = new Date(data.generated_at);
+    const dt = new Date(DATA.generated_at);
     document.getElementById('updated').textContent =
-      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${data.n_matched}/${data.n_scanned} 매칭`;
+      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '1.4'})`;
 
-    const summary = data.summary || {};
+    const summary = DATA.summary || {};
     document.getElementById('stat-stealth').textContent = summary.stealth_accumulation || 0;
     document.getElementById('stat-quiet').textContent = summary.quiet_accumulation || 0;
     document.getElementById('stat-breakout').textContent = summary.early_breakout || 0;
     document.getElementById('stat-china').textContent = summary.china_plays || 0;
 
     document.getElementById('algo-info').textContent =
-      `알고리즘: ${data.algorithm?.name || 'MFAS v1.3'} · ${data.algorithm?.description || ''}`;
+      `${DATA.algorithm?.name || 'MFAS v1.4'} · ${DATA.algorithm?.description || ''}`;
 
-    const stocks = data.stocks || [];
+    const stocks = DATA.stocks || [];
     const stealth = stocks.filter(s => s.phase === 'stealth_accumulation');
     const quiet = stocks.filter(s => s.phase === 'quiet_accumulation');
     const breakout = stocks.filter(s => s.phase === 'early_breakout');
@@ -346,26 +505,26 @@ async function loadAndRender() {
     const risky = stocks.filter(s => s.phase === 'risky');
 
     const content =
-      renderSection('🎯 진짜 외인 매집중', 
-        '외국인 보유율 상승 + c자리 ±15% + 20일선 횡단 활발. **시즌2 코어 — 최우선 후보.**',
-        stealth, '아직 조건을 만족하는 종목이 없습니다. 외인이 본격 매집 시작하면 여기 나타납니다.') +
-      renderSection('🐢 조용한 매집중', 
-        '외국인 보유율 ↑ + 가격 횡보. 20일선 패턴은 약하지만 진짜 매집 가능성.',
+      renderSection('🎯 스마트머니 매집중',
+        'OBV/CMF 우상향 + c자리 ±15% + 20일선 횡단 활발. <strong>시즌2 코어 — 최우선 후보.</strong>',
+        stealth, '아직 조건 만족 종목 없음. 스마트머니가 본격 매집 시작하면 여기 나타나요.') +
+      renderSection('🐢 조용한 매집중',
+        'OBV/CMF 양호 + 가격 횡보. 진짜 매집 가능성.',
         quiet, '없음') +
-      renderSection('🌱 막 깨고 나오는 중', 
+      renderSection('🌱 막 깨고 나오는 중',
         'c자리 통과 후 +10~30% 초기 상승. 매집기 종료, 본격 상승 시작.',
         breakout, '없음') +
-      renderSection('🇨🇳 중국 회복 베팅 (총정리)', 
-        '철강·화학·조선·해운·중공업 등 중국 경기 회복 직접 수혜 종목.',
+      renderSection('🇨🇳 중국 회복 베팅 (총정리)',
+        '철강·화학·조선·해운·중공업 등 중국 경기 회복 직접 수혜.',
         stocks.filter(s => s.is_china_play).slice(0, 10), '없음') +
-      renderSection('⚪ 진행 중 (+30~60%)', 
-        '상승 진행 중. 추격 부담 있음, 눌림목 대기.',
+      renderSection('⚪ 진행 중 (+30~60%)',
+        '상승 진행 중. 추격 부담, 눌림목 대기.',
         progress.slice(0, 5), '없음') +
-      renderSection('🔥 이미 폭발 (검증)', 
+      renderSection('🔥 이미 폭발 (검증)',
         '알고리즘 적중 입증용. 진입 X.',
         verified.slice(0, 5), '없음') +
-      (risky.length > 0 ? renderSection('⚠️ 외인 매도 중 (회피)', 
-        '외국인 보유율 하락. 가짜 신호 가능성, 회피 권장.',
+      (risky.length > 0 ? renderSection('⚠️ 스마트머니 매도중 (회피)',
+        'OBV/CMF 하락. 회피 권장.',
         risky.slice(0, 5), '없음') : '');
 
     document.getElementById('content').innerHTML = content;
