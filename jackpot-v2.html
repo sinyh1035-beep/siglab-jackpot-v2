@@ -157,7 +157,7 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <body>
 <div class="container">
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v2.0</div>
+  <div class="brand">SIGVIEW · JACKPOT v2.0.1</div>
   <h1>잭팟 도구 시즌2</h1>
   <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + NAVER 외인 보유율</div>
   <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (휠 확대/드래그 이동)"</div>
@@ -321,27 +321,13 @@ function renderChartFor(frameKey) {
   const closes = chartData.closes;
   const ma20 = chartData.ma20;
   
-  // 장기 추세선 (선형 회귀, 로그 스케일일 땐 로그 회귀)
-  let trendLine = null;
-  const validPts = [];
-  for (let i = 0; i < closes.length; i++) {
-    if (closes[i] != null && closes[i] > 0) validPts.push([i, closes[i]]);
-  }
-  if (validPts.length >= 5) {
-    const xs = validPts.map(p => p[0]);
-    const ys = validPts.map(p => useLog ? Math.log(p[1]) : p[1]);
-    const n = xs.length;
-    const sumX = xs.reduce((a, b) => a + b, 0);
-    const sumY = ys.reduce((a, b) => a + b, 0);
-    const sumXY = xs.reduce((acc, x, i) => acc + x * ys[i], 0);
-    const sumXX = xs.reduce((acc, x) => acc + x * x, 0);
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
-    trendLine = labels.map((_, i) => {
-      const y = slope * i + intercept;
-      return useLog ? Math.exp(y) : y;
-    });
-  }
+  // 52주 신고/신저 (차트에 보이는 값 기준 = 시각적으로 정확히 일치)
+  // 일봉=252봉, 주봉=52봉, 월봉=12봉 (각각 약 1년치)
+  const recentN = (frameKey === 'daily') ? 252 : (frameKey === 'weekly') ? 52 : 12;
+  const recentSlice = closes.slice(-Math.min(recentN, closes.length));
+  const validRecent = recentSlice.filter(v => v != null && v > 0);
+  const hi52 = validRecent.length > 0 ? Math.max(...validRecent) : null;
+  const lo52 = validRecent.length > 0 ? Math.min(...validRecent) : null;
   
   const datasets = [
     {
@@ -359,13 +345,21 @@ function renderChartFor(frameKey) {
       borderWidth: 1.3, pointRadius: 0, tension: 0.2, fill: false,
     },
   ];
-  if (trendLine) {
+  // 52주 신고/신저 수평선
+  if (hi52) {
     datasets.push({
-      label: '장기 추세선',
-      data: trendLine,
-      borderColor: '#E91E63',
-      backgroundColor: 'transparent',
-      borderWidth: 1.5, pointRadius: 0, borderDash: [6, 4], fill: false, tension: 0,
+      label: `52주 신고가 ${hi52.toLocaleString()}원`,
+      data: new Array(labels.length).fill(hi52),
+      borderColor: 'rgba(192,57,43,0.55)', backgroundColor: 'transparent',
+      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
+    });
+  }
+  if (lo52) {
+    datasets.push({
+      label: `52주 신저가 ${lo52.toLocaleString()}원`,
+      data: new Array(labels.length).fill(lo52),
+      borderColor: 'rgba(99,153,34,0.55)', backgroundColor: 'transparent',
+      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
     });
   }
   // 현재가 마커
@@ -399,6 +393,7 @@ function renderChartFor(frameKey) {
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: { right: 30, left: 5, top: 10, bottom: 5 } },
       interaction: { intersect: false, mode: 'index' },
       plugins: {
         legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 14, padding: 8 } },
