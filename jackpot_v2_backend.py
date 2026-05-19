@@ -1,15 +1,11 @@
 """
 jackpot_v2_backend.py
 ==========================================
-SIGVIEW 잭팟 도구 시즌2 v1.6
-- v1.5 그대로 + 차트 시각화 데이터 추가
-  · 20일 이동평균
-  · 가격 채널 (envelope ±N%)
-  · 52주 신고/신저
-  · 4차함수 적합선 (full curve)
-  · a/b/c 마커 위치
-- 외인 데이터: NAVER + 누적 캐싱 (그대로)
-- 종목 풀: 41개 (그대로 - v1.7에서 확장 예정)
+SIGVIEW 잭팟 도구 시즌2 v1.7
+- 일봉 5년 / 주봉 8년 / 월봉 25년 / 연봉 30년
+- 52주 신고/신저 프레임별 정확히 (일=252, 주=52, 월=12)
+- c자리 이후 하락 종목 패널티 (가짜 신호 제거)
+- 차트 데이터: 가격 + 20일선 + 채널 + 52주 신고저 (마커/적합선 제거)
 """
 import json
 import os
@@ -90,7 +86,7 @@ def to_native(obj):
 
 
 # ============================================================
-# NAVER 외인 데이터 (v1.5 그대로)
+# NAVER 외인 (v1.5 그대로)
 # ============================================================
 def fetch_naver_foreign(code, retry=2):
     url = f'https://m.stock.naver.com/api/stock/{code}/integration'
@@ -124,10 +120,8 @@ def fetch_naver_foreign(code, retry=2):
                     except ValueError:
                         organ = 0
                     results.append({
-                        'date': date_str,
-                        'foreign_ratio': ratio,
-                        'foreign_net_buy': buy,
-                        'organ_net_buy': organ,
+                        'date': date_str, 'foreign_ratio': ratio,
+                        'foreign_net_buy': buy, 'organ_net_buy': organ,
                     })
                 return results
         except Exception:
@@ -280,27 +274,34 @@ def collect_c_candidates(df, win_sizes, step, recent_cutoff, r2_min=0.55):
             c_price = float(df['종가'].iloc[c_idx])
             latest_price = float(df['종가'].iloc[-1])
             
-            # ★ v1.6 — 차트용 추가 데이터
+            # ★ v1.7 - c자리 검증 강화
+            # c 이후 최저가 측정 (가짜 신호 거르기)
+            c_to_now = df.iloc[c_idx:]
+            min_after_c = float(c_to_now['종가'].min()) if len(c_to_now) > 0 else c_price
+            drawdown_after_c = (min_after_c / c_price - 1) * 100 if c_price > 0 else 0
+            
+            # 기러기 자리는 c 이후 -15% 이상 떨어지면 가짜 신호로 판단
+            is_valid_c = drawdown_after_c > -15
+            
             a_idx = start_i + int(a_f * (win_size - 1))
             b_idx = start_i + int(b_f * (win_size - 1))
-            a_date = df.index[a_idx].strftime('%Y-%m-%d')
-            b_date = df.index[b_idx].strftime('%Y-%m-%d')
-            a_price = float(df['종가'].iloc[a_idx])
-            b_price = float(df['종가'].iloc[b_idx])
-            
             cands.append({
                 'c_date': c_date.strftime('%Y-%m-%d'),
                 'c_price': c_price,
                 'r2': round(float(r2), 3),
                 'c_pos': round(float(c_f), 3),
                 'win_size': int(win_size),
-                'start_i': int(start_i),  # ★ 차트용
+                'start_i': int(start_i),
                 'latest_price': latest_price,
                 'ratio_pct': round((latest_price / c_price - 1) * 100, 1) if c_price > 0 else 0.0,
-                # ★ v1.6 - a, b 정보
-                'a_date': a_date, 'a_price': a_price, 'a_pos': round(float(a_f), 3),
-                'b_date': b_date, 'b_price': b_price, 'b_pos': round(float(b_f), 3),
-                # ★ 적합 파라미터 (프론트에서 곡선 재구성용)
+                'drawdown_after_c': round(drawdown_after_c, 1),
+                'is_valid_c': is_valid_c,
+                'a_date': df.index[a_idx].strftime('%Y-%m-%d'),
+                'a_price': float(df['종가'].iloc[a_idx]),
+                'a_pos': round(float(a_f), 3),
+                'b_date': df.index[b_idx].strftime('%Y-%m-%d'),
+                'b_price': float(df['종가'].iloc[b_idx]),
+                'b_pos': round(float(b_f), 3),
                 'fit_k': float(k_f), 'fit_a': round(float(a_f), 4),
                 'fit_b': round(float(b_f), 4), 'fit_c': round(float(c_f), 4),
                 'g_base': round(float(g_base), 1),
@@ -314,6 +315,7 @@ def find_aligned_c(daily, weekly, monthly,
     best_score = -np.inf
     def date_diff_months(d1, d2):
         return abs((pd.Timestamp(d1) - pd.Timestamp(d2)).days) / 30
+
     for d in daily:
         for w in weekly:
             for m in monthly:
@@ -322,6 +324,9 @@ def find_aligned_c(daily, weekly, monthly,
                 dm = date_diff_months(d['c_date'], m['c_date'])
                 if dw <= max_dw_m and wm <= max_wm_m and dm <= max_dwm_m:
                     score = (d['r2'] + w['r2'] + m['r2']) - (dw + wm + dm) * 0.02
+                    # 유효성 보너스
+                    if d.get('is_valid_c') and w.get('is_valid_c') and m.get('is_valid_c'):
+                        score += 0.1
                     if score > best_score:
                         best_score = score
                         best = {'stars': 5, 'type': '일+주+월',
@@ -341,6 +346,8 @@ def find_aligned_c(daily, weekly, monthly,
                 diff = date_diff_months(a['c_date'], b['c_date'])
                 if diff <= max_m:
                     score = a['r2'] + b['r2'] - diff * 0.02
+                    if a.get('is_valid_c') and b.get('is_valid_c'):
+                        score += 0.05
                     if score > best_score:
                         best_score = score
                         best = {'stars': 4, 'type': type_name,
@@ -377,9 +384,6 @@ def analyze_ma20_crossings(df_daily, lookback_days=250):
     return {'count': crossings, 'price_range_pct': round(price_range_pct, 1), 'is_stealth': is_stealth}
 
 
-# ============================================================
-# Phase (v1.5 그대로)
-# ============================================================
 def determine_phase_v15(ratio_pct, ma20_stealth, foreign_trend):
     if (-15 <= ratio_pct <= 15) and ma20_stealth and foreign_trend in ('accumulating', 'slight_up'):
         return 'stealth_accumulation'
@@ -431,9 +435,6 @@ def calc_score_v15(stars, phase, ma20_data, foreign_data, is_china):
     return int(max(0, min(100, score)))
 
 
-# ============================================================
-# 데이터 수집
-# ============================================================
 def get_daily(code, years):
     start = (TODAY - timedelta(days=years * 365)).strftime('%Y%m%d')
     df = stock.get_market_ohlcv(start, END_DATE, code)
@@ -461,21 +462,38 @@ def resample_to_monthly(df_daily):
     }).dropna()
 
 
+def resample_to_yearly(df_daily):
+    if df_daily is None or len(df_daily) == 0:
+        return None
+    return df_daily.resample('YE').agg({
+        '시가': 'first', '고가': 'max', '저가': 'min',
+        '종가': 'last', '거래량': 'sum',
+    }).dropna()
+
+
 # ============================================================
-# ★ v1.6 - 차트용 데이터 확장
+# ★ v1.7 - 차트 데이터: 프레임별 52주 신고/신저 정확히
 # ============================================================
-def extract_chart_data_rich(df, max_points=300, label_text=''):
-    """v1.6 — 차트에 필요한 모든 데이터 추출
-    - 종가 + 20일선 + 채널 + 52주 신고/신저
+def extract_chart_data_v17(df, max_points=300, label_text='', frame_period_count=252):
+    """
+    frame_period_count: 52주 환산 기준
+      - 일봉: 252 (1년 거래일)
+      - 주봉: 52 (1년 주)
+      - 월봉: 12 (1년 월)
+      - 연봉: None (전체 적용)
     """
     if df is None or len(df) == 0:
         return None
     
-    # 원본 보존 (52주 신고/신저는 다운샘플 전)
-    full_high = float(df['고가'].tail(252).max()) if len(df) >= 30 else float(df['고가'].max())
-    full_low = float(df['저가'].tail(252).min()) if len(df) >= 30 else float(df['저가'].min())
+    # 52주 신고저 - 프레임별 정확히
+    if frame_period_count and len(df) >= frame_period_count:
+        recent_period = df.tail(frame_period_count)
+    else:
+        recent_period = df
+    full_high = float(recent_period['고가'].max())
+    full_low = float(recent_period['저가'].min())
     
-    # 20일선 (전체 데이터로 계산 후 다운샘플)
+    # 20일선
     ma20 = df['종가'].rolling(20).mean()
     
     # 채널 (20일선 ±10%)
@@ -509,13 +527,17 @@ def extract_chart_data_rich(df, max_points=300, label_text=''):
 
 
 def analyze_stock(code, name, foreign_history):
+    # ★ v1.7 - 더 긴 데이터 시도
+    # 일봉 5년 (분석용)
     df_d_5y = get_daily(code, 5)
     if df_d_5y is None or len(df_d_5y) < 250:
         return None
 
-    df_d_long = get_daily(code, 15)
+    # 일봉 30년 (월봉/연봉 변환용 - pykrx가 줄 수 있는 만큼)
+    df_d_long = get_daily(code, 30)
     df_w = resample_to_weekly(df_d_long) if df_d_long is not None else None
     df_m = resample_to_monthly(df_d_long) if df_d_long is not None else None
+    df_y = resample_to_yearly(df_d_long) if df_d_long is not None else None
 
     if df_w is None or df_m is None or len(df_w) < 100 or len(df_m) < 60:
         return None
@@ -549,11 +571,20 @@ def analyze_stock(code, name, foreign_history):
     is_china = code in CHINA_DIRECT
     accum_score = calc_score_v15(alignment['stars'], phase, ma20_data, foreign_data, is_china)
 
-    # ★ v1.6 - 풍부한 차트 데이터
+    # ★ 4프레임 차트 데이터 (연봉 추가)
     chart_data = {
-        'daily': extract_chart_data_rich(df_d_5y, max_points=300, label_text='일봉 5년'),
-        'weekly': extract_chart_data_rich(df_w, max_points=300, label_text='주봉 8년'),
-        'monthly': extract_chart_data_rich(df_m, max_points=200, label_text='월봉 15년'),
+        'daily': extract_chart_data_v17(df_d_5y, max_points=300, label_text='일봉 5년', frame_period_count=252),
+        'weekly': extract_chart_data_v17(df_w, max_points=300, label_text='주봉', frame_period_count=52),
+        'monthly': extract_chart_data_v17(df_m, max_points=300, label_text='월봉', frame_period_count=12),
+        'yearly': extract_chart_data_v17(df_y, max_points=100, label_text='연봉', frame_period_count=None) if df_y is not None and len(df_y) >= 3 else None,
+    }
+    
+    # 데이터 길이 정보
+    data_info = {
+        'daily_years': round(len(df_d_5y) / 252, 1),
+        'weekly_years': round(len(df_w) / 52, 1),
+        'monthly_years': round(len(df_m) / 12, 1),
+        'yearly_years': len(df_y) if df_y is not None else 0,
     }
 
     return {
@@ -582,13 +613,14 @@ def analyze_stock(code, name, foreign_history):
             'monthly': alignment.get('monthly'),
         },
         'chart': chart_data,
+        'data_info': data_info,
     }
 
 
 def main():
-    print(f'[SIGVIEW 잭팟 시즌2 v1.6] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
+    print(f'[SIGVIEW 잭팟 시즌2 v1.7] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
     print(f'경기민감주 풀: {len(CYCLICAL)}개')
-    print(f'차트 강화: 20일선 + 채널 + 52주 신고저 + a/b/c 마커')
+    print(f'데이터: 일봉 5년 / 주봉~8년 / 월봉~25년 / 연봉~30년')
     print()
     
     foreign_history = load_foreign_history()
@@ -609,7 +641,7 @@ def main():
     save_foreign_history(foreign_history)
     print(f'NAVER 성공: {fetch_success}/{len(CYCLICAL)}, 신규 누적: {total_new_records}건')
     
-    print('\n[Step 2] 종목 분석 (4차함수 + 외인 추세 + 차트)')
+    print('\n[Step 2] 종목 분석 (4차함수 + 외인 추세 + 강화 차트)')
     print('-' * 60)
     results = []
     for i, (code, name) in enumerate(CYCLICAL.items(), 1):
@@ -619,11 +651,10 @@ def main():
                 results.append(r)
                 china_tag = ' 🇨🇳' if r['is_china_play'] else ''
                 fs = r['signals']
-                fi_info = f'{fs["foreign_trend"]}'
-                if fs['foreign_latest_ratio'] is not None:
-                    fi_info += f' {fs["foreign_latest_ratio"]:.1f}%'
+                di = r['data_info']
                 print(f'  [{i}/{len(CYCLICAL)}] {name}{china_tag} ★{r["stars"]} '
-                      f'점수{r["accumulation_score"]} {r["verdict"]} [외인:{fi_info}, n={fs["foreign_data_points"]}]')
+                      f'점수{r["accumulation_score"]} {r["verdict"]} '
+                      f'[월봉 {di["monthly_years"]}년, 연봉 {di["yearly_years"]}년]')
             else:
                 print(f'  [{i}/{len(CYCLICAL)}] {name} - 매칭 없음')
         except Exception as e:
@@ -634,21 +665,20 @@ def main():
         r['rank'] = i
 
     output = {
-        'version': '2.0', 'season': 2, 'algo_version': '1.6',
+        'version': '2.0', 'season': 2, 'algo_version': '1.7',
         'generated_at': TODAY.isoformat(),
         'scan_universe': 'cyclical_korea',
         'n_scanned': len(CYCLICAL), 'n_matched': len(results),
         'foreign_data': {
-            'source': 'NAVER mobile API (m.stock.naver.com)',
+            'source': 'NAVER mobile API',
             'storage': FOREIGN_HISTORY_FILE,
             'total_codes_tracked': len(foreign_history),
             'fetch_success_today': fetch_success,
             'new_records_today': total_new_records,
         },
         'algorithm': {
-            'name': 'MFAS v1.6',
-            'description': '4차함수 c자리 + NAVER 외인 + 차트 시각화 (20일선/채널/52주)',
-            'chart_layers': ['close', 'ma20', 'channel', '52w_hi_lo', 'fit_curve', 'a_b_c_markers'],
+            'name': 'MFAS v1.7',
+            'description': '4차함수 c자리 (내부) + NAVER 외인 + 강화 차트 (4프레임, 줌/팬, 한글)',
         },
         'summary': {
             'five_stars': sum(1 for r in results if r['stars'] == 5),
@@ -670,11 +700,6 @@ def main():
         json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f'\n완료: {len(results)}개 매칭')
-    print(f'  🎯 외인매집 확정:   {output["summary"]["stealth_accumulation"]}')
-    print(f'  🐢 외인 조용매집:   {output["summary"]["quiet_accumulation"]}')
-    print(f'  🔍 매집 추정:       {output["summary"]["likely_accumulation"]}')
-    print(f'  🌱 막 깨고 나옴:    {output["summary"]["early_breakout"]}')
-    print(f'  🇨🇳 중국 플레이:     {output["summary"]["china_plays"]}')
 
 
 if __name__ == '__main__':
