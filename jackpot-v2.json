@@ -1,8 +1,8 @@
 {
   "version": "2.0",
   "season": 2,
-  "algo_version": "2.0",
-  "generated_at": "2026-05-19T15:33:33.395375+09:00",
+  "algo_version": "2.1",
+  "generated_at": "2026-05-19T15:38:31.252657+09:00",
   "n_scanned": 41,
   "n_matched": 33,
   "foreign_data": {
@@ -12,8 +12,8 @@
     "new_records_today": 205
   },
   "algorithm": {
-    "name": "SIGVIEW 시즌2 v2.0",
-    "description": "4차함수 c자리 + 외인 보유율 + 20일선 매집 패턴"
+    "name": "SIGVIEW 시즌2 v2.1",
+    "description": "자동 종목 빌더 (시총 1조+ cyclical) + 4차함수 + 외인 매집"
   },
   "summary": {
     "five_stars": 1,
