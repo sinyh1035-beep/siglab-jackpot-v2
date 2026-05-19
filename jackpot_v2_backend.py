@@ -1,12 +1,10 @@
 """
 jackpot_v2_backend.py
 ==========================================
-SIGVIEW 잭팟 도구 시즌2 v1.3 - "외인 매집 포착" 본격판
-- 4차함수 c자리 (기존)
-- + 외국인 소진율 추세 (★ 핵심 추가)
-- + 20일선 횡단 패턴 (스텔스 매집)
-- + 거래량 비대칭 (하락일 거래량 vs 상승일)
-- + Phase 재정의 (stealth_accumulation 최우선)
+SIGVIEW 잭팟 도구 시즌2 v1.3.1 - BUG FIX
+- numpy bool/int/float → Python native 변환 (JSON 직렬화 가능)
+- 외국인 함수 디버그 로그 추가 + try/except 더 견고하게
+- 차트 데이터 포함 (모달 차트 v1.4용 사전 준비)
 """
 import json
 import warnings
@@ -24,9 +22,6 @@ KST = timezone(timedelta(hours=9))
 TODAY = datetime.now(KST)
 END_DATE = TODAY.strftime('%Y%m%d')
 
-# ============================================================
-# 종목 풀 - 경기민감주 + 중국 수혜 가중치
-# ============================================================
 CYCLICAL = {
     '005930': '삼성전자', '000660': 'SK하이닉스', '042700': '한미반도체',
     '058470': '리노공업', '039030': '이오테크닉스',
@@ -46,15 +41,38 @@ CYCLICAL = {
     '267250': 'HD현대', '329180': 'HD현대중공업',
 }
 
-# 중국 회복 수혜 직접 영향 종목 (가중치 +5점)
 CHINA_DIRECT = {
-    '005490', '004020', '010130', '103140',  # 철강/비철
-    '011170', '009830', '011780', '010060', '096770', '010950',  # 화학/정유
-    '009540', '010140', '042660',  # 조선
-    '011200', '028670',  # 해운
-    '267250', '329180', '034020',  # 중공업
-    '003490',  # 항공
+    '005490', '004020', '010130', '103140',
+    '011170', '009830', '011780', '010060', '096770', '010950',
+    '009540', '010140', '042660',
+    '011200', '028670',
+    '267250', '329180', '034020',
+    '003490',
 }
+
+
+# ============================================================
+# numpy → Python native 변환 (JSON 직렬화 핵심 수정)
+# ============================================================
+def to_native(obj):
+    """numpy/pandas 타입을 Python native로 재귀 변환"""
+    if isinstance(obj, dict):
+        return {k: to_native(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [to_native(v) for v in obj]
+    if isinstance(obj, (np.bool_,)):
+        return bool(obj)
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.floating,)):
+        return float(obj)
+    if isinstance(obj, (np.ndarray,)):
+        return obj.tolist()
+    if isinstance(obj, (pd.Timestamp,)):
+        return obj.strftime('%Y-%m-%d')
+    if pd.isna(obj) if isinstance(obj, (int, float)) else False:
+        return None
+    return obj
 
 
 def quartic(x, k, a, b, c):
@@ -112,9 +130,9 @@ def collect_c_candidates(df, win_sizes, step, recent_cutoff, r2_min=0.55):
                 'c_price': c_price,
                 'r2': round(float(r2), 3),
                 'c_pos': round(float(c_f), 3),
-                'win_size': win_size,
+                'win_size': int(win_size),
                 'latest_price': latest_price,
-                'ratio_pct': round((latest_price / c_price - 1) * 100, 1) if c_price > 0 else 0,
+                'ratio_pct': round((latest_price / c_price - 1) * 100, 1) if c_price > 0 else 0.0,
             })
     return cands
 
@@ -138,8 +156,9 @@ def find_aligned_c(daily, weekly, monthly,
                     if score > best_score:
                         best_score = score
                         best = {'stars': 5, 'type': '일+주+월',
-                                'time_diff_months': round(max(dw, wm, dm), 1),
-                                'daily': d, 'weekly': w, 'monthly': m, 'score': score}
+                                'time_diff_months': round(float(max(dw, wm, dm)), 1),
+                                'daily': d, 'weekly': w, 'monthly': m,
+                                'score': float(score)}
     if best:
         return best
 
@@ -157,8 +176,8 @@ def find_aligned_c(daily, weekly, monthly,
                     if score > best_score:
                         best_score = score
                         best = {'stars': 4, 'type': type_name,
-                                'time_diff_months': round(diff, 1),
-                                key_a: a, key_b: b, 'score': score}
+                                'time_diff_months': round(float(diff), 1),
+                                key_a: a, key_b: b, 'score': float(score)}
     if best:
         return best
 
@@ -172,181 +191,128 @@ def find_aligned_c(daily, weekly, monthly,
     if all_singles:
         all_singles.sort(key=lambda x: -x[2]['r2'])
         type_name, key, d = all_singles[0]
-        return {'stars': 3, 'type': type_name, key: d, 'score': d['r2']}
+        return {'stars': 3, 'type': type_name, key: d, 'score': float(d['r2'])}
     return None
 
 
-# ============================================================
-# ★ 형 통찰 - 매집 시그널 3종
-# ============================================================
 def analyze_ma20_crossings(df_daily, lookback_days=250):
-    """20일선 횡단 패턴 분석"""
     if df_daily is None or len(df_daily) < 30:
-        return {'count': 0, 'is_stealth': False}
-    
+        return {'count': 0, 'is_stealth': False, 'price_range_pct': 0.0}
     recent = df_daily.tail(lookback_days).copy()
     recent['ma20'] = recent['종가'].rolling(20).mean()
     recent = recent.dropna()
     if len(recent) < 30:
-        return {'count': 0, 'is_stealth': False}
-    
-    # 가격이 ma20 위(1)/아래(-1) 상태 변화 횟수
+        return {'count': 0, 'is_stealth': False, 'price_range_pct': 0.0}
     above = (recent['종가'] > recent['ma20']).astype(int)
-    crossings = (above.diff().abs() == 1).sum()
-    
-    # 가격 변동성 (횡보 여부)
-    price_range_pct = (recent['종가'].max() - recent['종가'].min()) / recent['종가'].mean() * 100
-    
-    # 스텔스 조건: 횡단 4회+ AND 변동성 35% 이하 (횡보 중 잦은 매매)
-    is_stealth = (crossings >= 4) and (price_range_pct <= 35)
-    
+    crossings = int((above.diff().abs() == 1).sum())
+    price_range_pct = float((recent['종가'].max() - recent['종가'].min()) / recent['종가'].mean() * 100)
+    is_stealth = bool((crossings >= 4) and (price_range_pct <= 35))
     return {
-        'count': int(crossings),
-        'price_range_pct': round(float(price_range_pct), 1),
+        'count': crossings,
+        'price_range_pct': round(price_range_pct, 1),
         'is_stealth': is_stealth,
     }
 
 
 def analyze_volume_asymmetry(df_daily, lookback_days=250):
-    """거래량 비대칭 - 하락일 vs 상승일 거래량"""
     if df_daily is None or len(df_daily) < 30:
-        return {'ratio': 0, 'is_accumulation': False}
-    
+        return {'ratio': 0.0, 'is_accumulation': False}
     recent = df_daily.tail(lookback_days).copy()
     recent['change'] = recent['종가'].diff()
-    
     up_days = recent[recent['change'] > 0]
     down_days = recent[recent['change'] < 0]
-    
     if len(up_days) < 5 or len(down_days) < 5:
-        return {'ratio': 0, 'is_accumulation': False}
-    
-    avg_vol_down = down_days['거래량'].mean()
-    avg_vol_up = up_days['거래량'].mean()
-    
+        return {'ratio': 0.0, 'is_accumulation': False}
+    avg_vol_down = float(down_days['거래량'].mean())
+    avg_vol_up = float(up_days['거래량'].mean())
     if avg_vol_up == 0:
-        return {'ratio': 0, 'is_accumulation': False}
-    
+        return {'ratio': 0.0, 'is_accumulation': False}
     ratio = avg_vol_down / avg_vol_up
-    
-    # 매집 시그널: 하락일 거래량이 상승일과 같거나 더 많음 (ratio >= 1.0)
-    # 외인은 떨어질 때 사니까
-    is_accumulation = ratio >= 1.0
-    
+    is_accumulation = bool(ratio >= 1.0)
     return {
         'ratio': round(float(ratio), 2),
-        'is_accumulation': bool(is_accumulation),
+        'is_accumulation': is_accumulation,
     }
 
 
 def analyze_foreign_holding(code, days=400):
-    """외국인 소진율 추세 - 가장 강력한 시그널"""
+    """외국인 지분율 추세 (★ v1.3.1 견고화)"""
+    result = {'trend': 'unknown', 'slope_per_month': 0.0,
+              'latest_pct': 0.0, 'change_pct': 0.0, 'error': None}
     try:
         start = (TODAY - timedelta(days=days)).strftime('%Y%m%d')
         df = stock.get_exhaustion_rates_of_foreign_investment_by_date(start, END_DATE, code)
         if df is None or len(df) < 30:
-            return {'trend': 'unknown', 'slope_per_month': 0, 'latest_pct': 0, 'change_pct': 0}
+            result['error'] = 'insufficient_data'
+            return result
         
-        # 외국인 보유 비율 컬럼 찾기 (pykrx 버전에 따라 다를 수 있음)
-        ratio_col = None
-        for cand in ['지분율', '보유비율', '외인지분율', '외국인지분율']:
-            if cand in df.columns:
-                ratio_col = cand
-                break
-        if ratio_col is None:
-            # 첫 번째 % 컬럼 시도
-            for col in df.columns:
-                if '%' in str(col) or '율' in str(col):
-                    ratio_col = col
-                    break
-        if ratio_col is None:
-            return {'trend': 'unknown', 'slope_per_month': 0, 'latest_pct': 0, 'change_pct': 0}
+        # 정확한 컬럼명: '지분율' (pykrx 도큐먼트 확인)
+        if '지분율' not in df.columns:
+            result['error'] = f'no_지분율_col (cols: {list(df.columns)[:3]})'
+            return result
         
-        df = df.dropna(subset=[ratio_col])
+        df = df.dropna(subset=['지분율'])
         if len(df) < 30:
-            return {'trend': 'unknown', 'slope_per_month': 0, 'latest_pct': 0, 'change_pct': 0}
+            result['error'] = 'too_few_after_dropna'
+            return result
         
         df.index = pd.to_datetime(df.index)
         df = df.sort_index()
         
-        # 최근 6개월 추세
-        latest_pct = float(df[ratio_col].iloc[-1])
-        oldest_pct = float(df[ratio_col].iloc[0])
+        latest_pct = float(df['지분율'].iloc[-1])
+        oldest_pct = float(df['지분율'].iloc[0])
         change_pct = latest_pct - oldest_pct
         
-        # 선형 회귀 기울기 (일 단위)
-        x = np.arange(len(df))
-        y = df[ratio_col].values.astype(float)
+        x = np.arange(len(df), dtype=float)
+        y = df['지분율'].values.astype(float)
         slope, _, _, _, _ = linregress(x, y)
-        slope_per_month = slope * 20  # 1개월 = 약 20거래일
+        slope_per_month = float(slope * 20)
         
-        # 추세 분류
         if slope_per_month > 0.1:
-            trend = 'accumulating'  # 외국인 매집 중 ★
+            trend = 'accumulating'
         elif slope_per_month > 0.03:
             trend = 'slight_up'
         elif slope_per_month < -0.1:
-            trend = 'distributing'  # 외국인 매도 중 ✗
+            trend = 'distributing'
         elif slope_per_month < -0.03:
             trend = 'slight_down'
         else:
             trend = 'flat'
         
-        return {
+        result.update({
             'trend': trend,
-            'slope_per_month': round(float(slope_per_month), 3),
+            'slope_per_month': round(slope_per_month, 3),
             'latest_pct': round(latest_pct, 2),
             'change_pct': round(float(change_pct), 2),
-        }
+            'error': None,
+        })
+        return result
     except Exception as e:
-        return {'trend': 'error', 'slope_per_month': 0, 'latest_pct': 0, 'change_pct': 0,
-                'error': str(e)[:50]}
+        result['error'] = str(e)[:80]
+        return result
 
 
-# ============================================================
-# Phase 재정의 (형 통찰 반영)
-# ============================================================
 def determine_phase_v13(ratio_pct, ma20_stealth, vol_accum, fi_trend):
-    """
-    형 본질:
-    - stealth_accumulation: c±15% + 20일선 횡단 활발 + 외인 매집 중
-    - 이게 시즌2 코어
-    """
-    # 외인 매집 중 + 가격 횡보 + 20일선 횡단 활발 = 진짜 스텔스
     if (-15 <= ratio_pct <= 15) and ma20_stealth and fi_trend in ('accumulating', 'slight_up'):
         return 'stealth_accumulation'
-    
-    # 가격 횡보 + 외인 매집 (20일선 조건 약간 미달)
     if (-15 <= ratio_pct <= 15) and fi_trend in ('accumulating', 'slight_up'):
         return 'quiet_accumulation'
-    
-    # 막 깨고 나오는 중
     if 10 < ratio_pct <= 30 and fi_trend in ('accumulating', 'slight_up', 'flat'):
         return 'early_breakout'
-    
-    # 진행 중
     if 30 < ratio_pct <= 60:
         return 'in_progress'
-    
-    # 이미 폭발 (검증용)
     if ratio_pct > 60:
         return 'already_run'
-    
-    # 외인 매도 중 (가짜 신호 가능성)
     if fi_trend == 'distributing':
         return 'risky'
-    
-    # 그 외
     if ratio_pct < -15:
         return 'failed'
-    
     return 'neutral'
 
 
 def determine_verdict_v13(stars, phase):
-    """시즌2 v1.3 - 매집기 발굴 우선"""
     if phase == 'stealth_accumulation':
-        return '🎯 진짜 외인 매집중'  # 최우선
+        return '🎯 진짜 외인 매집중'
     if phase == 'quiet_accumulation':
         return '🐢 조용한 매집중'
     if phase == 'early_breakout':
@@ -363,50 +329,28 @@ def determine_verdict_v13(stars, phase):
 
 
 def calc_accumulation_score(stars, phase, ma20_data, vol_data, fi_data, is_china):
-    """매집 점수 (0~100) - 시즌2 v1.3 핵심 지표"""
-    score = 0
-    # 별점 기본 점수
-    score += stars * 10  # 30~50점
-    
-    # Phase 보너스
+    score = stars * 10
     phase_score = {
-        'stealth_accumulation': 30,
-        'quiet_accumulation': 22,
-        'early_breakout': 15,
-        'in_progress': 5,
-        'already_run': -5,
-        'risky': -10,
-        'failed': -15,
-        'neutral': 0,
+        'stealth_accumulation': 30, 'quiet_accumulation': 22,
+        'early_breakout': 15, 'in_progress': 5, 'already_run': -5,
+        'risky': -10, 'failed': -15, 'neutral': 0,
     }
     score += phase_score.get(phase, 0)
-    
-    # 외인 매집 보너스 (가장 중요)
     if fi_data['trend'] == 'accumulating':
         score += 15
     elif fi_data['trend'] == 'slight_up':
         score += 7
     elif fi_data['trend'] == 'distributing':
         score -= 10
-    
-    # 20일선 스텔스 보너스
     if ma20_data['is_stealth']:
         score += 8
-    
-    # 거래량 매집 패턴
     if vol_data['is_accumulation']:
         score += 5
-    
-    # 중국 수혜
     if is_china:
         score += 5
-    
-    return max(0, min(100, score))
+    return int(max(0, min(100, score)))
 
 
-# ============================================================
-# pykrx 데이터
-# ============================================================
 def get_daily(code, years):
     start = (TODAY - timedelta(days=years * 365)).strftime('%Y%m%d')
     df = stock.get_market_ohlcv(start, END_DATE, code)
@@ -461,17 +405,15 @@ def analyze_stock(code, name):
     if alignment is None:
         return None
 
-    # 매집 시그널 분석 (★ v1.3 핵심)
     ma20_data = analyze_ma20_crossings(df_d_5y)
     vol_data = analyze_volume_asymmetry(df_d_5y)
     fi_data = analyze_foreign_holding(code)
     
-    # 평균 ratio
     ratios = []
     for k in ['daily', 'weekly', 'monthly']:
         if k in alignment and alignment[k]:
             ratios.append(alignment[k]['ratio_pct'])
-    avg_ratio = float(np.mean(ratios)) if ratios else 0
+    avg_ratio = float(np.mean(ratios)) if ratios else 0.0
     
     phase = determine_phase_v13(avg_ratio, ma20_data['is_stealth'],
                                  vol_data['is_accumulation'], fi_data['trend'])
@@ -482,22 +424,24 @@ def analyze_stock(code, name):
 
     return {
         'code': code, 'name': name,
-        'stars': alignment['stars'], 'type': alignment['type'],
+        'stars': int(alignment['stars']),
+        'type': alignment['type'],
         'time_diff_months': alignment.get('time_diff_months'),
         'phase': phase, 'verdict': verdict,
         'accumulation_score': accum_score,
-        'is_china_play': is_china,
+        'is_china_play': bool(is_china),
         'avg_ratio_pct': round(avg_ratio, 1),
         'signals': {
             'ma20_crossings': ma20_data['count'],
-            'ma20_stealth': ma20_data['is_stealth'],
-            'price_range_pct': ma20_data.get('price_range_pct', 0),
+            'ma20_stealth': bool(ma20_data['is_stealth']),
+            'price_range_pct': ma20_data['price_range_pct'],
             'volume_down_up_ratio': vol_data['ratio'],
-            'volume_accumulation': vol_data['is_accumulation'],
+            'volume_accumulation': bool(vol_data['is_accumulation']),
             'foreign_trend': fi_data['trend'],
             'foreign_slope_per_month': fi_data['slope_per_month'],
             'foreign_latest_pct': fi_data['latest_pct'],
             'foreign_change_pct': fi_data['change_pct'],
+            'foreign_error': fi_data.get('error'),
         },
         'frames': {
             'daily': alignment.get('daily'),
@@ -508,32 +452,40 @@ def analyze_stock(code, name):
 
 
 def main():
-    print(f'[SIGVIEW 잭팟 시즌2 v1.3] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
-    print(f'경기민감주 풀: {len(CYCLICAL)}개 (외인 매집 + 20일선 + 거래량 분석 포함)')
+    print(f'[SIGVIEW 잭팟 시즌2 v1.3.1] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
+    print(f'경기민감주 풀: {len(CYCLICAL)}개')
 
     results = []
+    fi_errors = {}
     for i, (code, name) in enumerate(CYCLICAL.items(), 1):
         try:
             r = analyze_stock(code, name)
             if r:
                 results.append(r)
+                fi = r['signals']
                 china_tag = ' 🇨🇳' if r['is_china_play'] else ''
+                fi_info = f'{fi["foreign_trend"]} {fi["foreign_change_pct"]:+.1f}%p ({fi["foreign_latest_pct"]:.1f}%)'
+                if fi.get('foreign_error'):
+                    fi_errors[code] = fi['foreign_error']
+                    fi_info = f'ERR: {fi["foreign_error"][:30]}'
                 print(f'  [{i}/{len(CYCLICAL)}] {name}{china_tag} ★{r["stars"]} '
-                      f'점수{r["accumulation_score"]} {r["verdict"]} '
-                      f'(외인:{r["signals"]["foreign_trend"]} '
-                      f'+{r["signals"]["foreign_change_pct"]:+.1f}%p)')
+                      f'점수{r["accumulation_score"]} {r["verdict"]} (외인:{fi_info})')
             else:
                 print(f'  [{i}/{len(CYCLICAL)}] {name} - 매칭 없음')
         except Exception as e:
             print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {str(e)[:80]}')
+    
+    if fi_errors:
+        print(f'\n외인 데이터 에러 종목 {len(fi_errors)}개:')
+        for code, err in list(fi_errors.items())[:3]:
+            print(f'  - {code}: {err}')
 
-    # 정렬: 매집 점수 내림차순 (★보다 중요!)
     results.sort(key=lambda x: -x['accumulation_score'])
     for i, r in enumerate(results, 1):
         r['rank'] = i
 
     output = {
-        'version': '2.0', 'season': 2, 'algo_version': '1.3',
+        'version': '2.0', 'season': 2, 'algo_version': '1.3.1',
         'generated_at': TODAY.isoformat(),
         'scan_universe': 'cyclical_korea',
         'n_scanned': len(CYCLICAL), 'n_matched': len(results),
@@ -564,10 +516,13 @@ def main():
         'disclaimer': '본 데이터는 4차함수 패턴 매칭 + 외인 매집 추세 분석 결과이며 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다.',
     }
 
+    # ★ numpy 타입 → Python native 전환 (JSON 직렬화 핵심)
+    output = to_native(output)
+
     with open('jackpot-v2.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    print(f'\n완료: {len(results)}개 매칭')
+    print(f'\n완료: {len(results)}개 매칭, jackpot-v2.json 저장됨')
     print(f'  🎯 stealth_accumulation: {output["summary"]["stealth_accumulation"]}')
     print(f'  🐢 quiet_accumulation:   {output["summary"]["quiet_accumulation"]}')
     print(f'  🌱 early_breakout:       {output["summary"]["early_breakout"]}')
