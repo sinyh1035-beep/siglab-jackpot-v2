@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGVIEW 잭팟 도구 시즌2 v1.6 | 외인 매집 포착 + 강화 차트</title>
-<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + NAVER 외인 보유율 + 강화 차트(20일선/채널/52주 신고저).">
+<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 4차함수 c자리 + NAVER 외인 보유율 + 강화 차트(로그/20일선/채널/52주/a·b·c).">
 <meta name="robots" content="index, follow">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
@@ -120,13 +120,13 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .error { color: #c0392b; }
 .empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
 
-/* ===== 모달 강화 ===== */
-.modal-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.65); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
+/* ===== 모달 ===== */
+.modal-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
 .modal-backdrop.open { display: flex; }
-.modal { background: var(--bg); border-radius: 12px; max-width: 900px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 20px; position: relative; }
-.modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; z-index: 2; }
-.modal-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; padding-right: 30px; }
-.modal h2 { font-size: 18px; }
+.modal { background: var(--bg); border-radius: 12px; max-width: 1100px; width: 100%; max-height: 95vh; overflow-y: auto; padding: 20px; position: relative; }
+.modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 26px; color: var(--text-secondary); cursor: pointer; z-index: 2; }
+.modal-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; padding-right: 30px; flex-wrap: wrap; }
+.modal h2 { font-size: 19px; }
 .r2-badge { font-size: 12px; padding: 3px 8px; background: var(--bg-secondary); border-radius: 6px; color: var(--text-secondary); font-weight: 500; }
 .modal-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
 .frame-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
@@ -137,10 +137,12 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 .layer-btn.on { background: var(--text-primary); color: var(--bg); border-color: var(--text-primary); }
 .layer-btn::before { content: '○'; font-size: 12px; }
 .layer-btn.on::before { content: '●'; }
-.chart-wrap { height: 380px; position: relative; }
+.layer-btn.log-btn { border-color: #D4A017; }
+.layer-btn.log-btn.on { background: #D4A017; border-color: #D4A017; }
+.chart-wrap { height: 540px; position: relative; }
 .modal-info { margin-top: 14px; font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
 .modal-info strong { color: var(--text-primary); }
-.markers-row { display: flex; gap: 12px; flex-wrap: wrap; padding: 8px 0; font-size: 11px; }
+.markers-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0; font-size: 11px; }
 .marker-tag { padding: 2px 8px; border-radius: 4px; color: white; font-weight: 500; }
 .marker-tag.a { background: #FF8C00; }
 .marker-tag.b { background: #2E8B57; }
@@ -154,8 +156,8 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
   .stat-card { padding: 8px 4px; }
   .stat-value { font-size: 16px; }
   .signals-grid { grid-template-columns: 1fr; }
-  .chart-wrap { height: 300px; }
-  .modal { padding: 14px; max-height: 95vh; }
+  .chart-wrap { height: 420px; }
+  .modal { padding: 14px; max-height: 96vh; }
   .modal h2 { font-size: 16px; }
   .layer-toggles { gap: 4px; }
   .layer-btn { font-size: 10px; padding: 3px 7px; }
@@ -165,10 +167,10 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <body>
 <div class="container">
 <header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v1.6</div>
+  <div class="brand">SIGVIEW · JACKPOT v1.6.1</div>
   <h1>잭팟 도구 시즌2</h1>
-  <div class="subtitle">외인 매집 포착 · 4차함수 + 강화 차트</div>
-  <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (20일선/채널/52주/a·b·c 마커)"</div>
+  <div class="subtitle">외인 매집 포착 · 4차함수 + 강화 차트 (로그 스케일 지원)</div>
+  <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (로그/20일선/채널/52주/a·b·c)"</div>
   <div class="updated" id="updated">데이터 불러오는 중...</div>
 </header>
 <div class="notice" id="data-notice" style="display:none;"></div>
@@ -181,12 +183,12 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
 <div id="content"><div class="loading">데이터 불러오는 중...</div></div>
 <div class="disclaimer">
   <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
-  본 데이터는 4차함수 c자리 검출 + NAVER 외인 보유율 추세 + 20일선 횡단 분석 결과입니다. 모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
+  4차함수 c자리 + NAVER 외인 보유율 추세 + 20일선 횡단 분석. 모든 투자 판단과 책임은 본인에게 있습니다.<br><br>
   <span id="algo-info"></span>
 </div>
 </div>
 
-<!-- 강화 모달 -->
+<!-- 모달 -->
 <div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -195,9 +197,9 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
       <span class="r2-badge" id="r2-badge"></span>
     </div>
     <div class="modal-sub" id="modal-sub"></div>
-    
     <div class="frame-tabs" id="frame-tabs"></div>
     <div class="layer-toggles">
+      <button class="layer-btn log-btn on" data-layer="log" onclick="toggleLayer(this, 'log')">로그</button>
       <button class="layer-btn on" data-layer="ma20" onclick="toggleLayer(this, 'ma20')">20일선</button>
       <button class="layer-btn on" data-layer="channel" onclick="toggleLayer(this, 'channel')">채널</button>
       <button class="layer-btn on" data-layer="hi52w" onclick="toggleLayer(this, 'hi52w')">52주 신고</button>
@@ -217,7 +219,7 @@ let DATA = null;
 let currentChart = null;
 let currentStock = null;
 let currentFrame = 'daily';
-let layerState = { ma20: true, channel: true, hi52w: true, lo52w: true, fit: true, markers: true };
+let layerState = { log: true, ma20: true, channel: true, hi52w: true, lo52w: true, fit: true, markers: true };
 
 function phaseToColor(phase) {
   return ({
@@ -227,7 +229,6 @@ function phaseToColor(phase) {
     'risky': 'risky', 'failed': 'risky', 'neutral': 'progress',
   })[phase] || 'progress';
 }
-
 function trendLabel(trend) {
   return ({
     'accumulating': '🟢 매집중', 'slight_up': '🟢 약매집',
@@ -236,7 +237,6 @@ function trendLabel(trend) {
     'no_data': '⚫ 없음',
   })[trend] || '⚪';
 }
-
 function formatRatio(pct) {
   if (pct === null || pct === undefined) return '-';
   return `${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%`;
@@ -293,7 +293,7 @@ function renderCard(stock) {
       </div>
       <div class="stock-sub">${stock.type} · ${timeDiff}${stock.verdict}</div>
       <div class="stock-meta">${renderFrames(stock)}${renderSignals(stock)}</div>
-      <div class="chart-hint">📈 클릭 → 차트 (20일선/채널/52주/a·b·c)</div>
+      <div class="chart-hint">📈 클릭 → 차트 (로그/20일선/채널/52주/a·b·c)</div>
     </div>
   `;
 }
@@ -305,24 +305,43 @@ function renderSection(title, desc, stocks, emptyMsg) {
   return `<h2 class="section-title">${title}</h2><div class="section-desc">${desc}</div>${inner}`;
 }
 
+// ===== 가장 가까운 날짜 매칭 (★ v1.6.1 핵심 수정) =====
+function findNearestDateIdx(labels, targetDate) {
+  if (!targetDate) return -1;
+  // 정확 매칭 우선
+  const exact = labels.indexOf(targetDate);
+  if (exact >= 0) return exact;
+  // 근사 매칭 (가장 가까운 날짜)
+  const target = new Date(targetDate).getTime();
+  if (isNaN(target)) return -1;
+  let bestIdx = -1;
+  let bestDiff = Infinity;
+  for (let i = 0; i < labels.length; i++) {
+    const t = new Date(labels[i]).getTime();
+    if (isNaN(t)) continue;
+    const diff = Math.abs(t - target);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestIdx = i;
+    }
+  }
+  return bestIdx;
+}
+
 // ===== 모달 =====
 function openChart(code) {
   const stock = DATA.stocks.find(s => s.code === code);
   if (!stock) return;
   currentStock = stock;
   document.getElementById('modal-title').textContent = `${stock.name} (${stock.code})`;
-  
-  // 가장 큰 R² 표시
   let maxR2 = null;
   for (const k of ['daily', 'weekly', 'monthly']) {
     const f = stock.frames?.[k];
     if (f && (maxR2 === null || f.r2 > maxR2)) maxR2 = f.r2;
   }
   document.getElementById('r2-badge').textContent = maxR2 !== null ? `R² ${maxR2}` : '';
-  
   document.getElementById('modal-sub').textContent = 
     `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}`;
-  
   const availableFrames = [];
   if (stock.chart?.daily) availableFrames.push(['daily', '일봉 5년']);
   if (stock.chart?.weekly) availableFrames.push(['weekly', '주봉 8년']);
@@ -368,14 +387,17 @@ function renderChartFor(frameKey) {
   const hi52 = chartData.high_52w;
   const lo52 = chartData.low_52w;
   
-  // a/b/c 인덱스 찾기
-  const aIdx = frameInfo ? labels.indexOf(frameInfo.a_date) : -1;
-  const bIdx = frameInfo ? labels.indexOf(frameInfo.b_date) : -1;
-  const cIdx = frameInfo ? labels.indexOf(frameInfo.c_date) : -1;
+  // ★ 근사 매칭으로 a/b/c 인덱스 찾기
+  let aIdx = -1, bIdx = -1, cIdx = -1;
+  if (frameInfo) {
+    aIdx = findNearestDateIdx(labels, frameInfo.a_date);
+    bIdx = findNearestDateIdx(labels, frameInfo.b_date);
+    cIdx = findNearestDateIdx(labels, frameInfo.c_date);
+  }
   
   const datasets = [];
   
-  // 채널 (먼저 그려야 뒤에 깔림)
+  // 채널 (먼저)
   if (layerState.channel && chUp && chLo) {
     datasets.push({
       label: '채널 상단', data: chUp,
@@ -389,7 +411,7 @@ function renderChartFor(frameKey) {
     });
   }
   
-  // 종가 (메인)
+  // 종가
   datasets.push({
     label: '종가', data: closes,
     borderColor: '#1a1a1a', backgroundColor: 'rgba(26,26,26,0.05)',
@@ -405,15 +427,23 @@ function renderChartFor(frameKey) {
     });
   }
   
-  // 4차함수 적합선 (현재 윈도우 범위만 그리기)
-  if (layerState.fit && frameInfo && frameInfo.fit_k !== undefined) {
+  // ★ 4차함수 적합선 — 윈도우 길이 기준 정확히 그리기
+  if (layerState.fit && frameInfo && frameInfo.fit_k !== undefined && aIdx >= 0 && cIdx >= 0) {
     const fitData = new Array(labels.length).fill(null);
-    // 윈도우 안에서 적합선 계산
-    if (aIdx >= 0 && cIdx >= 0) {
-      const winStart = aIdx;
-      const winEnd = Math.min(labels.length - 1, cIdx + Math.floor((cIdx - aIdx) * 0.3));
+    // 윈도우: a부터 c 너머까지 (약 30% 추가)
+    const winStart = Math.max(0, aIdx - Math.floor((cIdx - aIdx) * 0.1));
+    const winEnd = Math.min(labels.length - 1, cIdx + Math.floor((cIdx - aIdx) * 0.3));
+    const winLen = winEnd - winStart;
+    if (winLen > 0) {
+      // 백엔드 fit_a, fit_b, fit_c는 0~1 정규화된 윈도우 좌표
+      // 시각화: a~c 사이를 윈도우 본체로 보고 그 비례로 그림
+      // 단순화: aIdx → fit_a, cIdx → fit_c에 맞춰 선형 매핑
+      const xnA = frameInfo.fit_a;
+      const xnC = frameInfo.fit_c;
       for (let i = winStart; i <= winEnd; i++) {
-        const xn = (i - winStart) / (winEnd - winStart);
+        // i가 aIdx~cIdx 안에 있을 때 정규화
+        const t = (i - aIdx) / Math.max(1, cIdx - aIdx);  // 0=a, 1=c
+        const xn = xnA + t * (xnC - xnA);
         const { fit_k, fit_a, fit_b, fit_c, g_base } = frameInfo;
         const y = fit_k * (xn - fit_a) * (xn - fit_b) * Math.pow(xn - fit_c, 2) + g_base;
         if (isFinite(y) && y > 0) fitData[i] = y;
@@ -422,56 +452,73 @@ function renderChartFor(frameKey) {
     datasets.push({
       label: '4차함수 적합', data: fitData,
       borderColor: '#E91E63', backgroundColor: 'transparent',
-      borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false, borderDash: [8, 3],
+      borderWidth: 2.2, pointRadius: 0, tension: 0.3, fill: false, borderDash: [8, 3],
     });
   }
   
-  // a/b/c 마커 (점 데이터)
+  // ★ a/b/c 마커 (Y는 실제 종가에 맞춤)
   if (layerState.markers && frameInfo) {
-    const aData = labels.map((_, i) => i === aIdx ? frameInfo.a_price : null);
-    const bData = labels.map((_, i) => i === bIdx ? frameInfo.b_price : null);
-    const cData = labels.map((_, i) => i === cIdx ? frameInfo.c_price : null);
+    const aData = labels.map((_, i) => i === aIdx ? closes[aIdx] : null);
+    const bData = labels.map((_, i) => i === bIdx ? closes[bIdx] : null);
+    const cData = labels.map((_, i) => i === cIdx ? closes[cIdx] : null);
     if (aIdx >= 0) datasets.push({
-      label: 'a (1차 고점)', data: aData,
+      label: `a ${frameInfo.a_date}`, data: aData,
       borderColor: '#FF8C00', backgroundColor: '#FF8C00',
-      pointRadius: 8, pointStyle: 'rectRot', showLine: false,
+      pointRadius: 10, pointStyle: 'rectRot', showLine: false,
     });
     if (bIdx >= 0) datasets.push({
-      label: 'b (1차 바닥)', data: bData,
+      label: `b ${frameInfo.b_date}`, data: bData,
       borderColor: '#2E8B57', backgroundColor: '#2E8B57',
-      pointRadius: 8, pointStyle: 'rectRot', showLine: false,
+      pointRadius: 10, pointStyle: 'rectRot', showLine: false,
     });
     if (cIdx >= 0) datasets.push({
-      label: 'c (기러기자리)', data: cData,
+      label: `c ${frameInfo.c_date}`, data: cData,
       borderColor: '#C0392B', backgroundColor: '#C0392B',
-      pointRadius: 10, pointStyle: 'circle', showLine: false,
+      pointRadius: 12, pointStyle: 'circle', showLine: false,
     });
-    // 현재 마커 (마지막 점)
     const nowData = labels.map((_, i) => i === labels.length - 1 ? closes[i] : null);
     datasets.push({
       label: '현재', data: nowData,
       borderColor: '#4169E1', backgroundColor: '#4169E1',
-      pointRadius: 7, pointStyle: 'crossRot', showLine: false,
+      pointRadius: 9, pointStyle: 'crossRot', showLine: false,
     });
   }
   
-  // 수평선 (52주 신고/신저) - annotation 없이 dataset으로
+  // 52주 신고/신저
   if (layerState.hi52w && hi52) {
-    const hiArr = new Array(labels.length).fill(hi52);
     datasets.push({
-      label: `52주 신고 ${hi52.toLocaleString()}`, data: hiArr,
-      borderColor: 'rgba(192,57,43,0.4)', backgroundColor: 'transparent',
+      label: `52주 신고 ${hi52.toLocaleString()}`,
+      data: new Array(labels.length).fill(hi52),
+      borderColor: 'rgba(192,57,43,0.45)', backgroundColor: 'transparent',
       borderWidth: 1, pointRadius: 0, borderDash: [2, 4], fill: false,
     });
   }
   if (layerState.lo52w && lo52) {
-    const loArr = new Array(labels.length).fill(lo52);
     datasets.push({
-      label: `52주 신저 ${lo52.toLocaleString()}`, data: loArr,
-      borderColor: 'rgba(99,153,34,0.4)', backgroundColor: 'transparent',
+      label: `52주 신저 ${lo52.toLocaleString()}`,
+      data: new Array(labels.length).fill(lo52),
+      borderColor: 'rgba(99,153,34,0.45)', backgroundColor: 'transparent',
       borderWidth: 1, pointRadius: 0, borderDash: [2, 4], fill: false,
     });
   }
+  
+  // ★ Y축 스케일 — 로그 토글
+  const yScaleConfig = layerState.log ? {
+    type: 'logarithmic',
+    ticks: { 
+      font: { size: 10 },
+      callback: function(value) {
+        // 로그 스케일에서 깔끔한 숫자만 표시
+        const log = Math.log10(value);
+        if (log === Math.floor(log)) return value.toLocaleString();
+        if (Math.floor(log * 2) === log * 2) return value.toLocaleString();
+        return '';
+      },
+    },
+  } : {
+    type: 'linear',
+    ticks: { font: { size: 10 } },
+  };
   
   const ctx = document.getElementById('chart-canvas').getContext('2d');
   currentChart = new Chart(ctx, {
@@ -481,7 +528,7 @@ function renderChartFor(frameKey) {
       responsive: true, maintainAspectRatio: false,
       interaction: { intersect: false, mode: 'index' },
       plugins: {
-        legend: { display: true, position: 'top', labels: { font: { size: 10 }, boxWidth: 12, padding: 8 } },
+        legend: { display: true, position: 'top', labels: { font: { size: 10 }, boxWidth: 12, padding: 6 } },
         tooltip: {
           callbacks: {
             label: (ctx) => {
@@ -493,12 +540,11 @@ function renderChartFor(frameKey) {
       },
       scales: {
         x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } },
-        y: { ticks: { font: { size: 10 } } },
+        y: yScaleConfig,
       },
     },
   });
 
-  // 마커 표시 row
   const markers = [];
   if (frameInfo) {
     if (frameInfo.a_date) markers.push(`<span class="marker-tag a">a ${frameInfo.a_date} (${frameInfo.a_price?.toLocaleString()})</span>`);
@@ -511,7 +557,7 @@ function renderChartFor(frameKey) {
   let info = '';
   if (frameInfo) {
     info = `
-      <strong>4차함수 적합:</strong> R²=${frameInfo.r2}, 윈도우 ${frameInfo.win_size}봉<br>
+      <strong>4차함수 적합:</strong> R²=${frameInfo.r2}, 윈도우 ${frameInfo.win_size}봉 (Y축: ${layerState.log ? '로그' : '선형'})<br>
       <strong>a:</strong> ${frameInfo.a_date} (1차 고점) · 
       <strong>b:</strong> ${frameInfo.b_date} (1차 바닥) · 
       <strong>c:</strong> ${frameInfo.c_date} (기러기자리)<br>
