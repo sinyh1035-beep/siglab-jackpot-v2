@@ -1,17 +1,9 @@
 """
 jackpot_v2_backend.py
 ==========================================
-SIGVIEW 잭팟 도구 시즌2 - 백엔드 자동 스캔
-- pykrx로 KOSPI/KOSDAQ cyclical 종목 일/주/월봉 다운로드
-- MFAS v2 알고리즘 (4차함수 c자리 다중 프레임 시간 일치)
-- jackpot-v2.json 출력
-- GitHub Actions에서 매일 자정 (KST) 자동 실행
-
-알고리즘:
-  f(x) - g(x) = k(x - a)(x - b)(x - c)^2
-  - a, b: 단순근 (zero crossings)
-  - c: 이중근 (접점, 기러기 자리)
-  - 일/주/월 3프레임에서 동시 c자리 일치 = 강신호
+SIGVIEW 잭팟 도구 시즌2 - 백엔드 자동 스캔 (BUG FIX v1.1)
+- pykrx로 일봉만 받고 pandas resample로 주봉/월봉 변환
+- (pykrx는 freq='w' 미지원 - 'd', 'm', 'y'만 가능)
 """
 import json
 import warnings
@@ -28,43 +20,26 @@ KST = timezone(timedelta(hours=9))
 TODAY = datetime.now(KST)
 END_DATE = TODAY.strftime('%Y%m%d')
 
-# ============================================================
-# 종목 풀 - 경기민감주 (시총 5천억+, 추후 확장)
-# ============================================================
 CYCLICAL = {
-    # 반도체
     '005930': '삼성전자', '000660': 'SK하이닉스', '042700': '한미반도체',
     '058470': '리노공업', '039030': '이오테크닉스',
-    # 2차전지
     '373220': 'LG에너지솔루션', '006400': '삼성SDI', '051910': 'LG화학',
     '003670': '포스코퓨처엠', '247540': '에코프로비엠', '086520': '에코프로',
-    # 자동차
     '005380': '현대차', '000270': '기아', '012330': '현대모비스',
-    # 조선
     '009540': 'HD한국조선해양', '010140': '삼성중공업', '042660': '한화오션',
-    # 철강/비철
     '005490': 'POSCO홀딩스', '004020': '현대제철', '010130': '고려아연',
     '103140': '풍산',
-    # 화학/정유
     '011170': '롯데케미칼', '009830': '한화솔루션', '011780': '금호석유',
     '096770': 'SK이노베이션', '010950': 'S-Oil',
-    # 건설
     '000720': '현대건설', '006360': 'GS건설', '047040': '대우건설',
-    # 해운/항공
     '011200': 'HMM', '028670': '팬오션', '003490': '대한항공',
-    # 방산
     '012450': '한화에어로스페이스', '047810': '한국항공우주', '079550': 'LIG넥스원',
-    # 풍력/원자력
     '112610': '씨에스윈드', '052690': '한전기술', '051600': '한전KPS',
-    # 중공업
     '034020': '두산에너빌리티',
     '267250': 'HD현대', '329180': 'HD현대중공업',
 }
 
 
-# ============================================================
-# 4차함수 모델
-# ============================================================
 def quartic(x, k, a, b, c):
     return k * (x - a) * (x - b) * (x - c) ** 2
 
@@ -129,7 +104,6 @@ def collect_c_candidates(df, win_sizes, step, recent_cutoff, r2_min=0.60):
 
 def find_aligned_c(daily, weekly, monthly,
                     max_dw_m=6, max_wm_m=12, max_dwm_m=12):
-    """3프레임 시간 일치 c자리 찾기"""
     best = None
     best_score = -np.inf
 
@@ -138,7 +112,6 @@ def find_aligned_c(daily, weekly, monthly,
         b = pd.Timestamp(d2)
         return abs((a - b).days) / 30
 
-    # ★★★★★ (3프레임)
     for d in daily:
         for w in weekly:
             for m in monthly:
@@ -155,7 +128,6 @@ def find_aligned_c(daily, weekly, monthly,
     if best:
         return best
 
-    # ★★★★ (2프레임)
     pairs = [
         ('일+주', daily, weekly, max_dw_m, 'daily', 'weekly'),
         ('주+월', weekly, monthly, max_wm_m, 'weekly', 'monthly'),
@@ -175,7 +147,6 @@ def find_aligned_c(daily, weekly, monthly,
     if best:
         return best
 
-    # ★★★ (1프레임)
     all_singles = []
     for d in daily:
         all_singles.append(('일', 'daily', d))
@@ -191,7 +162,6 @@ def find_aligned_c(daily, weekly, monthly,
 
 
 def determine_phase(alignment):
-    """phase 결정: exploded / early_rise / accumulating"""
     ratios = []
     for k in ['daily', 'weekly', 'monthly']:
         if k in alignment and alignment[k]:
@@ -218,22 +188,43 @@ def determine_verdict(stars, phase):
 
 
 # ============================================================
-# 한 종목 분석
+# pykrx 일봉 + pandas resample (★ 버그 수정 핵심)
 # ============================================================
+def get_daily(code, years):
+    start = (TODAY - timedelta(days=years * 365)).strftime('%Y%m%d')
+    df = stock.get_market_ohlcv(start, END_DATE, code)
+    if df is None or len(df) == 0:
+        return None
+    df.index = pd.to_datetime(df.index)
+    return df
+
+
+def resample_to_weekly(df_daily):
+    if df_daily is None or len(df_daily) == 0:
+        return None
+    return df_daily.resample('W-FRI').agg({
+        '시가': 'first', '고가': 'max', '저가': 'min',
+        '종가': 'last', '거래량': 'sum',
+    }).dropna()
+
+
+def resample_to_monthly(df_daily):
+    if df_daily is None or len(df_daily) == 0:
+        return None
+    return df_daily.resample('ME').agg({
+        '시가': 'first', '고가': 'max', '저가': 'min',
+        '종가': 'last', '거래량': 'sum',
+    }).dropna()
+
+
 def analyze_stock(code, name):
-    # 일봉 — 5년
-    start_d = (TODAY - timedelta(days=5 * 365)).strftime('%Y%m%d')
-    df_d = stock.get_market_ohlcv(start_d, END_DATE, code)
-    if df_d is None or len(df_d) < 250:
+    df_d_5y = get_daily(code, 5)
+    if df_d_5y is None or len(df_d_5y) < 250:
         return None
 
-    # 주봉 — 8년
-    start_w = (TODAY - timedelta(days=8 * 365)).strftime('%Y%m%d')
-    df_w = stock.get_market_ohlcv(start_w, END_DATE, code, freq='w')
-    
-    # 월봉 — 20년
-    start_m = (TODAY - timedelta(days=20 * 365)).strftime('%Y%m%d')
-    df_m = stock.get_market_ohlcv(start_m, END_DATE, code, freq='m')
+    df_d_long = get_daily(code, 15)
+    df_w = resample_to_weekly(df_d_long) if df_d_long is not None else None
+    df_m = resample_to_monthly(df_d_long) if df_d_long is not None else None
 
     if df_w is None or df_m is None or len(df_w) < 100 or len(df_m) < 60:
         return None
@@ -242,7 +233,7 @@ def analyze_stock(code, name):
     cutoff_w = pd.Timestamp((TODAY - timedelta(days=4 * 365)).date())
     cutoff_m = pd.Timestamp((TODAY - timedelta(days=6 * 365)).date())
 
-    daily_c = collect_c_candidates(df_d, [800, 1200], 100, cutoff_d, r2_min=0.60)
+    daily_c = collect_c_candidates(df_d_5y, [800, 1200], 100, cutoff_d, r2_min=0.60)
     weekly_c = collect_c_candidates(df_w, [200, 300], 15, cutoff_w, r2_min=0.60)
     monthly_c = collect_c_candidates(df_m, [84, 120], 12, cutoff_m, r2_min=0.60)
 
@@ -257,13 +248,10 @@ def analyze_stock(code, name):
     verdict = determine_verdict(alignment['stars'], phase)
 
     return {
-        'code': code,
-        'name': name,
-        'stars': alignment['stars'],
-        'type': alignment['type'],
+        'code': code, 'name': name,
+        'stars': alignment['stars'], 'type': alignment['type'],
         'time_diff_months': alignment.get('time_diff_months'),
-        'phase': phase,
-        'verdict': verdict,
+        'phase': phase, 'verdict': verdict,
         'frames': {
             'daily': alignment.get('daily'),
             'weekly': alignment.get('weekly'),
@@ -273,11 +261,8 @@ def analyze_stock(code, name):
     }
 
 
-# ============================================================
-# 메인
-# ============================================================
 def main():
-    print(f'[SIGVIEW 잭팟 시즌2] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST 스캔 시작')
+    print(f'[SIGVIEW 잭팟 시즌2 v1.1] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST 스캔 시작')
     print(f'경기민감주 풀: {len(CYCLICAL)}개')
 
     results = []
@@ -292,29 +277,23 @@ def main():
         except Exception as e:
             print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {e}')
 
-    # 정렬: stars 내림차순, score 내림차순
     results.sort(key=lambda x: (-x['stars'], -x['_score']))
     for i, r in enumerate(results, 1):
         r['rank'] = i
         r.pop('_score', None)
 
-    # JSON 출력
     output = {
-        'version': '2.0',
-        'season': 2,
+        'version': '2.0', 'season': 2,
         'generated_at': TODAY.isoformat(),
         'scan_universe': 'cyclical_korea',
-        'n_scanned': len(CYCLICAL),
-        'n_matched': len(results),
+        'n_scanned': len(CYCLICAL), 'n_matched': len(results),
         'algorithm': {
             'name': 'MFAS v2',
             'description': 'Multi-Frame Alignment Score - 4차함수 c자리 다중 프레임 시간 일치 검출',
             'frames': ['daily', 'weekly', 'monthly'],
             'r2_min': 0.60,
             'time_constraints_months': {
-                'daily_weekly_max': 6,
-                'weekly_monthly_max': 12,
-                'all_three_max': 12,
+                'daily_weekly_max': 6, 'weekly_monthly_max': 12, 'all_three_max': 12,
             },
             'c_position_range': [0.65, 0.95],
         },
@@ -331,9 +310,6 @@ def main():
         json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f'\n완료: {len(results)}개 매칭, jackpot-v2.json 저장됨')
-    print(f'  ★★★★★: {output["summary"]["five_stars"]}')
-    print(f'  ★★★★:   {output["summary"]["four_stars"]}')
-    print(f'  ★★★:    {output["summary"]["three_stars"]}')
 
 
 if __name__ == '__main__':
