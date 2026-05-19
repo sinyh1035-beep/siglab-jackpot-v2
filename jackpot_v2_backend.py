@@ -1,17 +1,21 @@
 """
 jackpot_v2_backend.py
 ==========================================
-SIGVIEW 잭팟 도구 시즌2 v1.4
-- 외인 함수 제거 (KRX 인증 차단 회피)
-- Smart Money Score (OBV/AD/CMF) ★ NEW
-  : 100년 검증된 "스마트머니" 추적 지표로 외인 매집 대체
-- 차트 데이터 포함 (JSON에 일/주/월 OHLC 압축 저장)
-- numpy 직렬화 안전 (to_native)
+SIGVIEW 잭팟 도구 시즌2 v1.5
+- NAVER 모바일 API에서 외인 데이터 받기 (KRX 인증 불필요)
+- foreign-history.json에 누적 저장 (자체 외인 DB 구축)
+- 외인 보유율 추세 분석 (진짜 형 본질)
+- 4차함수 c자리 검출 (기존)
+- 보조지표(OBV/AD/CMF) 제거 - 형 본질만
+- 차트 데이터 포함 (모달용)
 """
 import json
+import os
 import warnings
+import time
 from datetime import datetime, timezone, timedelta
 
+import requests
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
@@ -23,6 +27,16 @@ warnings.filterwarnings('ignore')
 KST = timezone(timedelta(hours=9))
 TODAY = datetime.now(KST)
 END_DATE = TODAY.strftime('%Y%m%d')
+TODAY_STR = TODAY.strftime('%Y-%m-%d')
+
+NAVER_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/json,text/plain,*/*',
+    'Accept-Language': 'ko-KR,ko;q=0.9',
+    'Referer': 'https://m.stock.naver.com/',
+}
+
+FOREIGN_HISTORY_FILE = 'foreign-history.json'
 
 CYCLICAL = {
     '005930': '삼성전자', '000660': 'SK하이닉스', '042700': '한미반도체',
@@ -53,6 +67,9 @@ CHINA_DIRECT = {
 }
 
 
+# ============================================================
+# 유틸: numpy → native (JSON 직렬화)
+# ============================================================
 def to_native(obj):
     if isinstance(obj, dict):
         return {k: to_native(v) for k, v in obj.items()}
@@ -74,6 +91,187 @@ def to_native(obj):
     return obj
 
 
+# ============================================================
+# ★ v1.5 핵심 - NAVER 외인 데이터 + 누적 캐싱
+# ============================================================
+def fetch_naver_foreign(code, retry=2):
+    """NAVER 모바일 API에서 외인/기관 데이터 받기"""
+    url = f'https://m.stock.naver.com/api/stock/{code}/integration'
+    for attempt in range(retry):
+        try:
+            r = requests.get(url, headers=NAVER_HEADERS, timeout=10)
+            if r.status_code == 200:
+                data = r.json()
+                deals = data.get('dealTrendInfos', [])
+                if not deals:
+                    return []
+                results = []
+                for d in deals:
+                    bizdate = d.get('bizdate', '')
+                    if not bizdate or len(bizdate) != 8:
+                        continue
+                    # YYYYMMDD → YYYY-MM-DD
+                    date_str = f'{bizdate[:4]}-{bizdate[4:6]}-{bizdate[6:8]}'
+                    
+                    # 보유율 파싱 ("31.42%" → 31.42)
+                    ratio_str = str(d.get('foreignerHoldRatio', '')).replace('%', '').replace(',', '').strip()
+                    try:
+                        ratio = float(ratio_str) if ratio_str else None
+                    except ValueError:
+                        ratio = None
+                    
+                    # 순매수 파싱 ("+37,111" → 37111)
+                    buy_str = str(d.get('foreignerPureBuyQuant', '')).replace(',', '').replace('+', '').strip()
+                    try:
+                        buy = int(buy_str) if buy_str and buy_str != '-' else 0
+                    except ValueError:
+                        buy = 0
+                    
+                    # 기관 순매수
+                    org_str = str(d.get('organPureBuyQuant', '')).replace(',', '').replace('+', '').strip()
+                    try:
+                        organ = int(org_str) if org_str and org_str != '-' else 0
+                    except ValueError:
+                        organ = 0
+                    
+                    results.append({
+                        'date': date_str,
+                        'foreign_ratio': ratio,
+                        'foreign_net_buy': buy,
+                        'organ_net_buy': organ,
+                    })
+                return results
+        except Exception as e:
+            if attempt < retry - 1:
+                time.sleep(0.5)
+                continue
+            else:
+                return None
+    return None
+
+
+def load_foreign_history():
+    """기존 누적 외인 히스토리 로드"""
+    if not os.path.exists(FOREIGN_HISTORY_FILE):
+        return {}
+    try:
+        with open(FOREIGN_HISTORY_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f'history load 실패: {e}')
+        return {}
+
+
+def save_foreign_history(history):
+    with open(FOREIGN_HISTORY_FILE, 'w', encoding='utf-8') as f:
+        json.dump(history, f, ensure_ascii=False, indent=2)
+
+
+def update_foreign_history(history, code, new_data):
+    """누적 추가 - 기존 날짜 데이터는 덮어쓰지 않음 (역사 보존)"""
+    if code not in history:
+        history[code] = {}
+    existing_dates = set(history[code].keys())
+    added = 0
+    for entry in new_data:
+        date = entry['date']
+        if date not in existing_dates:
+            history[code][date] = {
+                'fr': entry.get('foreign_ratio'),
+                'fb': entry.get('foreign_net_buy'),
+                'ob': entry.get('organ_net_buy'),
+            }
+            added += 1
+    return added
+
+
+def analyze_foreign_from_history(history, code):
+    """누적된 외인 데이터로 추세 분석"""
+    if code not in history or not history[code]:
+        return {
+            'trend': 'no_data',
+            'latest_ratio': None,
+            'change_30d': None,
+            'change_90d': None,
+            'slope_per_month': 0.0,
+            'data_points': 0,
+        }
+    
+    series = []
+    for date, vals in history[code].items():
+        fr = vals.get('fr')
+        if fr is not None:
+            series.append((date, fr))
+    series.sort(key=lambda x: x[0])
+    
+    if not series:
+        return {
+            'trend': 'no_data',
+            'latest_ratio': None,
+            'change_30d': None,
+            'change_90d': None,
+            'slope_per_month': 0.0,
+            'data_points': 0,
+        }
+    
+    latest_ratio = series[-1][1]
+    n = len(series)
+    
+    # 30일 전 비교
+    change_30d = None
+    if n >= 2:
+        cutoff_30 = (TODAY - timedelta(days=30)).strftime('%Y-%m-%d')
+        old_30 = [s for s in series if s[0] <= cutoff_30]
+        if old_30:
+            change_30d = round(latest_ratio - old_30[-1][1], 2)
+    
+    # 90일 전 비교
+    change_90d = None
+    if n >= 2:
+        cutoff_90 = (TODAY - timedelta(days=90)).strftime('%Y-%m-%d')
+        old_90 = [s for s in series if s[0] <= cutoff_90]
+        if old_90:
+            change_90d = round(latest_ratio - old_90[-1][1], 2)
+    
+    # 선형 회귀 기울기 (가용한 데이터 전체)
+    slope_per_month = 0.0
+    if n >= 5:
+        try:
+            x = np.arange(n, dtype=float)
+            y = np.array([s[1] for s in series])
+            slope, _, _, _, _ = linregress(x, y)
+            # 데이터가 일별 또는 매일 안 모이는 경우 보정 어려움, 일단 그대로
+            slope_per_month = float(slope * 20)  # 20거래일 = 약 1개월
+        except Exception:
+            slope_per_month = 0.0
+    
+    # 추세 분류 (데이터 충분할 때만)
+    if n < 10:
+        trend = 'gathering_data'
+    elif slope_per_month > 0.1:
+        trend = 'accumulating'
+    elif slope_per_month > 0.03:
+        trend = 'slight_up'
+    elif slope_per_month < -0.1:
+        trend = 'distributing'
+    elif slope_per_month < -0.03:
+        trend = 'slight_down'
+    else:
+        trend = 'flat'
+    
+    return {
+        'trend': trend,
+        'latest_ratio': round(latest_ratio, 2),
+        'change_30d': change_30d,
+        'change_90d': change_90d,
+        'slope_per_month': round(slope_per_month, 3),
+        'data_points': n,
+    }
+
+
+# ============================================================
+# 4차함수 (기존)
+# ============================================================
 def quartic(x, k, a, b, c):
     return k * (x - a) * (x - b) * (x - c) ** 2
 
@@ -130,15 +328,8 @@ def collect_c_candidates(df, win_sizes, step, recent_cutoff, r2_min=0.55):
                 'r2': round(float(r2), 3),
                 'c_pos': round(float(c_f), 3),
                 'win_size': int(win_size),
-                'start_i': int(start_i),
                 'latest_price': latest_price,
                 'ratio_pct': round((latest_price / c_price - 1) * 100, 1) if c_price > 0 else 0.0,
-                # 차트용 — 적합 파라미터
-                'fit_k': float(k_f),
-                'fit_a': round(float(a_f), 4),
-                'fit_b': round(float(b_f), 4),
-                'fit_c': round(float(c_f), 4),
-                'g_base': float(g_base),
             })
     return cands
 
@@ -199,97 +390,6 @@ def find_aligned_c(daily, weekly, monthly,
     return None
 
 
-# ============================================================
-# ★ Smart Money Score - 외인 매집 대체 지표
-# ============================================================
-def calc_smart_money(df_daily, lookback_days=250):
-    """OBV + A/D + CMF 결합으로 스마트머니 매집 추적"""
-    if df_daily is None or len(df_daily) < 50:
-        return {
-            'obv_slope_normalized': 0.0, 'cmf_20': 0.0,
-            'ad_slope_normalized': 0.0, 'smart_money_score': 0,
-            'trend': 'unknown',
-        }
-    
-    recent = df_daily.tail(lookback_days).copy()
-    
-    # OBV
-    close = recent['종가'].values.astype(float)
-    vol = recent['거래량'].values.astype(float)
-    high = recent['고가'].values.astype(float)
-    low = recent['저가'].values.astype(float)
-    
-    obv = np.zeros(len(close))
-    for i in range(1, len(close)):
-        if close[i] > close[i-1]:
-            obv[i] = obv[i-1] + vol[i]
-        elif close[i] < close[i-1]:
-            obv[i] = obv[i-1] - vol[i]
-        else:
-            obv[i] = obv[i-1]
-    
-    # OBV 정규화 기울기 (선형회귀)
-    avg_vol = np.mean(vol)
-    if avg_vol > 0 and len(obv) > 10:
-        slope_obv, _, _, _, _ = linregress(np.arange(len(obv)), obv)
-        obv_slope_norm = slope_obv / avg_vol
-    else:
-        obv_slope_norm = 0.0
-    
-    # A/D Line (Accumulation/Distribution)
-    hl_range = high - low
-    hl_range = np.where(hl_range == 0, 1, hl_range)  # 0 방지
-    mfm = ((close - low) - (high - close)) / hl_range
-    mfv = mfm * vol
-    ad = np.cumsum(mfv)
-    
-    # A/D 정규화 기울기
-    if avg_vol > 0 and len(ad) > 10:
-        slope_ad, _, _, _, _ = linregress(np.arange(len(ad)), ad)
-        ad_slope_norm = slope_ad / avg_vol
-    else:
-        ad_slope_norm = 0.0
-    
-    # CMF (20일)
-    if len(mfv) >= 20:
-        mfv_series = pd.Series(mfv)
-        vol_series = pd.Series(vol)
-        cmf_series = mfv_series.rolling(20).sum() / vol_series.rolling(20).sum()
-        cmf_20 = float(cmf_series.iloc[-30:].mean())  # 최근 30일 평균
-        if not np.isfinite(cmf_20):
-            cmf_20 = 0.0
-    else:
-        cmf_20 = 0.0
-    
-    # 종합 점수 (-100 ~ +100)
-    smart_score = (
-        obv_slope_norm * 30 +  # OBV 기울기 가중치
-        ad_slope_norm * 30 +   # A/D 기울기 가중치
-        cmf_20 * 200            # CMF는 절대값 작음 (-1~+1), 가중치 크게
-    )
-    smart_score = max(-100, min(100, smart_score))
-    
-    # 추세 분류
-    if smart_score > 15:
-        trend = 'accumulating'  # 강한 매집
-    elif smart_score > 5:
-        trend = 'slight_up'
-    elif smart_score < -15:
-        trend = 'distributing'
-    elif smart_score < -5:
-        trend = 'slight_down'
-    else:
-        trend = 'flat'
-    
-    return {
-        'obv_slope_normalized': round(float(obv_slope_norm), 4),
-        'cmf_20': round(float(cmf_20), 3),
-        'ad_slope_normalized': round(float(ad_slope_norm), 4),
-        'smart_money_score': round(float(smart_score), 1),
-        'trend': trend,
-    }
-
-
 def analyze_ma20_crossings(df_daily, lookback_days=250):
     if df_daily is None or len(df_daily) < 30:
         return {'count': 0, 'is_stealth': False, 'price_range_pct': 0.0}
@@ -309,51 +409,51 @@ def analyze_ma20_crossings(df_daily, lookback_days=250):
     }
 
 
-def analyze_volume_asymmetry(df_daily, lookback_days=250):
-    if df_daily is None or len(df_daily) < 30:
-        return {'ratio': 0.0, 'is_accumulation': False}
-    recent = df_daily.tail(lookback_days).copy()
-    recent['change'] = recent['종가'].diff()
-    up_days = recent[recent['change'] > 0]
-    down_days = recent[recent['change'] < 0]
-    if len(up_days) < 5 or len(down_days) < 5:
-        return {'ratio': 0.0, 'is_accumulation': False}
-    avg_vol_down = float(down_days['거래량'].mean())
-    avg_vol_up = float(up_days['거래량'].mean())
-    if avg_vol_up == 0:
-        return {'ratio': 0.0, 'is_accumulation': False}
-    ratio = avg_vol_down / avg_vol_up
-    is_accumulation = bool(ratio >= 1.0)
-    return {
-        'ratio': round(float(ratio), 2),
-        'is_accumulation': is_accumulation,
-    }
-
-
-def determine_phase_v14(ratio_pct, ma20_stealth, vol_accum, sm_trend):
-    """v1.4 - Smart Money 추세 사용"""
-    if (-15 <= ratio_pct <= 15) and ma20_stealth and sm_trend in ('accumulating', 'slight_up'):
+# ============================================================
+# Phase v1.5 - 형 본질만 (외인 추세 + 4차함수 + 20일선)
+# ============================================================
+def determine_phase_v15(ratio_pct, ma20_stealth, foreign_trend):
+    """
+    핵심: 외인 보유율이 정말 늘고 있는가 + 가격이 횡보중인가
+    """
+    # 외인 데이터 충분 + 외인 매집중 + c자리 ±15% + 20일선 횡단
+    if (-15 <= ratio_pct <= 15) and ma20_stealth and foreign_trend in ('accumulating', 'slight_up'):
         return 'stealth_accumulation'
-    if (-15 <= ratio_pct <= 15) and sm_trend in ('accumulating', 'slight_up'):
+    
+    # 외인 매집중 + 가격 횡보 (20일선 약함)
+    if (-15 <= ratio_pct <= 15) and foreign_trend in ('accumulating', 'slight_up'):
         return 'quiet_accumulation'
-    if 10 < ratio_pct <= 30 and sm_trend in ('accumulating', 'slight_up', 'flat'):
+    
+    # 외인 데이터 부족 + c±15% + 20일선 횡단 (조건부 매집 추정)
+    if (-15 <= ratio_pct <= 15) and ma20_stealth and foreign_trend in ('gathering_data', 'no_data'):
+        return 'likely_accumulation'  # 데이터 누적되면 확실해질 종목
+    
+    # 막 깨고 나오는 중
+    if 10 < ratio_pct <= 30 and foreign_trend in ('accumulating', 'slight_up', 'flat', 'gathering_data'):
         return 'early_breakout'
+    
     if 30 < ratio_pct <= 60:
         return 'in_progress'
+    
     if ratio_pct > 60:
         return 'already_run'
-    if sm_trend == 'distributing':
+    
+    if foreign_trend == 'distributing':
         return 'risky'
+    
     if ratio_pct < -15:
         return 'failed'
+    
     return 'neutral'
 
 
-def determine_verdict_v14(stars, phase):
+def determine_verdict_v15(stars, phase):
     if phase == 'stealth_accumulation':
-        return '🎯 스마트머니 매집중'
+        return '🎯 외인 매집중 (확정)'
     if phase == 'quiet_accumulation':
-        return '🐢 조용한 매집중'
+        return '🐢 외인 조용한 매집'
+    if phase == 'likely_accumulation':
+        return '🔍 매집 추정 (데이터 누적중)'
     if phase == 'early_breakout':
         return '🌱 막 깨고 나옴'
     if phase == 'in_progress':
@@ -361,31 +461,52 @@ def determine_verdict_v14(stars, phase):
     if phase == 'already_run':
         return '🔥 이미 폭발 (검증)'
     if phase == 'risky':
-        return '⚠️ 스마트머니 매도중'
+        return '⚠️ 외인 매도중'
     if phase == 'failed':
         return '❌ 약함'
     return f'★{stars} 단독'
 
 
-def calc_accumulation_score(stars, phase, ma20_data, vol_data, sm_data, is_china):
+def calc_score_v15(stars, phase, ma20_data, foreign_data, is_china):
     score = stars * 10
     phase_score = {
-        'stealth_accumulation': 30, 'quiet_accumulation': 22,
-        'early_breakout': 15, 'in_progress': 5, 'already_run': -5,
-        'risky': -10, 'failed': -15, 'neutral': 0,
+        'stealth_accumulation': 35,
+        'quiet_accumulation': 25,
+        'likely_accumulation': 15,  # 추정이라 보너스 약하게
+        'early_breakout': 15,
+        'in_progress': 5,
+        'already_run': -5,
+        'risky': -15,
+        'failed': -20,
+        'neutral': 0,
     }
     score += phase_score.get(phase, 0)
-    # Smart Money 가중치 (smart_money_score 자체가 -100~100이므로 /5)
-    score += sm_data['smart_money_score'] / 5
+    
+    # 외인 추세 가중치
+    ft = foreign_data['trend']
+    if ft == 'accumulating':
+        score += 20
+    elif ft == 'slight_up':
+        score += 10
+    elif ft == 'distributing':
+        score -= 15
+    elif ft == 'slight_down':
+        score -= 5
+    
+    # 20일선 매매 스텔스
     if ma20_data['is_stealth']:
-        score += 8
-    if vol_data['is_accumulation']:
-        score += 5
+        score += 10
+    
+    # 중국 수혜
     if is_china:
         score += 5
+    
     return int(max(0, min(100, score)))
 
 
+# ============================================================
+# 데이터 수집
+# ============================================================
 def get_daily(code, years):
     start = (TODAY - timedelta(days=years * 365)).strftime('%Y%m%d')
     df = stock.get_market_ohlcv(start, END_DATE, code)
@@ -414,19 +535,18 @@ def resample_to_monthly(df_daily):
 
 
 def extract_chart_data(df, max_points=300):
-    """차트용 데이터 추출 (날짜+종가만, 압축)"""
     if df is None or len(df) == 0:
         return None
-    # 너무 많은 점은 다운샘플
     if len(df) > max_points:
         step = len(df) // max_points
         df = df.iloc[::step]
-    dates = [d.strftime('%Y-%m-%d') for d in df.index]
-    closes = [round(float(c), 1) for c in df['종가'].values]
-    return {'dates': dates, 'closes': closes}
+    return {
+        'dates': [d.strftime('%Y-%m-%d') for d in df.index],
+        'closes': [round(float(c), 1) for c in df['종가'].values],
+    }
 
 
-def analyze_stock(code, name):
+def analyze_stock(code, name, foreign_history):
     df_d_5y = get_daily(code, 5)
     if df_d_5y is None or len(df_d_5y) < 250:
         return None
@@ -454,8 +574,7 @@ def analyze_stock(code, name):
         return None
 
     ma20_data = analyze_ma20_crossings(df_d_5y)
-    vol_data = analyze_volume_asymmetry(df_d_5y)
-    sm_data = calc_smart_money(df_d_5y)
+    foreign_data = analyze_foreign_from_history(foreign_history, code)
     
     ratios = []
     for k in ['daily', 'weekly', 'monthly']:
@@ -463,14 +582,11 @@ def analyze_stock(code, name):
             ratios.append(alignment[k]['ratio_pct'])
     avg_ratio = float(np.mean(ratios)) if ratios else 0.0
     
-    phase = determine_phase_v14(avg_ratio, ma20_data['is_stealth'],
-                                 vol_data['is_accumulation'], sm_data['trend'])
-    verdict = determine_verdict_v14(alignment['stars'], phase)
+    phase = determine_phase_v15(avg_ratio, ma20_data['is_stealth'], foreign_data['trend'])
+    verdict = determine_verdict_v15(alignment['stars'], phase)
     is_china = code in CHINA_DIRECT
-    accum_score = calc_accumulation_score(alignment['stars'], phase,
-                                           ma20_data, vol_data, sm_data, is_china)
+    accum_score = calc_score_v15(alignment['stars'], phase, ma20_data, foreign_data, is_china)
 
-    # 차트 데이터 (3프레임)
     chart_data = {
         'daily': extract_chart_data(df_d_5y, max_points=300),
         'weekly': extract_chart_data(df_w, max_points=300),
@@ -487,16 +603,15 @@ def analyze_stock(code, name):
         'is_china_play': bool(is_china),
         'avg_ratio_pct': round(avg_ratio, 1),
         'signals': {
+            'foreign_trend': foreign_data['trend'],
+            'foreign_latest_ratio': foreign_data['latest_ratio'],
+            'foreign_change_30d': foreign_data['change_30d'],
+            'foreign_change_90d': foreign_data['change_90d'],
+            'foreign_slope_per_month': foreign_data['slope_per_month'],
+            'foreign_data_points': foreign_data['data_points'],
             'ma20_crossings': ma20_data['count'],
             'ma20_stealth': bool(ma20_data['is_stealth']),
             'price_range_pct': ma20_data['price_range_pct'],
-            'volume_down_up_ratio': vol_data['ratio'],
-            'volume_accumulation': bool(vol_data['is_accumulation']),
-            'smart_money_score': sm_data['smart_money_score'],
-            'smart_money_trend': sm_data['trend'],
-            'obv_slope': sm_data['obv_slope_normalized'],
-            'cmf_20': sm_data['cmf_20'],
-            'ad_slope': sm_data['ad_slope_normalized'],
         },
         'frames': {
             'daily': alignment.get('daily'),
@@ -507,46 +622,91 @@ def analyze_stock(code, name):
     }
 
 
+# ============================================================
+# 메인
+# ============================================================
 def main():
-    print(f'[SIGVIEW 잭팟 시즌2 v1.4] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
+    print(f'[SIGVIEW 잭팟 시즌2 v1.5] {TODAY.strftime("%Y-%m-%d %H:%M:%S")} KST')
     print(f'경기민감주 풀: {len(CYCLICAL)}개')
-    print(f'Smart Money Score (OBV+AD+CMF) + 차트 데이터 포함')
-
+    print(f'외인 데이터: NAVER 모바일 API + 누적 캐싱 ({FOREIGN_HISTORY_FILE})')
+    print()
+    
+    # Step 1: 누적 외인 히스토리 로드
+    foreign_history = load_foreign_history()
+    print(f'외인 히스토리 로드: {len(foreign_history)}개 종목 기록 있음')
+    
+    # Step 2: NAVER에서 최신 외인 데이터 받기 (모든 종목)
+    print('\n[Step 1] NAVER에서 최신 외인 데이터 수집')
+    print('-' * 60)
+    fetch_success = 0
+    total_new_records = 0
+    for i, (code, name) in enumerate(CYCLICAL.items(), 1):
+        new_data = fetch_naver_foreign(code)
+        if new_data:
+            added = update_foreign_history(foreign_history, code, new_data)
+            total_new_records += added
+            fetch_success += 1
+            if i <= 3 or added > 0:
+                print(f'  [{i}/{len(CYCLICAL)}] {name}: {len(new_data)}일치 받음, {added}일 신규 누적')
+        else:
+            print(f'  [{i}/{len(CYCLICAL)}] {name}: NAVER 실패')
+        time.sleep(0.1)  # rate limit
+    
+    save_foreign_history(foreign_history)
+    print(f'\nNAVER 성공: {fetch_success}/{len(CYCLICAL)}, 신규 누적: {total_new_records}건')
+    print(f'외인 히스토리 저장 완료')
+    
+    # Step 3: 종목 분석
+    print('\n[Step 2] 종목 분석 (4차함수 + 외인 추세)')
+    print('-' * 60)
     results = []
     for i, (code, name) in enumerate(CYCLICAL.items(), 1):
         try:
-            r = analyze_stock(code, name)
+            r = analyze_stock(code, name, foreign_history)
             if r:
                 results.append(r)
                 china_tag = ' 🇨🇳' if r['is_china_play'] else ''
-                sm = r['signals']
+                fs = r['signals']
+                fi_info = f'{fs["foreign_trend"]}'
+                if fs['foreign_latest_ratio'] is not None:
+                    fi_info += f' {fs["foreign_latest_ratio"]:.1f}%'
+                if fs['foreign_change_30d'] is not None:
+                    fi_info += f' (30d: {fs["foreign_change_30d"]:+.2f}%p)'
+                fi_info += f' [n={fs["foreign_data_points"]}]'
                 print(f'  [{i}/{len(CYCLICAL)}] {name}{china_tag} ★{r["stars"]} '
-                      f'점수{r["accumulation_score"]} {r["verdict"]} '
-                      f'(SM:{sm["smart_money_score"]:+.0f}/{sm["smart_money_trend"]})')
+                      f'점수{r["accumulation_score"]} {r["verdict"]}')
+                print(f'           외인: {fi_info}')
             else:
                 print(f'  [{i}/{len(CYCLICAL)}] {name} - 매칭 없음')
         except Exception as e:
-            print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {str(e)[:80]}')
+            print(f'  [{i}/{len(CYCLICAL)}] {name} - 에러: {str(e)[:100]}')
 
     results.sort(key=lambda x: -x['accumulation_score'])
     for i, r in enumerate(results, 1):
         r['rank'] = i
 
     output = {
-        'version': '2.0', 'season': 2, 'algo_version': '1.4',
+        'version': '2.0', 'season': 2, 'algo_version': '1.5',
         'generated_at': TODAY.isoformat(),
         'scan_universe': 'cyclical_korea',
         'n_scanned': len(CYCLICAL), 'n_matched': len(results),
+        'foreign_data': {
+            'source': 'NAVER mobile API (m.stock.naver.com)',
+            'storage': FOREIGN_HISTORY_FILE,
+            'total_codes_tracked': len(foreign_history),
+            'fetch_success_today': fetch_success,
+            'new_records_today': total_new_records,
+        },
         'algorithm': {
-            'name': 'MFAS v1.4 + Smart Money Score',
-            'description': '4차함수 c자리 + Smart Money(OBV/AD/CMF) + 20일선 + 거래량. KRX 인증 없이 외인 매집 추정.',
+            'name': 'MFAS v1.5',
+            'description': '4차함수 c자리 + NAVER 외인 보유율 추세 + 20일선 횡단. 보조지표 없음, 형 본질만.',
             'phases': {
-                'stealth_accumulation': '🎯 스마트머니 매집중 (최우선)',
-                'quiet_accumulation': '🐢 조용한 매집중',
+                'stealth_accumulation': '🎯 외인 매집 확정',
+                'quiet_accumulation': '🐢 외인 조용한 매집',
+                'likely_accumulation': '🔍 매집 추정 (데이터 부족)',
                 'early_breakout': '🌱 막 깨고 나옴',
-                'in_progress': '⚪ 진행 중',
-                'already_run': '🔥 이미 폭발',
-                'risky': '⚠️ 매도중',
+                'already_run': '🔥 이미 폭발 (검증)',
+                'risky': '⚠️ 외인 매도중',
             },
         },
         'summary': {
@@ -555,11 +715,12 @@ def main():
             'three_stars': sum(1 for r in results if r['stars'] == 3),
             'stealth_accumulation': sum(1 for r in results if r['phase'] == 'stealth_accumulation'),
             'quiet_accumulation': sum(1 for r in results if r['phase'] == 'quiet_accumulation'),
+            'likely_accumulation': sum(1 for r in results if r['phase'] == 'likely_accumulation'),
             'early_breakout': sum(1 for r in results if r['phase'] == 'early_breakout'),
             'china_plays': sum(1 for r in results if r['is_china_play']),
         },
         'stocks': results,
-        'disclaimer': '본 데이터는 4차함수 패턴 매칭 + Smart Money 매집 분석 결과이며 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다.',
+        'disclaimer': '본 데이터는 4차함수 패턴 매칭 + NAVER 외인 보유율 추세 분석 결과이며 투자 권유가 아닙니다. 모든 투자 판단과 책임은 본인에게 있습니다.',
     }
 
     output = to_native(output)
@@ -568,10 +729,11 @@ def main():
         json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f'\n완료: {len(results)}개 매칭')
-    print(f'  🎯 stealth_accumulation: {output["summary"]["stealth_accumulation"]}')
-    print(f'  🐢 quiet_accumulation:   {output["summary"]["quiet_accumulation"]}')
-    print(f'  🌱 early_breakout:       {output["summary"]["early_breakout"]}')
-    print(f'  🇨🇳 China plays:          {output["summary"]["china_plays"]}')
+    print(f'  🎯 외인매집 확정:   {output["summary"]["stealth_accumulation"]}')
+    print(f'  🐢 외인 조용매집:   {output["summary"]["quiet_accumulation"]}')
+    print(f'  🔍 매집 추정:       {output["summary"]["likely_accumulation"]}')
+    print(f'  🌱 막 깨고 나옴:    {output["summary"]["early_breakout"]}')
+    print(f'  🇨🇳 중국 플레이:     {output["summary"]["china_plays"]}')
 
 
 if __name__ == '__main__':
