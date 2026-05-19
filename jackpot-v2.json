@@ -1,29 +1,21 @@
 {
   "version": "2.0",
   "season": 2,
-  "algo_version": "1.6",
-  "generated_at": "2026-05-19T14:35:24.040272+09:00",
+  "algo_version": "1.7",
+  "generated_at": "2026-05-19T15:05:24.960802+09:00",
   "scan_universe": "cyclical_korea",
   "n_scanned": 41,
   "n_matched": 33,
   "foreign_data": {
-    "source": "NAVER mobile API (m.stock.naver.com)",
+    "source": "NAVER mobile API",
     "storage": "foreign-history.json",
     "total_codes_tracked": 41,
     "fetch_success_today": 41,
     "new_records_today": 205
   },
   "algorithm": {
-    "name": "MFAS v1.6",
-    "description": "4차함수 c자리 + NAVER 외인 + 차트 시각화 (20일선/채널/52주)",
-    "chart_layers": [
-      "close",
-      "ma20",
-      "channel",
-      "52w_hi_lo",
-      "fit_curve",
-      "a_b_c_markers"
-    ]
+    "name": "MFAS v1.7",
+    "description": "4차함수 c자리 (내부) + NAVER 외인 + 강화 차트 (4프레임, 줌/팬, 한글)"
   },
   "summary": {
     "five_stars": 1,
@@ -46,7 +38,7 @@
       "verdict": "🌱 막 깨고 나옴",
       "accumulation_score": 60,
       "is_china_play": true,
-      "avg_ratio_pct": 25.2,
+      "avg_ratio_pct": 25.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 7.43,
@@ -67,8 +59,10 @@
           "c_pos": 0.856,
           "win_size": 300,
           "start_i": 270,
-          "latest_price": 19680.0,
-          "ratio_pct": 25.2,
+          "latest_price": 19740.0,
+          "ratio_pct": 25.6,
+          "drawdown_after_c": -4.1,
+          "is_valid_c": true,
           "a_date": "2019-06-07",
           "a_price": 3365.0,
           "a_pos": 0.014,
@@ -1628,10 +1622,10 @@
           ],
           "high_52w": 26250.0,
           "low_52w": 18090.0,
-          "latest_price": 19680.0
+          "latest_price": 19740.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -3237,12 +3231,12 @@
             18673.2,
             18657.0
           ],
-          "high_52w": 43850.0,
-          "low_52w": 13620.0,
-          "latest_price": 19680.0
+          "high_52w": 26250.0,
+          "low_52w": 18660.0,
+          "latest_price": 19740.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -3541,7 +3535,7 @@
             21350.0,
             19570.0,
             20500.0,
-            19680.0
+            19740.0
           ],
           "ma20": [
             null,
@@ -3691,7 +3685,7 @@
             19691.5,
             19760.0,
             19936.5,
-            19994.0
+            19997.0
           ],
           "channel_upper": [
             null,
@@ -3841,7 +3835,7 @@
             21660.7,
             21736.0,
             21930.2,
-            21993.4
+            21996.7
           ],
           "channel_lower": [
             null,
@@ -3991,12 +3985,99 @@
             17722.4,
             17784.0,
             17942.9,
-            17994.6
+            17997.3
+          ],
+          "high_52w": 26250.0,
+          "low_52w": 18660.0,
+          "latest_price": 19740.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            61441.0,
+            26615.0,
+            6030.0,
+            5020.0,
+            3695.0,
+            3550.0,
+            13950.0,
+            26900.0,
+            19550.0,
+            19580.0,
+            17660.0,
+            20500.0,
+            19740.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 84784.0,
           "low_52w": 0.0,
-          "latest_price": 19680.0
+          "latest_price": 19740.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 1
     },
@@ -4010,7 +4091,7 @@
       "verdict": "🔍 매집 추정 (데이터 누적중)",
       "accumulation_score": 60,
       "is_china_play": true,
-      "avg_ratio_pct": 12.7,
+      "avg_ratio_pct": 13.0,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 20.09,
@@ -4031,8 +4112,10 @@
           "c_pos": 0.879,
           "win_size": 200,
           "start_i": 300,
-          "latest_price": 25650.0,
-          "ratio_pct": 12.7,
+          "latest_price": 25700.0,
+          "ratio_pct": 13.0,
+          "drawdown_after_c": -14.9,
+          "is_valid_c": true,
           "a_date": "2020-01-10",
           "a_price": 17701.0,
           "a_pos": 0.026,
@@ -5592,10 +5675,10 @@
           ],
           "high_52w": 29750.0,
           "low_52w": 21000.0,
-          "latest_price": 25650.0
+          "latest_price": 25700.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -7201,12 +7284,12 @@
             21852.0,
             22196.2
           ],
-          "high_52w": 34950.0,
-          "low_52w": 19220.0,
-          "latest_price": 25650.0
+          "high_52w": 29750.0,
+          "low_52w": 21000.0,
+          "latest_price": 25700.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -7505,7 +7588,7 @@
             28100.0,
             23550.0,
             24550.0,
-            25650.0
+            25700.0
           ],
           "ma20": [
             null,
@@ -7655,7 +7738,7 @@
             23125.0,
             23240.0,
             23365.0,
-            23520.0
+            23522.5
           ],
           "channel_upper": [
             null,
@@ -7805,7 +7888,7 @@
             25437.5,
             25564.0,
             25701.5,
-            25872.0
+            25874.8
           ],
           "channel_lower": [
             null,
@@ -7955,12 +8038,99 @@
             20812.5,
             20916.0,
             21028.5,
-            21168.0
+            21170.2
+          ],
+          "high_52w": 29750.0,
+          "low_52w": 21000.0,
+          "latest_price": 25700.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            27478.0,
+            16886.0,
+            16673.0,
+            21949.0,
+            21430.0,
+            18480.0,
+            21091.0,
+            29350.0,
+            22950.0,
+            23900.0,
+            22600.0,
+            22550.0,
+            25700.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 35100.0,
           "low_52w": 8299.0,
-          "latest_price": 25650.0
+          "latest_price": 25700.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 2
     },
@@ -7974,7 +8144,7 @@
       "verdict": "⚪ 진행 중",
       "accumulation_score": 50,
       "is_china_play": true,
-      "avg_ratio_pct": 57.0,
+      "avg_ratio_pct": 57.2,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 31.42,
@@ -7994,8 +8164,10 @@
           "c_pos": 0.917,
           "win_size": 800,
           "start_i": 200,
-          "latest_price": 440000.0,
-          "ratio_pct": 41.7,
+          "latest_price": 440500.0,
+          "ratio_pct": 41.9,
+          "drawdown_after_c": -24.8,
+          "is_valid_c": false,
           "a_date": "2022-05-12",
           "a_price": 273000.0,
           "a_pos": 0.053,
@@ -8015,8 +8187,10 @@
           "c_pos": 0.891,
           "win_size": 200,
           "start_i": 405,
-          "latest_price": 440000.0,
-          "ratio_pct": 72.2,
+          "latest_price": 440500.0,
+          "ratio_pct": 72.4,
+          "drawdown_after_c": -8.6,
+          "is_valid_c": true,
           "a_date": "2022-02-25",
           "a_price": 275500.0,
           "a_pos": 0.058,
@@ -9576,10 +9750,10 @@
           ],
           "high_52w": 542000.0,
           "low_52w": 230000.0,
-          "latest_price": 440000.0
+          "latest_price": 440500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -11185,12 +11359,12 @@
             322042.5,
             339232.5
           ],
-          "high_52w": 764000.0,
-          "low_52w": 211000.0,
-          "latest_price": 440000.0
+          "high_52w": 542000.0,
+          "low_52w": 230000.0,
+          "latest_price": 440500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -11489,7 +11663,7 @@
             413000.0,
             332500.0,
             462000.0,
-            440000.0
+            440500.0
           ],
           "ma20": [
             null,
@@ -11639,7 +11813,7 @@
             304325.0,
             303375.0,
             309475.0,
-            312225.0
+            312250.0
           ],
           "channel_upper": [
             null,
@@ -11789,7 +11963,7 @@
             334757.5,
             333712.5,
             340422.5,
-            343447.5
+            343475.0
           ],
           "channel_lower": [
             null,
@@ -11939,12 +12113,99 @@
             273892.5,
             273037.5,
             278527.5,
-            281002.5
+            281025.0
+          ],
+          "high_52w": 542000.0,
+          "low_52w": 240500.0,
+          "latest_price": 440500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            275500.0,
+            166500.0,
+            257500.0,
+            332500.0,
+            243000.0,
+            236500.0,
+            272000.0,
+            274500.0,
+            276500.0,
+            499500.0,
+            253500.0,
+            305000.0,
+            440500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 764000.0,
           "low_52w": 133000.0,
-          "latest_price": 440000.0
+          "latest_price": 440500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 3
     },
@@ -11958,7 +12219,7 @@
       "verdict": "🌱 막 깨고 나옴",
       "accumulation_score": 50,
       "is_china_play": true,
-      "avg_ratio_pct": 20.1,
+      "avg_ratio_pct": 19.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 17.58,
@@ -11979,8 +12240,10 @@
           "c_pos": 0.879,
           "win_size": 200,
           "start_i": 285,
-          "latest_price": 38850.0,
-          "ratio_pct": 20.1,
+          "latest_price": 38650.0,
+          "ratio_pct": 19.5,
+          "drawdown_after_c": -35.5,
+          "is_valid_c": false,
           "a_date": "2019-11-22",
           "a_price": 31100.0,
           "a_pos": 0.065,
@@ -13540,10 +13803,10 @@
           ],
           "high_52w": 50400.0,
           "low_52w": 23900.0,
-          "latest_price": 38850.0
+          "latest_price": 38650.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -15149,12 +15412,12 @@
             32240.2,
             33468.8
           ],
-          "high_52w": 54900.0,
-          "low_52w": 19900.0,
-          "latest_price": 38850.0
+          "high_52w": 50400.0,
+          "low_52w": 24100.0,
+          "latest_price": 38650.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -15453,7 +15716,7 @@
             46500.0,
             33650.0,
             42550.0,
-            38850.0
+            38650.0
           ],
           "ma20": [
             null,
@@ -15603,7 +15866,7 @@
             28947.5,
             29247.5,
             30105.0,
-            30652.5
+            30642.5
           ],
           "channel_upper": [
             null,
@@ -15753,7 +16016,7 @@
             31842.3,
             32172.3,
             33115.5,
-            33717.8
+            33706.8
           ],
           "channel_lower": [
             null,
@@ -15903,12 +16166,99 @@
             26052.8,
             26322.8,
             27094.5,
-            27587.2
+            27578.2
+          ],
+          "high_52w": 50400.0,
+          "low_52w": 26750.0,
+          "latest_price": 38650.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            63500.0,
+            49950.0,
+            57000.0,
+            58600.0,
+            45250.0,
+            31450.0,
+            39600.0,
+            41000.0,
+            30600.0,
+            36500.0,
+            21050.0,
+            31050.0,
+            38650.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 81400.0,
           "low_52w": 12400.0,
-          "latest_price": 38850.0
+          "latest_price": 38650.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 4
     },
@@ -15942,8 +16292,10 @@
           "c_pos": 0.888,
           "win_size": 800,
           "start_i": 0,
-          "latest_price": 137200.0,
+          "latest_price": 137300.0,
           "ratio_pct": 4.3,
+          "drawdown_after_c": -33.3,
+          "is_valid_c": false,
           "a_date": "2024-04-03",
           "a_price": 131600.0,
           "a_pos": 0.888,
@@ -15963,8 +16315,10 @@
           "c_pos": 0.844,
           "win_size": 200,
           "start_i": 375,
-          "latest_price": 137200.0,
+          "latest_price": 137300.0,
           "ratio_pct": -3.0,
+          "drawdown_after_c": -37.0,
+          "is_valid_c": false,
           "a_date": "2024-07-26",
           "a_price": 148200.0,
           "a_pos": 0.844,
@@ -17524,10 +17878,10 @@
           ],
           "high_52w": 162300.0,
           "low_52w": 102800.0,
-          "latest_price": 137200.0
+          "latest_price": 137300.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -19133,12 +19487,12 @@
             119790.0,
             121882.5
           ],
-          "high_52w": 218500.0,
-          "low_52w": 87300.0,
-          "latest_price": 137200.0
+          "high_52w": 162300.0,
+          "low_52w": 102800.0,
+          "latest_price": 137300.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -19437,7 +19791,7 @@
             153400.0,
             117900.0,
             146600.0,
-            137200.0
+            137300.0
           ],
           "ma20": [
             null,
@@ -19587,7 +19941,7 @@
             121770.0,
             120730.0,
             121215.0,
-            120180.0
+            120185.0
           ],
           "channel_upper": [
             null,
@@ -19737,7 +20091,7 @@
             133947.0,
             132803.0,
             133336.5,
-            132198.0
+            132203.5
           ],
           "channel_lower": [
             null,
@@ -19887,12 +20241,99 @@
             109593.0,
             108657.0,
             109093.5,
-            108162.0
+            108166.5
+          ],
+          "high_52w": 162300.0,
+          "low_52w": 102800.0,
+          "latest_price": 137300.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            80600.0,
+            52100.0,
+            82000.0,
+            99500.0,
+            87300.0,
+            77500.0,
+            145000.0,
+            166000.0,
+            126000.0,
+            132900.0,
+            90600.0,
+            120700.0,
+            137300.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 298500.0,
           "low_52w": 43800.0,
-          "latest_price": 137200.0
+          "latest_price": 137300.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 5
     },
@@ -19906,7 +20347,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 45,
       "is_china_play": false,
-      "avg_ratio_pct": 345.0,
+      "avg_ratio_pct": 344.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 24.61,
@@ -19926,8 +20367,10 @@
           "c_pos": 0.679,
           "win_size": 1200,
           "start_i": 0,
-          "latest_price": 139900.0,
-          "ratio_pct": 358.7,
+          "latest_price": 139800.0,
+          "ratio_pct": 358.4,
+          "drawdown_after_c": -21.0,
+          "is_valid_c": false,
           "a_date": "2022-05-26",
           "a_price": 42150.0,
           "a_pos": 0.211,
@@ -19947,8 +20390,10 @@
           "c_pos": 0.707,
           "win_size": 200,
           "start_i": 405,
-          "latest_price": 139900.0,
-          "ratio_pct": 355.0,
+          "latest_price": 139800.0,
+          "ratio_pct": 354.6,
+          "drawdown_after_c": -17.1,
+          "is_valid_c": false,
           "a_date": "2022-10-21",
           "a_price": 34150.0,
           "a_pos": 0.228,
@@ -19968,8 +20413,10 @@
           "c_pos": 0.765,
           "win_size": 84,
           "start_i": 60,
-          "latest_price": 139900.0,
-          "ratio_pct": 321.4,
+          "latest_price": 139800.0,
+          "ratio_pct": 321.1,
+          "drawdown_after_c": -23.5,
+          "is_valid_c": false,
           "a_date": "2020-03-31",
           "a_price": 26708.0,
           "a_pos": 0.168,
@@ -21528,10 +21975,10 @@
           ],
           "high_52w": 198400.0,
           "low_52w": 41100.0,
-          "latest_price": 139900.0
+          "latest_price": 139800.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -23138,11 +23585,11 @@
             124704.0
           ],
           "high_52w": 198400.0,
-          "low_52w": 24100.0,
-          "latest_price": 139900.0
+          "low_52w": 54100.0,
+          "latest_price": 139800.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -23441,7 +23888,7 @@
             164700.0,
             142100.0,
             161800.0,
-            139900.0
+            139800.0
           ],
           "ma20": [
             null,
@@ -23591,7 +24038,7 @@
             55990.0,
             61422.5,
             67912.5,
-            73382.5
+            73377.5
           ],
           "channel_upper": [
             null,
@@ -23741,7 +24188,7 @@
             61589.0,
             67564.8,
             74703.8,
-            80720.8
+            80715.2
           ],
           "channel_lower": [
             null,
@@ -23891,12 +24338,99 @@
             50391.0,
             55280.2,
             61121.2,
-            66044.2
+            66039.8
+          ],
+          "high_52w": 198400.0,
+          "low_52w": 54100.0,
+          "latest_price": 139800.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            40962.0,
+            27778.0,
+            41643.0,
+            35319.0,
+            53124.0,
+            41157.0,
+            36438.0,
+            44450.0,
+            34900.0,
+            34900.0,
+            25400.0,
+            70100.0,
+            139800.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 198400.0,
           "low_52w": 18632.0,
-          "latest_price": 139900.0
+          "latest_price": 139800.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 6
     },
@@ -23910,7 +24444,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 382.2,
+      "avg_ratio_pct": 384.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 34.04,
@@ -23931,8 +24465,10 @@
           "c_pos": 0.694,
           "win_size": 300,
           "start_i": 270,
-          "latest_price": 396000.0,
-          "ratio_pct": 367.0,
+          "latest_price": 398000.0,
+          "ratio_pct": 369.3,
+          "drawdown_after_c": -2.6,
+          "is_valid_c": true,
           "a_date": "2020-05-08",
           "a_price": 81700.0,
           "a_pos": 0.177,
@@ -23952,8 +24488,10 @@
           "c_pos": 0.719,
           "win_size": 84,
           "start_i": 48,
-          "latest_price": 396000.0,
-          "ratio_pct": 397.5,
+          "latest_price": 398000.0,
+          "ratio_pct": 400.0,
+          "drawdown_after_c": -2.6,
+          "is_valid_c": true,
           "a_date": "2019-05-31",
           "a_price": 117500.0,
           "a_pos": 0.189,
@@ -25512,10 +26050,10 @@
           ],
           "high_52w": 494500.0,
           "low_52w": 260500.0,
-          "latest_price": 396000.0
+          "latest_price": 398000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -27122,11 +27660,11 @@
             378315.0
           ],
           "high_52w": 494500.0,
-          "low_52w": 68100.0,
-          "latest_price": 396000.0
+          "low_52w": 284000.0,
+          "latest_price": 398000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -27425,7 +27963,7 @@
             450000.0,
             344000.0,
             461500.0,
-            396000.0
+            398000.0
           ],
           "ma20": [
             null,
@@ -27575,7 +28113,7 @@
             306725.0,
             313575.0,
             327080.0,
-            337495.0
+            337595.0
           ],
           "channel_upper": [
             null,
@@ -27725,7 +28263,7 @@
             337397.5,
             344932.5,
             359788.0,
-            371244.5
+            371354.5
           ],
           "channel_lower": [
             null,
@@ -27875,12 +28413,99 @@
             276052.5,
             282217.5,
             294372.0,
-            303745.5
+            303835.5
+          ],
+          "high_52w": 494500.0,
+          "low_52w": 304500.0,
+          "latest_price": 398000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            104468.0,
+            79759.0,
+            132174.0,
+            95948.0,
+            128500.0,
+            126500.0,
+            108500.0,
+            94600.0,
+            70700.0,
+            120900.0,
+            228000.0,
+            407000.0,
+            398000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 494500.0,
           "low_52w": 0.0,
-          "latest_price": 396000.0
+          "latest_price": 398000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 7
     },
@@ -27894,7 +28519,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 423.6,
+      "avg_ratio_pct": 421.8,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 30.51,
@@ -27915,8 +28540,10 @@
           "c_pos": 0.775,
           "win_size": 200,
           "start_i": 300,
-          "latest_price": 28650.0,
-          "ratio_pct": 437.5,
+          "latest_price": 28550.0,
+          "ratio_pct": 435.6,
+          "drawdown_after_c": -7.9,
+          "is_valid_c": true,
           "a_date": "2020-05-01",
           "a_price": 4045.0,
           "a_pos": 0.11,
@@ -27936,8 +28563,10 @@
           "c_pos": 0.652,
           "win_size": 120,
           "start_i": 24,
-          "latest_price": 28650.0,
-          "ratio_pct": 409.8,
+          "latest_price": 28550.0,
+          "ratio_pct": 408.0,
+          "drawdown_after_c": -9.1,
+          "is_valid_c": true,
           "a_date": "2017-11-30",
           "a_price": 9954.0,
           "a_pos": 0.179,
@@ -29496,10 +30125,10 @@
           ],
           "high_52w": 35350.0,
           "low_52w": 14030.0,
-          "latest_price": 28650.0
+          "latest_price": 28550.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -31106,11 +31735,11 @@
             26208.0
           ],
           "high_52w": 35350.0,
-          "low_52w": 0.0,
-          "latest_price": 28650.0
+          "low_52w": 14370.0,
+          "latest_price": 28550.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -31409,7 +32038,7 @@
             28950.0,
             24450.0,
             32350.0,
-            28650.0
+            28550.0
           ],
           "ma20": [
             null,
@@ -31559,7 +32188,7 @@
             17615.0,
             18252.0,
             19345.0,
-            20276.0
+            20271.0
           ],
           "channel_upper": [
             null,
@@ -31709,7 +32338,7 @@
             19376.5,
             20077.2,
             21279.5,
-            22303.6
+            22298.1
           ],
           "channel_lower": [
             null,
@@ -31859,12 +32488,99 @@
             15853.5,
             16426.8,
             17410.5,
-            18248.4
+            18243.9
+          ],
+          "high_52w": 35350.0,
+          "low_52w": 15610.0,
+          "latest_price": 28550.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            14423.0,
+            7844.0,
+            7705.0,
+            6106.0,
+            6995.0,
+            6863.0,
+            6645.0,
+            5670.0,
+            5110.0,
+            7750.0,
+            11300.0,
+            24100.0,
+            28550.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 35350.0,
           "low_52w": 0.0,
-          "latest_price": 28650.0
+          "latest_price": 28550.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 8
     },
@@ -31873,12 +32589,12 @@
       "name": "한화오션",
       "stars": 4,
       "type": "주+월",
-      "time_diff_months": 8.3,
+      "time_diff_months": 0.1,
       "phase": "already_run",
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 400.1,
+      "avg_ratio_pct": 584.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 10.73,
@@ -31893,25 +32609,27 @@
       "frames": {
         "daily": null,
         "weekly": {
-          "c_date": "2023-07-07",
-          "c_price": 36513.0,
-          "r2": 0.774,
-          "c_pos": 0.677,
-          "win_size": 300,
-          "start_i": 285,
-          "latest_price": 112500.0,
-          "ratio_pct": 208.1,
-          "a_date": "2020-05-29",
-          "a_price": 19367.0,
-          "a_pos": 0.136,
-          "b_date": "2020-05-29",
-          "b_price": 19367.0,
-          "b_pos": 0.136,
-          "fit_k": 752059.1158815472,
-          "fit_a": 0.1364,
-          "fit_b": 0.1364,
-          "fit_c": 0.6774,
-          "g_base": 20060.2
+          "c_date": "2022-11-04",
+          "c_price": 16480.0,
+          "r2": 0.588,
+          "c_pos": 0.767,
+          "win_size": 200,
+          "start_i": 300,
+          "latest_price": 112100.0,
+          "ratio_pct": 580.2,
+          "drawdown_after_c": -3.2,
+          "is_valid_c": true,
+          "a_date": "2020-03-27",
+          "a_price": 11727.0,
+          "a_pos": 0.081,
+          "b_date": "2020-03-27",
+          "b_price": 11727.0,
+          "b_pos": 0.081,
+          "fit_k": 489071.510212852,
+          "fit_a": 0.0805,
+          "fit_b": 0.0805,
+          "fit_c": 0.7665,
+          "g_base": 18736.2
         },
         "monthly": {
           "c_date": "2022-10-31",
@@ -31920,8 +32638,10 @@
           "c_pos": 0.679,
           "win_size": 120,
           "start_i": 24,
-          "latest_price": 112500.0,
-          "ratio_pct": 592.0,
+          "latest_price": 112100.0,
+          "ratio_pct": 589.5,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2016-08-31",
           "a_price": 19900.0,
           "a_pos": 0.052,
@@ -33480,10 +34200,10 @@
           ],
           "high_52w": 154800.0,
           "low_52w": 71500.0,
-          "latest_price": 112500.0
+          "latest_price": 112100.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -35090,11 +35810,11 @@
             118557.0
           ],
           "high_52w": 154800.0,
-          "low_52w": 15325.0,
-          "latest_price": 112500.0
+          "low_52w": 71500.0,
+          "latest_price": 112100.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -35393,7 +36113,7 @@
             141200.0,
             120200.0,
             131800.0,
-            112500.0
+            112100.0
           ],
           "ma20": [
             null,
@@ -35543,7 +36263,7 @@
             80127.5,
             84610.0,
             89472.5,
-            93570.0
+            93550.0
           ],
           "channel_upper": [
             null,
@@ -35693,7 +36413,7 @@
             88140.2,
             93071.0,
             98419.8,
-            102927.0
+            102905.0
           ],
           "channel_lower": [
             null,
@@ -35843,12 +36563,99 @@
             72114.8,
             76149.0,
             80525.2,
-            84213.0
+            84195.0
+          ],
+          "high_52w": 154800.0,
+          "low_52w": 71500.0,
+          "latest_price": 112100.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            82844.0,
+            22521.0,
+            19900.0,
+            12349.0,
+            30339.0,
+            24742.0,
+            24342.0,
+            20478.0,
+            16835.0,
+            25100.0,
+            37350.0,
+            113600.0,
+            112100.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 161469.0,
           "low_52w": 9639.0,
-          "latest_price": 112500.0
+          "latest_price": 112100.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 9
     },
@@ -35862,7 +36669,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 173.1,
+      "avg_ratio_pct": 172.8,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 27.96,
@@ -35883,8 +36690,10 @@
           "c_pos": 0.769,
           "win_size": 300,
           "start_i": 270,
-          "latest_price": 1362000.0,
-          "ratio_pct": 169.2,
+          "latest_price": 1360000.0,
+          "ratio_pct": 168.8,
+          "drawdown_after_c": -13.0,
+          "is_valid_c": true,
           "a_date": "2019-09-06",
           "a_price": 437500.0,
           "a_pos": 0.059,
@@ -35904,8 +36713,10 @@
           "c_pos": 0.688,
           "win_size": 84,
           "start_i": 60,
-          "latest_price": 1362000.0,
-          "ratio_pct": 177.1,
+          "latest_price": 1360000.0,
+          "ratio_pct": 176.7,
+          "drawdown_after_c": -9.0,
+          "is_valid_c": true,
           "a_date": "2019-05-31",
           "a_price": 437000.0,
           "a_pos": 0.045,
@@ -37464,10 +38275,10 @@
           ],
           "high_52w": 2188000.0,
           "low_52w": 718000.0,
-          "latest_price": 1362000.0
+          "latest_price": 1360000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -39073,12 +39884,12 @@
             1417275.0,
             1434690.0
           ],
-          "high_52w": 2407000.0,
-          "low_52w": 435000.0,
-          "latest_price": 1362000.0
+          "high_52w": 2188000.0,
+          "low_52w": 718000.0,
+          "latest_price": 1360000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -39377,7 +40188,7 @@
             2030000.0,
             1422000.0,
             1579000.0,
-            1362000.0
+            1360000.0
           ],
           "ma20": [
             null,
@@ -39527,7 +40338,7 @@
             986550.0,
             1033450.0,
             1085650.0,
-            1119350.0
+            1119250.0
           ],
           "channel_upper": [
             null,
@@ -39677,7 +40488,7 @@
             1085205.0,
             1136795.0,
             1194215.0,
-            1231285.0
+            1231175.0
           ],
           "channel_lower": [
             null,
@@ -39827,12 +40638,99 @@
             887895.0,
             930105.0,
             977085.0,
-            1007415.0
+            1007325.0
+          ],
+          "high_52w": 2188000.0,
+          "low_52w": 718000.0,
+          "latest_price": 1360000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            403500.0,
+            469000.0,
+            475000.0,
+            493000.0,
+            432500.0,
+            425000.0,
+            401500.0,
+            511000.0,
+            564000.0,
+            498000.0,
+            1006000.0,
+            1316000.0,
+            1360000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 2407000.0,
           "low_52w": 276500.0,
-          "latest_price": 1362000.0
+          "latest_price": 1360000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 10
     },
@@ -39846,7 +40744,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 535.8,
+      "avg_ratio_pct": 531.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 24.9,
@@ -39866,8 +40764,10 @@
           "c_pos": 0.666,
           "win_size": 800,
           "start_i": 200,
-          "latest_price": 106200.0,
-          "ratio_pct": 502.0,
+          "latest_price": 105500.0,
+          "ratio_pct": 498.1,
+          "drawdown_after_c": -10.1,
+          "is_valid_c": true,
           "a_date": "2022-11-30",
           "a_price": 16750.0,
           "a_pos": 0.224,
@@ -39887,8 +40787,10 @@
           "c_pos": 0.666,
           "win_size": 200,
           "start_i": 390,
-          "latest_price": 106200.0,
-          "ratio_pct": 569.6,
+          "latest_price": 105500.0,
+          "ratio_pct": 565.2,
+          "drawdown_after_c": -7.4,
+          "is_valid_c": true,
           "a_date": "2022-07-22",
           "a_price": 17800.0,
           "a_pos": 0.237,
@@ -41448,10 +42350,10 @@
           ],
           "high_52w": 139200.0,
           "low_52w": 26650.0,
-          "latest_price": 106200.0
+          "latest_price": 105500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -43058,11 +43960,11 @@
             92079.0
           ],
           "high_52w": 139200.0,
-          "low_52w": 12450.0,
-          "latest_price": 106200.0
+          "low_52w": 39100.0,
+          "latest_price": 105500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -43361,7 +44263,7 @@
             106300.0,
             91800.0,
             127100.0,
-            106200.0
+            105500.0
           ],
           "ma20": [
             null,
@@ -43511,7 +44413,7 @@
             47567.0,
             51215.5,
             56665.5,
-            61080.0
+            61045.0
           ],
           "channel_upper": [
             null,
@@ -43661,7 +44563,7 @@
             52323.7,
             56337.1,
             62332.1,
-            67188.0
+            67149.5
           ],
           "channel_lower": [
             null,
@@ -43811,12 +44713,99 @@
             42810.3,
             46094.0,
             50999.0,
-            54972.0
+            54940.5
+          ],
+          "high_52w": 139200.0,
+          "low_52w": 39300.0,
+          "latest_price": 105500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            18094.0,
+            15760.0,
+            20810.0,
+            11744.0,
+            7445.0,
+            5071.0,
+            13030.0,
+            20400.0,
+            15400.0,
+            15900.0,
+            17550.0,
+            75300.0,
+            105500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 139200.0,
           "low_52w": 2123.0,
-          "latest_price": 106200.0
+          "latest_price": 105500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 11
     },
@@ -43830,7 +44819,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 393.9,
+      "avg_ratio_pct": 390.4,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 48.61,
@@ -43850,8 +44839,10 @@
           "c_pos": 0.68,
           "win_size": 800,
           "start_i": 400,
-          "latest_price": 279500.0,
-          "ratio_pct": 367.4,
+          "latest_price": 277500.0,
+          "ratio_pct": 364.0,
+          "drawdown_after_c": -11.4,
+          "is_valid_c": true,
           "a_date": "2023-02-03",
           "a_price": 63800.0,
           "a_pos": 0.03,
@@ -43871,8 +44862,10 @@
           "c_pos": 0.701,
           "win_size": 200,
           "start_i": 435,
-          "latest_price": 279500.0,
-          "ratio_pct": 420.5,
+          "latest_price": 277500.0,
+          "ratio_pct": 416.8,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2022-09-09",
           "a_price": 55600.0,
           "a_pos": 0.046,
@@ -45432,10 +46425,10 @@
           ],
           "high_52w": 299500.0,
           "low_52w": 53700.0,
-          "latest_price": 279500.0
+          "latest_price": 277500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -47042,11 +48035,11 @@
             171603.0
           ],
           "high_52w": 299500.0,
-          "low_52w": 49900.0,
-          "latest_price": 279500.0
+          "low_52w": 53700.0,
+          "latest_price": 277500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -47345,7 +48338,7 @@
             216500.0,
             167200.0,
             220500.0,
-            279500.0
+            277500.0
           ],
           "ma20": [
             null,
@@ -47495,7 +48488,7 @@
             82620.0,
             86785.0,
             94095.0,
-            104995.0
+            104895.0
           ],
           "channel_upper": [
             null,
@@ -47645,7 +48638,7 @@
             90882.0,
             95463.5,
             103504.5,
-            115494.5
+            115384.5
           ],
           "channel_lower": [
             null,
@@ -47795,12 +48788,99 @@
             74358.0,
             78106.5,
             84685.5,
-            94495.5
+            94405.5
+          ],
+          "high_52w": 299500.0,
+          "low_52w": 56200.0,
+          "latest_price": 277500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            26540.0,
+            25200.0,
+            36040.0,
+            50960.0,
+            38700.0,
+            55800.0,
+            81000.0,
+            78300.0,
+            55300.0,
+            78500.0,
+            53200.0,
+            119900.0,
+            277500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 299500.0,
           "low_52w": 0.0,
-          "latest_price": 279500.0
+          "latest_price": 277500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 12
     },
@@ -47814,7 +48894,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 1619.0,
+      "avg_ratio_pct": 1614.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 52.06,
@@ -47835,8 +48915,10 @@
           "c_pos": 0.759,
           "win_size": 300,
           "start_i": 240,
-          "latest_price": 1766000.0,
-          "ratio_pct": 1819.6,
+          "latest_price": 1761500.0,
+          "ratio_pct": 1814.7,
+          "drawdown_after_c": -9.5,
+          "is_valid_c": true,
           "a_date": "2018-10-19",
           "a_price": 70800.0,
           "a_pos": 0.006,
@@ -47856,8 +48938,10 @@
           "c_pos": 0.676,
           "win_size": 84,
           "start_i": 60,
-          "latest_price": 1766000.0,
-          "ratio_pct": 1418.5,
+          "latest_price": 1761500.0,
+          "ratio_pct": 1414.6,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2019-04-30",
           "a_price": 79000.0,
           "a_pos": 0.026,
@@ -49416,10 +50500,10 @@
           ],
           "high_52w": 1995000.0,
           "low_52w": 186800.0,
-          "latest_price": 1766000.0
+          "latest_price": 1761500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -51026,11 +52110,11 @@
             917505.0
           ],
           "high_52w": 1995000.0,
-          "low_52w": 73100.0,
-          "latest_price": 1766000.0
+          "low_52w": 196900.0,
+          "latest_price": 1761500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -51329,7 +52413,7 @@
             1061000.0,
             807000.0,
             1286000.0,
-            1766000.0
+            1761500.0
           ],
           "ma20": [
             null,
@@ -51479,7 +52563,7 @@
             345855.0,
             376475.0,
             432090.0,
-            511660.0
+            511435.0
           ],
           "channel_upper": [
             null,
@@ -51629,7 +52713,7 @@
             380440.5,
             414122.5,
             475299.0,
-            562826.0
+            562578.5
           ],
           "channel_lower": [
             null,
@@ -51779,12 +52863,99 @@
             311269.5,
             338827.5,
             388881.0,
-            460494.0
+            460291.5
+          ],
+          "high_52w": 1995000.0,
+          "low_52w": 203000.0,
+          "latest_price": 1761500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            47750.0,
+            30750.0,
+            44700.0,
+            76500.0,
+            60500.0,
+            94100.0,
+            118500.0,
+            131000.0,
+            75000.0,
+            141500.0,
+            173900.0,
+            651000.0,
+            1761500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 1995000.0,
           "low_52w": 25650.0,
-          "latest_price": 1766000.0
+          "latest_price": 1761500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 13
     },
@@ -51798,7 +52969,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 150.4,
+      "avg_ratio_pct": 149.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 21.61,
@@ -51818,8 +52989,10 @@
           "c_pos": 0.713,
           "win_size": 800,
           "start_i": 400,
-          "latest_price": 97500.0,
-          "ratio_pct": 170.1,
+          "latest_price": 97300.0,
+          "ratio_pct": 169.5,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2023-01-11",
           "a_price": 32337.0,
           "a_pos": 0.01,
@@ -51839,8 +53012,10 @@
           "c_pos": 0.711,
           "win_size": 200,
           "start_i": 435,
-          "latest_price": 97500.0,
-          "ratio_pct": 130.8,
+          "latest_price": 97300.0,
+          "ratio_pct": 130.3,
+          "drawdown_after_c": -18.3,
+          "is_valid_c": false,
           "a_date": "2022-08-05",
           "a_price": 26650.0,
           "a_pos": 0.024,
@@ -53400,10 +54575,10 @@
           ],
           "high_52w": 129000.0,
           "low_52w": 36200.0,
-          "latest_price": 97500.0
+          "latest_price": 97300.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -55010,11 +56185,11 @@
             90661.5
           ],
           "high_52w": 129000.0,
-          "low_52w": 0.0,
-          "latest_price": 97500.0
+          "low_52w": 39050.0,
+          "latest_price": 97300.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -55313,7 +56488,7 @@
             106200.0,
             94400.0,
             119300.0,
-            97500.0
+            97300.0
           ],
           "ma20": [
             null,
@@ -55463,7 +56638,7 @@
             50827.8,
             53540.4,
             57546.2,
-            60529.1
+            60519.1
           ],
           "channel_upper": [
             null,
@@ -55613,7 +56788,7 @@
             55910.5,
             58894.5,
             63300.8,
-            66582.0
+            66571.0
           ],
           "channel_lower": [
             null,
@@ -55763,12 +56938,99 @@
             45745.0,
             48186.4,
             51791.6,
-            54476.1
+            54467.1
+          ],
+          "high_52w": 129000.0,
+          "low_52w": 39050.0,
+          "latest_price": 97300.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            7668.0,
+            9390.0,
+            8680.0,
+            11513.0,
+            9420.0,
+            12874.0,
+            27031.0,
+            39706.0,
+            31136.0,
+            40547.0,
+            38364.0,
+            60300.0,
+            97300.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 129000.0,
           "low_52w": 0.0,
-          "latest_price": 97500.0
+          "latest_price": 97300.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 14
     },
@@ -55782,7 +57044,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 253.6,
+      "avg_ratio_pct": 251.3,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 22.06,
@@ -55792,7 +57054,7 @@
         "foreign_data_points": 5,
         "ma20_crossings": 29,
         "ma20_stealth": false,
-        "price_range_pct": 124.4
+        "price_range_pct": 124.5
       },
       "frames": {
         "daily": {
@@ -55802,8 +57064,10 @@
           "c_pos": 0.808,
           "win_size": 800,
           "start_i": 300,
-          "latest_price": 467000.0,
-          "ratio_pct": 213.0,
+          "latest_price": 464000.0,
+          "ratio_pct": 211.0,
+          "drawdown_after_c": -24.2,
+          "is_valid_c": false,
           "a_date": "2022-09-13",
           "a_price": 74500.0,
           "a_pos": 0.032,
@@ -55823,8 +57087,10 @@
           "c_pos": 0.741,
           "win_size": 200,
           "start_i": 435,
-          "latest_price": 467000.0,
-          "ratio_pct": 294.1,
+          "latest_price": 464000.0,
+          "ratio_pct": 291.6,
+          "drawdown_after_c": -1.4,
+          "is_valid_c": true,
           "a_date": "2022-07-08",
           "a_price": 77800.0,
           "a_pos": 0.004,
@@ -57384,10 +58650,10 @@
           ],
           "high_52w": 527000.0,
           "low_52w": 115700.0,
-          "latest_price": 467000.0
+          "latest_price": 464000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -58994,11 +60260,11 @@
             362002.5
           ],
           "high_52w": 527000.0,
-          "low_52w": 57200.0,
-          "latest_price": 467000.0
+          "low_52w": 133900.0,
+          "latest_price": 464000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -59297,7 +60563,7 @@
             418500.0,
             384500.0,
             468000.0,
-            467000.0
+            464000.0
           ],
           "ma20": [
             null,
@@ -59447,7 +60713,7 @@
             198895.0,
             209335.0,
             224140.0,
-            239830.0
+            239680.0
           ],
           "channel_upper": [
             null,
@@ -59597,7 +60863,7 @@
             218784.5,
             230268.5,
             246554.0,
-            263813.0
+            263648.0
           ],
           "channel_lower": [
             null,
@@ -59747,12 +61013,99 @@
             179005.5,
             188401.5,
             201726.0,
-            215847.0
+            215712.0
+          ],
+          "high_52w": 527000.0,
+          "low_52w": 143300.0,
+          "latest_price": 464000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            125300.0,
+            124800.0,
+            89800.0,
+            109000.0,
+            48300.0,
+            103300.0,
+            117000.0,
+            119500.0,
+            66600.0,
+            152900.0,
+            139200.0,
+            272000.0,
+            464000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 527000.0,
           "low_52w": 38050.0,
-          "latest_price": 467000.0
+          "latest_price": 464000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 15
     },
@@ -59766,7 +61119,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 69.9,
+      "avg_ratio_pct": 70.2,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 9.58,
@@ -59786,8 +61139,10 @@
           "c_pos": 0.857,
           "win_size": 1200,
           "start_i": 0,
-          "latest_price": 223000.0,
-          "ratio_pct": 48.9,
+          "latest_price": 223500.0,
+          "ratio_pct": 49.2,
+          "drawdown_after_c": -13.5,
+          "is_valid_c": true,
           "a_date": "2021-08-12",
           "a_price": 148305.0,
           "a_pos": 0.051,
@@ -59807,8 +61162,10 @@
           "c_pos": 0.895,
           "win_size": 200,
           "start_i": 405,
-          "latest_price": 223000.0,
-          "ratio_pct": 90.9,
+          "latest_price": 223500.0,
+          "ratio_pct": 91.3,
+          "drawdown_after_c": -16.9,
+          "is_valid_c": false,
           "a_date": "2021-12-24",
           "a_price": 139581.0,
           "a_pos": 0.013,
@@ -61368,10 +62725,10 @@
           ],
           "high_52w": 299500.0,
           "low_52w": 95477.0,
-          "latest_price": 223000.0
+          "latest_price": 223500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -62977,12 +64334,12 @@
             192168.0,
             198387.0
           ],
-          "high_52w": 672704.0,
-          "low_52w": 93150.0,
-          "latest_price": 223000.0
+          "high_52w": 299500.0,
+          "low_52w": 95477.0,
+          "latest_price": 223500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -63281,7 +64638,7 @@
             247000.0,
             203500.0,
             252000.0,
-            223000.0
+            223500.0
           ],
           "ma20": [
             null,
@@ -63431,7 +64788,7 @@
             171894.9,
             171819.4,
             174023.5,
-            173057.1
+            173082.1
           ],
           "channel_upper": [
             null,
@@ -63581,7 +64938,7 @@
             189084.4,
             189001.3,
             191425.9,
-            190362.8
+            190390.3
           ],
           "channel_lower": [
             null,
@@ -63731,12 +65088,99 @@
             154705.4,
             154637.5,
             156621.1,
-            155751.4
+            155773.9
+          ],
+          "high_52w": 299500.0,
+          "low_52w": 109241.0,
+          "latest_price": 223500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            12755.0,
+            12464.0,
+            10917.0,
+            36209.0,
+            57954.0,
+            44807.0,
+            100808.0,
+            139581.0,
+            174476.0,
+            347984.0,
+            137739.0,
+            187000.0,
+            223500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 672704.0,
           "low_52w": 0.0,
-          "latest_price": 223000.0
+          "latest_price": 223500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 16
     },
@@ -63750,7 +65194,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 70.2,
+      "avg_ratio_pct": 69.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 13.76,
@@ -63770,8 +65214,10 @@
           "c_pos": 0.926,
           "win_size": 800,
           "start_i": 200,
-          "latest_price": 184000.0,
-          "ratio_pct": 64.4,
+          "latest_price": 183300.0,
+          "ratio_pct": 63.8,
+          "drawdown_after_c": -27.4,
+          "is_valid_c": false,
           "a_date": "2022-04-22",
           "a_price": 117043.0,
           "a_pos": 0.036,
@@ -63791,8 +65237,10 @@
           "c_pos": 0.939,
           "win_size": 200,
           "start_i": 135,
-          "latest_price": 184000.0,
-          "ratio_pct": 76.1,
+          "latest_price": 183300.0,
+          "ratio_pct": 75.4,
+          "drawdown_after_c": -20.0,
+          "is_valid_c": false,
           "a_date": "2021-12-17",
           "a_price": 125740.0,
           "a_pos": 0.054,
@@ -65352,10 +66800,10 @@
           ],
           "high_52w": 260000.0,
           "low_52w": 81100.0,
-          "latest_price": 184000.0
+          "latest_price": 183300.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2019-03-08",
             "2019-03-15",
@@ -66112,7 +67560,7 @@
             206000.0,
             237500.0,
             190500.0,
-            184000.0
+            183300.0
           ],
           "ma20": [
             null,
@@ -66491,7 +67939,7 @@
             189055.0,
             193180.0,
             194890.0,
-            197005.0
+            196970.0
           ],
           "channel_upper": [
             null,
@@ -66870,7 +68318,7 @@
             207960.5,
             212498.0,
             214379.0,
-            216705.5
+            216667.0
           ],
           "channel_lower": [
             null,
@@ -67249,14 +68697,14 @@
             170149.5,
             173862.0,
             175401.0,
-            177304.5
+            177273.0
           ],
-          "high_52w": 584000.0,
-          "low_52w": 66712.0,
-          "latest_price": 184000.0
+          "high_52w": 260000.0,
+          "low_52w": 81100.0,
+          "latest_price": 183300.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2019-03-31",
             "2019-04-30",
@@ -67433,7 +68881,7 @@
             221500.0,
             192200.0,
             206000.0,
-            184000.0
+            183300.0
           ],
           "ma20": [
             null,
@@ -67522,7 +68970,7 @@
             142080.0,
             142695.0,
             144580.0,
-            144555.0
+            144520.0
           ],
           "channel_upper": [
             null,
@@ -67611,7 +69059,7 @@
             156288.0,
             156964.5,
             159038.0,
-            159010.5
+            158972.0
           ],
           "channel_lower": [
             null,
@@ -67700,12 +69148,74 @@
             127872.0,
             128425.5,
             130122.0,
-            130099.5
+            130068.0
+          ],
+          "high_52w": 260000.0,
+          "low_52w": 87600.0,
+          "latest_price": 183300.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            13096.0,
+            42029.0,
+            123739.0,
+            92100.0,
+            288000.0,
+            109900.0,
+            146600.0,
+            183300.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 584000.0,
           "low_52w": 11007.0,
-          "latest_price": 184000.0
+          "latest_price": 183300.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 7.2,
+        "monthly_years": 7.2,
+        "yearly_years": 8
       },
       "rank": 17
     },
@@ -67719,7 +69229,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 132.1,
+      "avg_ratio_pct": 131.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 18.78,
@@ -67739,8 +69249,10 @@
           "c_pos": 0.923,
           "win_size": 800,
           "start_i": 200,
-          "latest_price": 122450.0,
-          "ratio_pct": 104.4,
+          "latest_price": 122150.0,
+          "ratio_pct": 103.9,
+          "drawdown_after_c": -36.0,
+          "is_valid_c": false,
           "a_date": "2022-04-06",
           "a_price": 19342.0,
           "a_pos": 0.022,
@@ -67760,8 +69272,10 @@
           "c_pos": 0.898,
           "win_size": 200,
           "start_i": 405,
-          "latest_price": 122450.0,
-          "ratio_pct": 159.7,
+          "latest_price": 122150.0,
+          "ratio_pct": 159.1,
+          "drawdown_after_c": -16.6,
+          "is_valid_c": false,
           "a_date": "2022-01-21",
           "a_price": 18485.0,
           "a_pos": 0.03,
@@ -69321,10 +70835,10 @@
           ],
           "high_52w": 190000.0,
           "low_52w": 37750.0,
-          "latest_price": 122450.0
+          "latest_price": 122150.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -70930,12 +72444,12 @@
             124348.5,
             128416.5
           ],
-          "high_52w": 301957.0,
-          "low_52w": 0.0,
-          "latest_price": 122450.0
+          "high_52w": 190000.0,
+          "low_52w": 37750.0,
+          "latest_price": 122150.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -71234,7 +72748,7 @@
             185000.0,
             139500.0,
             152900.0,
-            122450.0
+            122150.0
           ],
           "ma20": [
             null,
@@ -71384,7 +72898,7 @@
             76939.8,
             79387.4,
             82833.6,
-            84610.2
+            84595.2
           ],
           "channel_upper": [
             null,
@@ -71534,7 +73048,7 @@
             84633.8,
             87326.1,
             91117.0,
-            93071.3
+            93054.8
           ],
           "channel_lower": [
             null,
@@ -71684,12 +73198,99 @@
             69245.8,
             71448.7,
             74550.3,
-            76149.2
+            76135.7
+          ],
+          "high_52w": 190000.0,
+          "low_52w": 41000.0,
+          "latest_price": 122150.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            936.0,
+            1557.0,
+            1370.0,
+            5003.0,
+            4189.0,
+            2850.0,
+            6431.0,
+            22392.0,
+            20209.0,
+            126944.0,
+            56408.0,
+            90800.0,
+            122150.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 301957.0,
           "low_52w": 0.0,
-          "latest_price": 122450.0
+          "latest_price": 122150.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 18
     },
@@ -71725,6 +73326,8 @@
           "start_i": 400,
           "latest_price": 604000.0,
           "ratio_pct": 207.1,
+          "drawdown_after_c": -8.5,
+          "is_valid_c": true,
           "a_date": "2023-01-25",
           "a_price": 165700.0,
           "a_pos": 0.02,
@@ -71746,6 +73349,8 @@
           "start_i": 435,
           "latest_price": 604000.0,
           "ratio_pct": 240.3,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2022-09-02",
           "a_price": 196500.0,
           "a_pos": 0.04,
@@ -73308,7 +74913,7 @@
           "latest_price": 604000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -74915,11 +76520,11 @@
             457852.5
           ],
           "high_52w": 774500.0,
-          "low_52w": 150500.0,
+          "low_52w": 179700.0,
           "latest_price": 604000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -75671,9 +77276,96 @@
             273222.0
           ],
           "high_52w": 774500.0,
+          "low_52w": 183100.0,
+          "latest_price": 604000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            169000.0,
+            149000.0,
+            146000.0,
+            156000.0,
+            118500.0,
+            120500.0,
+            192000.0,
+            209000.0,
+            151000.0,
+            203500.0,
+            212000.0,
+            296500.0,
+            604000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "high_52w": 774500.0,
           "low_52w": 65000.0,
           "latest_price": 604000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 19
     },
@@ -75687,7 +77379,7 @@
       "verdict": "⚪ 진행 중",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 41.1,
+      "avg_ratio_pct": 40.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 15.94,
@@ -75708,8 +77400,10 @@
           "c_pos": 0.935,
           "win_size": 200,
           "start_i": 285,
-          "latest_price": 30050.0,
-          "ratio_pct": 41.1,
+          "latest_price": 29950.0,
+          "ratio_pct": 40.6,
+          "drawdown_after_c": -38.2,
+          "is_valid_c": false,
           "a_date": "2020-03-13",
           "a_price": 20750.0,
           "a_pos": 0.148,
@@ -77269,10 +78963,10 @@
           ],
           "high_52w": 44850.0,
           "low_52w": 17780.0,
-          "latest_price": 30050.0
+          "latest_price": 29950.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -78878,12 +80572,12 @@
             22678.2,
             24030.5
           ],
-          "high_52w": 49550.0,
-          "low_52w": 12670.0,
-          "latest_price": 30050.0
+          "high_52w": 44850.0,
+          "low_52w": 17790.0,
+          "latest_price": 29950.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -79182,7 +80876,7 @@
             22400.0,
             25100.0,
             38050.0,
-            30050.0
+            29950.0
           ],
           "ma20": [
             null,
@@ -79332,7 +81026,7 @@
             19101.5,
             19364.0,
             20241.5,
-            20827.0
+            20822.0
           ],
           "channel_upper": [
             null,
@@ -79482,7 +81176,7 @@
             21011.7,
             21300.4,
             22265.7,
-            22909.7
+            22904.2
           ],
           "channel_lower": [
             null,
@@ -79632,12 +81326,99 @@
             17191.4,
             17427.6,
             18217.4,
-            18744.3
+            18739.8
+          ],
+          "high_52w": 44850.0,
+          "low_52w": 17790.0,
+          "latest_price": 29950.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            23250.0,
+            19750.0,
+            26500.0,
+            28300.0,
+            43750.0,
+            31050.0,
+            37800.0,
+            39600.0,
+            21150.0,
+            15020.0,
+            17350.0,
+            19700.0,
+            29950.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 56500.0,
           "low_52w": 12670.0,
-          "latest_price": 30050.0
+          "latest_price": 29950.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 20
     },
@@ -79651,7 +81432,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 632.8,
+      "avg_ratio_pct": 620.8,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 10.17,
@@ -79661,7 +81442,7 @@
         "foreign_data_points": 5,
         "ma20_crossings": 17,
         "ma20_stealth": false,
-        "price_range_pct": 400.0
+        "price_range_pct": 400.1
       },
       "frames": {
         "daily": {
@@ -79671,8 +81452,10 @@
           "c_pos": 0.718,
           "win_size": 800,
           "start_i": 400,
-          "latest_price": 27550.0,
-          "ratio_pct": 692.8,
+          "latest_price": 27100.0,
+          "ratio_pct": 679.9,
+          "drawdown_after_c": -3.3,
+          "is_valid_c": true,
           "a_date": "2023-06-19",
           "a_price": 4345.0,
           "a_pos": 0.144,
@@ -79692,8 +81475,10 @@
           "c_pos": 0.863,
           "win_size": 200,
           "start_i": 420,
-          "latest_price": 27550.0,
-          "ratio_pct": 572.8,
+          "latest_price": 27100.0,
+          "ratio_pct": 561.8,
+          "drawdown_after_c": -17.9,
+          "is_valid_c": false,
           "a_date": "2025-07-04",
           "a_price": 4095.0,
           "a_pos": 0.863,
@@ -81253,10 +83038,10 @@
           ],
           "high_52w": 40350.0,
           "low_52w": 3320.0,
-          "latest_price": 27550.0
+          "latest_price": 27100.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -82863,11 +84648,11 @@
             13919.9
           ],
           "high_52w": 40350.0,
-          "low_52w": 2940.0,
-          "latest_price": 27550.0
+          "low_52w": 3320.0,
+          "latest_price": 27100.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -83166,7 +84951,7 @@
             10140.0,
             15550.0,
             35000.0,
-            27550.0
+            27100.0
           ],
           "ma20": [
             null,
@@ -83316,7 +85101,7 @@
             4073.2,
             4642.2,
             6190.8,
-            7376.8
+            7354.2
           ],
           "channel_upper": [
             null,
@@ -83466,7 +85251,7 @@
             4480.6,
             5106.5,
             6809.8,
-            8114.4
+            8089.7
           ],
           "channel_lower": [
             null,
@@ -83616,12 +85401,99 @@
             3665.9,
             4178.0,
             5571.7,
-            6639.1
+            6618.8
+          ],
+          "high_52w": 40350.0,
+          "low_52w": 3320.0,
+          "latest_price": 27100.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            5890.0,
+            5600.0,
+            5080.0,
+            5920.0,
+            5390.0,
+            4740.0,
+            4985.0,
+            5770.0,
+            4180.0,
+            4145.0,
+            3105.0,
+            3820.0,
+            27100.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 40350.0,
           "low_52w": 2250.0,
-          "latest_price": 27550.0
+          "latest_price": 27100.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 21
     },
@@ -83658,6 +85530,8 @@
           "start_i": 285,
           "latest_price": 86700.0,
           "ratio_pct": 213.0,
+          "drawdown_after_c": -12.3,
+          "is_valid_c": true,
           "a_date": "2019-10-04",
           "a_price": 21700.0,
           "a_pos": 0.034,
@@ -85220,7 +87094,7 @@
           "latest_price": 86700.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -86827,11 +88701,11 @@
             96579.0
           ],
           "high_52w": 172200.0,
-          "low_52w": 23300.0,
+          "low_52w": 61000.0,
           "latest_price": 86700.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -87583,9 +89457,96 @@
             82361.2
           ],
           "high_52w": 172200.0,
+          "low_52w": 61600.0,
+          "latest_price": 86700.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            25050.0,
+            27550.0,
+            40500.0,
+            47500.0,
+            27350.0,
+            23800.0,
+            27950.0,
+            31150.0,
+            33650.0,
+            39200.0,
+            49950.0,
+            106500.0,
+            86700.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "high_52w": 172200.0,
           "low_52w": 13500.0,
           "latest_price": 86700.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 22
     },
@@ -87599,7 +89560,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 30,
       "is_china_play": true,
-      "avg_ratio_pct": 115.0,
+      "avg_ratio_pct": 115.2,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 77.84,
@@ -87619,8 +89580,10 @@
           "c_pos": 0.726,
           "win_size": 800,
           "start_i": 400,
-          "latest_price": 110100.0,
-          "ratio_pct": 115.0,
+          "latest_price": 110200.0,
+          "ratio_pct": 115.2,
+          "drawdown_after_c": -1.2,
+          "is_valid_c": true,
           "a_date": "2023-09-11",
           "a_price": 78700.0,
           "a_pos": 0.217,
@@ -89181,10 +91144,10 @@
           ],
           "high_52w": 177100.0,
           "low_52w": 50000.0,
-          "latest_price": 110100.0
+          "latest_price": 110200.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -90791,11 +92754,11 @@
             98325.0
           ],
           "high_52w": 177100.0,
-          "low_52w": 50000.0,
-          "latest_price": 110100.0
+          "low_52w": 50700.0,
+          "latest_price": 110200.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -91094,7 +93057,7 @@
             110000.0,
             105300.0,
             134500.0,
-            110100.0
+            110200.0
           ],
           "ma20": [
             null,
@@ -91244,7 +93207,7 @@
             66700.0,
             68570.0,
             72175.0,
-            74620.0
+            74625.0
           ],
           "channel_upper": [
             null,
@@ -91394,7 +93357,7 @@
             73370.0,
             75427.0,
             79392.5,
-            82082.0
+            82087.5
           ],
           "channel_lower": [
             null,
@@ -91544,12 +93507,99 @@
             60030.0,
             61713.0,
             64957.5,
-            67158.0
+            67162.5
+          ],
+          "high_52w": 177100.0,
+          "low_52w": 54500.0,
+          "latest_price": 110200.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            48400.0,
+            79400.0,
+            84700.0,
+            117000.0,
+            97700.0,
+            95300.0,
+            69200.0,
+            85700.0,
+            83400.0,
+            69600.0,
+            54800.0,
+            83000.0,
+            110200.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 177100.0,
           "low_52w": 37500.0,
-          "latest_price": 110100.0
+          "latest_price": 110200.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 23
     },
@@ -91586,6 +93636,8 @@
           "start_i": 285,
           "latest_price": 6030.0,
           "ratio_pct": 68.0,
+          "drawdown_after_c": -8.5,
+          "is_valid_c": true,
           "a_date": "2019-10-04",
           "a_price": 4385.0,
           "a_pos": 0.023,
@@ -93148,7 +95200,7 @@
           "latest_price": 6030.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -94754,12 +96806,12 @@
             4373.1,
             4561.2
           ],
-          "high_52w": 8390.0,
-          "low_52w": 3005.0,
+          "high_52w": 6600.0,
+          "low_52w": 3485.0,
           "latest_price": 6030.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -95510,10 +97562,97 @@
             3571.7,
             3663.2
           ],
+          "high_52w": 6600.0,
+          "low_52w": 3485.0,
+          "latest_price": 6030.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            3908.0,
+            3690.0,
+            3985.0,
+            5270.0,
+            4445.0,
+            4545.0,
+            5020.0,
+            5410.0,
+            5730.0,
+            3735.0,
+            3300.0,
+            3850.0,
+            6030.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
           "high_52w": 8920.0,
           "low_52w": 0.0,
           "latest_price": 6030.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 24
     },
@@ -95551,6 +97690,8 @@
           "start_i": 24,
           "latest_price": 264500.0,
           "ratio_pct": 338.6,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2019-11-30",
           "a_price": 69200.0,
           "a_pos": 0.082,
@@ -97112,7 +99253,7 @@
           "latest_price": 264500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2017-05-12",
             "2017-05-19",
@@ -99479,11 +101620,11 @@
             236070.0
           ],
           "high_52w": 333000.0,
-          "low_52w": 45500.0,
+          "low_52w": 84300.0,
           "latest_price": 264500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2017-05-31",
             "2017-06-30",
@@ -100040,9 +102181,81 @@
             141786.0
           ],
           "high_52w": 333000.0,
+          "low_52w": 106700.0,
+          "latest_price": 264500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            76200.0,
+            69200.0,
+            67600.0,
+            56700.0,
+            53700.0,
+            57100.0,
+            63300.0,
+            79200.0,
+            188500.0,
+            264500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "high_52w": 333000.0,
           "low_52w": 0.0,
           "latest_price": 264500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 9.1,
+        "monthly_years": 9.1,
+        "yearly_years": 10
       },
       "rank": 25
     },
@@ -100056,7 +102269,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 2044.4,
+      "avg_ratio_pct": 2051.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 6.73,
@@ -100077,8 +102290,10 @@
           "c_pos": 0.665,
           "win_size": 300,
           "start_i": 240,
-          "latest_price": 289500.0,
-          "ratio_pct": 2044.4,
+          "latest_price": 290500.0,
+          "ratio_pct": 2051.9,
+          "drawdown_after_c": -20.0,
+          "is_valid_c": false,
           "a_date": "2019-01-11",
           "a_price": 3680.0,
           "a_pos": 0.044,
@@ -101638,10 +103853,10 @@
           ],
           "high_52w": 426000.0,
           "low_52w": 77000.0,
-          "latest_price": 289500.0
+          "latest_price": 290500.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -103248,11 +105463,11 @@
             237730.5
           ],
           "high_52w": 426000.0,
-          "low_52w": 0.0,
-          "latest_price": 289500.0
+          "low_52w": 78600.0,
+          "latest_price": 290500.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -103551,7 +105766,7 @@
             323500.0,
             251000.0,
             368000.0,
-            289500.0
+            290500.0
           ],
           "ma20": [
             null,
@@ -103701,7 +105916,7 @@
             117055.0,
             123045.0,
             135720.0,
-            144780.0
+            144830.0
           ],
           "channel_upper": [
             null,
@@ -103851,7 +106066,7 @@
             128760.5,
             135349.5,
             149292.0,
-            159258.0
+            159313.0
           ],
           "channel_lower": [
             null,
@@ -104001,12 +106216,99 @@
             105349.5,
             110740.5,
             122148.0,
-            130302.0
+            130347.0
+          ],
+          "high_52w": 426000.0,
+          "low_52w": 79800.0,
+          "latest_price": 290500.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            3240.0,
+            2500.0,
+            3090.0,
+            5925.0,
+            3890.0,
+            4050.0,
+            9050.0,
+            18925.0,
+            11500.0,
+            61700.0,
+            82500.0,
+            127400.0,
+            290500.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 426000.0,
           "low_52w": 0.0,
-          "latest_price": 289500.0
+          "latest_price": 290500.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 26
     },
@@ -104020,7 +106322,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 66.0,
+      "avg_ratio_pct": 66.1,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 38.32,
@@ -104041,8 +106343,10 @@
           "c_pos": 0.765,
           "win_size": 200,
           "start_i": 435,
-          "latest_price": 154500.0,
-          "ratio_pct": 66.0,
+          "latest_price": 154600.0,
+          "ratio_pct": 66.1,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2022-08-05",
           "a_price": 80500.0,
           "a_pos": 0.022,
@@ -105602,10 +107906,10 @@
           ],
           "high_52w": 212500.0,
           "low_52w": 86200.0,
-          "latest_price": 154500.0
+          "latest_price": 154600.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -107212,11 +109516,11 @@
             142267.5
           ],
           "high_52w": 212500.0,
-          "low_52w": 59300.0,
-          "latest_price": 154500.0
+          "low_52w": 86200.0,
+          "latest_price": 154600.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -107515,7 +109819,7 @@
             205500.0,
             145200.0,
             151800.0,
-            154500.0
+            154600.0
           ],
           "ma20": [
             null,
@@ -107665,7 +109969,7 @@
             109525.0,
             111180.0,
             113465.0,
-            116195.0
+            116200.0
           ],
           "channel_upper": [
             null,
@@ -107815,7 +110119,7 @@
             120477.5,
             122298.0,
             124811.5,
-            127814.5
+            127820.0
           ],
           "channel_lower": [
             null,
@@ -107965,12 +110269,99 @@
             98572.5,
             100062.0,
             102118.5,
-            104575.5
+            104580.0
+          ],
+          "high_52w": 212500.0,
+          "low_52w": 88100.0,
+          "latest_price": 154600.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            52300.0,
+            52600.0,
+            39250.0,
+            33500.0,
+            33700.0,
+            44300.0,
+            62400.0,
+            82200.0,
+            59300.0,
+            100000.0,
+            100700.0,
+            121800.0,
+            154600.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 212500.0,
           "low_52w": 21500.0,
-          "latest_price": 154500.0
+          "latest_price": 154600.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 27
     },
@@ -107984,7 +110375,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 133.6,
+      "avg_ratio_pct": 134.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 41.12,
@@ -107994,7 +110385,7 @@
         "foreign_data_points": 5,
         "ma20_crossings": 22,
         "ma20_stealth": false,
-        "price_range_pct": 103.9
+        "price_range_pct": 103.8
       },
       "frames": {
         "daily": null,
@@ -108005,8 +110396,10 @@
           "c_pos": 0.726,
           "win_size": 200,
           "start_i": 405,
-          "latest_price": 522000.0,
-          "ratio_pct": 133.6,
+          "latest_price": 524000.0,
+          "ratio_pct": 134.5,
+          "drawdown_after_c": -2.9,
+          "is_valid_c": true,
           "a_date": "2022-04-29",
           "a_price": 207500.0,
           "a_pos": 0.103,
@@ -109566,10 +111959,10 @@
           ],
           "high_52w": 687000.0,
           "low_52w": 240000.0,
-          "latest_price": 522000.0
+          "latest_price": 524000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -111176,11 +113569,11 @@
             395437.5
           ],
           "high_52w": 687000.0,
-          "low_52w": 189500.0,
-          "latest_price": 522000.0
+          "low_52w": 240000.0,
+          "latest_price": 524000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -111479,7 +113872,7 @@
             517000.0,
             378000.0,
             425000.0,
-            522000.0
+            524000.0
           ],
           "ma20": [
             null,
@@ -111629,7 +114022,7 @@
             291700.0,
             299575.0,
             309950.0,
-            325175.0
+            325275.0
           ],
           "channel_upper": [
             null,
@@ -111779,7 +114172,7 @@
             320870.0,
             329532.5,
             340945.0,
-            357692.5
+            357802.5
           ],
           "channel_lower": [
             null,
@@ -111929,12 +114322,99 @@
             262530.0,
             269617.5,
             278955.0,
-            292657.5
+            292747.5
+          ],
+          "high_52w": 687000.0,
+          "low_52w": 245000.0,
+          "latest_price": 524000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            236000.0,
+            246500.0,
+            264000.0,
+            263000.0,
+            190000.0,
+            256000.0,
+            255500.0,
+            254500.0,
+            200500.0,
+            237000.0,
+            236500.0,
+            373000.0,
+            524000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 687000.0,
           "low_52w": 126000.0,
-          "latest_price": 522000.0
+          "latest_price": 524000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 28
     },
@@ -111948,7 +114428,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 234.2,
+      "avg_ratio_pct": 235.0,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 26.82,
@@ -111969,8 +114449,10 @@
           "c_pos": 0.759,
           "win_size": 300,
           "start_i": 300,
-          "latest_price": 162400.0,
-          "ratio_pct": 234.2,
+          "latest_price": 162800.0,
+          "ratio_pct": 235.0,
+          "drawdown_after_c": 0.0,
+          "is_valid_c": true,
           "a_date": "2020-01-31",
           "a_price": 30100.0,
           "a_pos": 0.027,
@@ -113530,10 +116012,10 @@
           ],
           "high_52w": 215500.0,
           "low_52w": 82250.0,
-          "latest_price": 162400.0
+          "latest_price": 162800.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -115140,11 +117622,11 @@
             154597.5
           ],
           "high_52w": 215500.0,
-          "low_52w": 26850.0,
-          "latest_price": 162400.0
+          "low_52w": 82250.0,
+          "latest_price": 162800.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -115443,7 +117925,7 @@
             191500.0,
             164700.0,
             169000.0,
-            162400.0
+            162800.0
           ],
           "ma20": [
             null,
@@ -115593,7 +118075,7 @@
             88350.0,
             93735.0,
             99470.0,
-            104985.0
+            105005.0
           ],
           "channel_upper": [
             null,
@@ -115743,7 +118225,7 @@
             97185.0,
             103108.5,
             109417.0,
-            115483.5
+            115505.5
           ],
           "channel_lower": [
             null,
@@ -115893,12 +118375,99 @@
             79515.0,
             84361.5,
             89523.0,
-            94486.5
+            94504.5
+          ],
+          "high_52w": 215500.0,
+          "low_52w": 83000.0,
+          "latest_price": 162800.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            39800.0,
+            78100.0,
+            67000.0,
+            47450.0,
+            31900.0,
+            34050.0,
+            25800.0,
+            32450.0,
+            50900.0,
+            50000.0,
+            54900.0,
+            114400.0,
+            162800.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 215500.0,
           "low_52w": 0.0,
-          "latest_price": 162400.0
+          "latest_price": 162800.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 29
     },
@@ -115912,7 +118481,7 @@
       "verdict": "🔥 이미 폭발 (검증)",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 965.4,
+      "avg_ratio_pct": 966.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 23.18,
@@ -115933,8 +118502,10 @@
           "c_pos": 0.744,
           "win_size": 200,
           "start_i": 255,
-          "latest_price": 864000.0,
-          "ratio_pct": 965.4,
+          "latest_price": 865000.0,
+          "ratio_pct": 966.6,
+          "drawdown_after_c": -10.5,
+          "is_valid_c": true,
           "a_date": "2020-08-28",
           "a_price": 31750.0,
           "a_pos": 0.003,
@@ -117494,10 +120065,10 @@
           ],
           "high_52w": 1118000.0,
           "low_52w": 326500.0,
-          "latest_price": 864000.0
+          "latest_price": 865000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2015-10-02",
             "2015-10-09",
@@ -118610,7 +121181,7 @@
             941000.0,
             840000.0,
             834000.0,
-            864000.0
+            865000.0
           ],
           "ma20": [
             null,
@@ -119167,7 +121738,7 @@
             638100.0,
             659300.0,
             681100.0,
-            702350.0
+            702400.0
           ],
           "channel_upper": [
             null,
@@ -119724,7 +122295,7 @@
             701910.0,
             725230.0,
             749210.0,
-            772585.0
+            772640.0
           ],
           "channel_lower": [
             null,
@@ -120281,14 +122852,14 @@
             574290.0,
             593370.0,
             612990.0,
-            632115.0
+            632160.0
           ],
           "high_52w": 1118000.0,
-          "low_52w": 41850.0,
-          "latest_price": 864000.0
+          "low_52w": 360000.0,
+          "latest_price": 865000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2015-10-31",
             "2015-11-30",
@@ -120547,7 +123118,7 @@
             509000.0,
             611000.0,
             941000.0,
-            864000.0
+            865000.0
           ],
           "ma20": [
             null,
@@ -120677,7 +123248,7 @@
             362505.0,
             383055.0,
             420355.0,
-            453005.0
+            453055.0
           ],
           "channel_upper": [
             null,
@@ -120807,7 +123378,7 @@
             398755.5,
             421360.5,
             462390.5,
-            498305.5
+            498360.5
           ],
           "channel_lower": [
             null,
@@ -120937,12 +123508,94 @@
             326254.5,
             344749.5,
             378319.5,
-            407704.5
+            407749.5
+          ],
+          "high_52w": 1118000.0,
+          "low_52w": 360000.0,
+          "latest_price": 865000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            103500.0,
+            80500.0,
+            59800.0,
+            36950.0,
+            31600.0,
+            30500.0,
+            68600.0,
+            92200.0,
+            130500.0,
+            220500.0,
+            421000.0,
+            865000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 1118000.0,
           "low_52w": 15600.0,
-          "latest_price": 864000.0
+          "latest_price": 865000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 10.7,
+        "monthly_years": 10.7,
+        "yearly_years": 12
       },
       "rank": 30
     },
@@ -120977,8 +123630,10 @@
           "c_pos": 0.896,
           "win_size": 200,
           "start_i": 270,
-          "latest_price": 81500.0,
+          "latest_price": 81400.0,
           "ratio_pct": -44.3,
+          "drawdown_after_c": -62.7,
+          "is_valid_c": false,
           "a_date": "2020-01-03",
           "a_price": 205741.0,
           "a_pos": 0.175,
@@ -122538,10 +125193,10 @@
           ],
           "high_52w": 119500.0,
           "low_52w": 55400.0,
-          "latest_price": 81500.0
+          "latest_price": 81400.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -124147,12 +126802,12 @@
             73584.0,
             75505.5
           ],
-          "high_52w": 261939.0,
-          "low_52w": 51800.0,
-          "latest_price": 81500.0
+          "high_52w": 119500.0,
+          "low_52w": 56300.0,
+          "latest_price": 81400.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -124451,7 +127106,7 @@
             95900.0,
             80600.0,
             113900.0,
-            81500.0
+            81400.0
           ],
           "ma20": [
             null,
@@ -124601,7 +127256,7 @@
             72945.0,
             71905.0,
             73465.0,
-            72465.0
+            72460.0
           ],
           "channel_upper": [
             null,
@@ -124751,7 +127406,7 @@
             80239.5,
             79095.5,
             80811.5,
-            79711.5
+            79706.0
           ],
           "channel_lower": [
             null,
@@ -124901,12 +127556,99 @@
             65650.5,
             64714.5,
             66118.5,
-            65218.5
+            65214.0
+          ],
+          "high_52w": 119500.0,
+          "low_52w": 58100.0,
+          "latest_price": 81400.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            152401.0,
+            231935.0,
+            351475.0,
+            350522.0,
+            263844.0,
+            213361.0,
+            262892.0,
+            206694.0,
+            178500.0,
+            153200.0,
+            59800.0,
+            70300.0,
+            81400.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 452440.0,
           "low_52w": 51800.0,
-          "latest_price": 81500.0
+          "latest_price": 81400.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 31
     },
@@ -124920,7 +127662,7 @@
       "verdict": "❌ 약함",
       "accumulation_score": 15,
       "is_china_play": true,
-      "avg_ratio_pct": -20.6,
+      "avg_ratio_pct": -21.0,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 14.58,
@@ -124941,8 +127683,10 @@
           "c_pos": 0.884,
           "win_size": 200,
           "start_i": 285,
-          "latest_price": 120300.0,
-          "ratio_pct": -20.6,
+          "latest_price": 119700.0,
+          "ratio_pct": -21.0,
+          "drawdown_after_c": -46.5,
+          "is_valid_c": false,
           "a_date": "2019-10-25",
           "a_price": 159400.0,
           "a_pos": 0.046,
@@ -126502,10 +129246,10 @@
           ],
           "high_52w": 155400.0,
           "low_52w": 80800.0,
-          "latest_price": 120300.0
+          "latest_price": 119700.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -128111,12 +130855,12 @@
             104611.5,
             106821.0
           ],
-          "high_52w": 274029.0,
-          "low_52w": 80800.0,
-          "latest_price": 120300.0
+          "high_52w": 155400.0,
+          "low_52w": 80900.0,
+          "latest_price": 119700.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -128415,7 +131159,7 @@
             127700.0,
             108700.0,
             146200.0,
-            120300.0
+            119700.0
           ],
           "ma20": [
             null,
@@ -128565,7 +131309,7 @@
             112065.0,
             112290.0,
             114100.0,
-            114260.0
+            114230.0
           ],
           "channel_upper": [
             null,
@@ -128715,7 +131459,7 @@
             123271.5,
             123519.0,
             125510.0,
-            125686.0
+            125653.0
           ],
           "channel_lower": [
             null,
@@ -128865,12 +131609,99 @@
             100858.5,
             101061.0,
             102690.0,
-            102834.0
+            102807.0
+          ],
+          "high_52w": 155400.0,
+          "low_52w": 87000.0,
+          "latest_price": 119700.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            83734.0,
+            127913.0,
+            144148.0,
+            201218.0,
+            176619.0,
+            147592.0,
+            186950.0,
+            234672.0,
+            151528.0,
+            140300.0,
+            112000.0,
+            101200.0,
+            119700.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 322243.0,
           "low_52w": 54215.0,
-          "latest_price": 120300.0
+          "latest_price": 119700.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 32
     },
@@ -128905,8 +131736,10 @@
           "c_pos": 0.86,
           "win_size": 200,
           "start_i": 270,
-          "latest_price": 348500.0,
+          "latest_price": 349000.0,
           "ratio_pct": -45.5,
+          "drawdown_after_c": -71.5,
+          "is_valid_c": false,
           "a_date": "2019-06-28",
           "a_price": 354500.0,
           "a_pos": 0.039,
@@ -130466,10 +133299,10 @@
           ],
           "high_52w": 437500.0,
           "low_52w": 181500.0,
-          "latest_price": 348500.0
+          "latest_price": 349000.0
         },
         "weekly": {
-          "label": "주봉 8년",
+          "label": "주봉",
           "dates": [
             "2014-02-28",
             "2014-03-14",
@@ -132075,12 +134908,12 @@
             303772.5,
             309577.5
           ],
-          "high_52w": 910000.0,
+          "high_52w": 437500.0,
           "low_52w": 181500.0,
-          "latest_price": 348500.0
+          "latest_price": 349000.0
         },
         "monthly": {
-          "label": "월봉 15년",
+          "label": "월봉",
           "dates": [
             "2014-02-28",
             "2014-03-31",
@@ -132379,7 +135212,7 @@
             417500.0,
             299000.0,
             397000.0,
-            348500.0
+            349000.0
           ],
           "ma20": [
             null,
@@ -132529,7 +135362,7 @@
             293115.0,
             292790.0,
             296565.0,
-            296165.0
+            296190.0
           ],
           "channel_upper": [
             null,
@@ -132679,7 +135512,7 @@
             322426.5,
             322069.0,
             326221.5,
-            325781.5
+            325809.0
           ],
           "channel_lower": [
             null,
@@ -132829,12 +135662,99 @@
             263803.5,
             263511.0,
             266908.5,
-            266548.5
+            266571.0
+          ],
+          "high_52w": 437500.0,
+          "low_52w": 193900.0,
+          "latest_price": 349000.0
+        },
+        "yearly": {
+          "label": "연봉",
+          "dates": [
+            "2014-12-31",
+            "2015-12-31",
+            "2016-12-31",
+            "2017-12-31",
+            "2018-12-31",
+            "2019-12-31",
+            "2020-12-31",
+            "2021-12-31",
+            "2022-12-31",
+            "2023-12-31",
+            "2024-12-31",
+            "2025-12-31",
+            "2026-12-31"
+          ],
+          "closes": [
+            181000.0,
+            328500.0,
+            261000.0,
+            405000.0,
+            347000.0,
+            317500.0,
+            824000.0,
+            615000.0,
+            600000.0,
+            499000.0,
+            250000.0,
+            333000.0,
+            349000.0
+          ],
+          "ma20": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_upper": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "channel_lower": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
           ],
           "high_52w": 1050000.0,
           "low_52w": 163000.0,
-          "latest_price": 348500.0
+          "latest_price": 349000.0
         }
+      },
+      "data_info": {
+        "daily_years": 4.9,
+        "weekly_years": 12.3,
+        "monthly_years": 12.3,
+        "yearly_years": 13
       },
       "rank": 33
     }
