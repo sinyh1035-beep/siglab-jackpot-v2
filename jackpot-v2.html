@@ -1,19 +1,12 @@
-<!-- ============================================================
-  SIGVIEW 잭팟 시즌2 v2.0 - WPCode 위젯
-  
-  설치:
-  1. WPCode → + Add Snippet → Add Your Custom Code
-  2. Title: SIGVIEW 잭팟 시즌2 v2.0
-  3. Code Type: HTML Snippet
-  4. 아래 전체 붙여넣기
-  5. Insertion: Shortcode → Active ON → Save
-  6. 새 페이지 생성 → 슬러그: tools-jackpot-v2 → 단축코드만 → 게시
-============================================================ -->
-
-<div id="jackpot-v2-root">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGVIEW 잭팟 시즌2 v2.0 — 4차함수 c자리</title>
 <style>
-#jackpot-v2-root *,#jackpot-v2-root *::before,#jackpot-v2-root *::after{box-sizing:border-box}
-#jackpot-v2-root{
+*,*::before,*::after{box-sizing:border-box}
+body{
   --bg:#0f1117;--bg2:#1a1c25;--bg3:#252731;
   --txt:#e8e9ed;--txt2:#a0a3ad;--txt3:#6e7280;
   --border:rgba(255,255,255,0.08);--accent:#ec4899;
@@ -23,95 +16,93 @@
   color:var(--txt);background:var(--bg);max-width:1000px;margin:0 auto;
   padding:24px 16px 80px;line-height:1.6;-webkit-font-smoothing:antialiased;
 }
-#jackpot-v2-root .v2-header{margin-bottom:20px}
-#jackpot-v2-root .v2-brand{font-size:11px;color:var(--txt3);letter-spacing:1.5px;margin-bottom:4px}
-#jackpot-v2-root h1.v2-title{font-size:26px;font-weight:700;margin:0 0 4px;color:#fff}
-#jackpot-v2-root .v2-subtitle{font-size:13px;color:var(--txt2);margin-bottom:4px}
-#jackpot-v2-root .v2-philosophy{font-size:12px;color:var(--txt3);font-style:italic}
-#jackpot-v2-root .v2-updated{font-size:11px;color:var(--txt3);margin-top:6px}
-#jackpot-v2-root .v2-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0}
-#jackpot-v2-root .v2-stat{background:var(--bg2);border-radius:8px;padding:12px 8px;text-align:center}
-#jackpot-v2-root .v2-stat-label{font-size:10px;color:var(--txt2);margin-bottom:4px}
-#jackpot-v2-root .v2-stat-value{font-size:22px;font-weight:700;color:#fff}
-#jackpot-v2-root .v2-stat-value.hi{color:var(--gold)}
-#jackpot-v2-root .v2-filter-row{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
-#jackpot-v2-root .v2-filter-btn{padding:6px 12px;border:1px solid var(--border);background:var(--bg2);
+.v2-header{margin-bottom:20px}
+.v2-brand{font-size:11px;color:var(--txt3);letter-spacing:1.5px;margin-bottom:4px}
+h1.v2-title{font-size:26px;font-weight:700;margin:0 0 4px;color:#fff}
+.v2-subtitle{font-size:13px;color:var(--txt2);margin-bottom:4px}
+.v2-philosophy{font-size:12px;color:var(--txt3);font-style:italic}
+.v2-updated{font-size:11px;color:var(--txt3);margin-top:6px}
+.v2-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0}
+.v2-stat{background:var(--bg2);border-radius:8px;padding:12px 8px;text-align:center}
+.v2-stat-label{font-size:10px;color:var(--txt2);margin-bottom:4px}
+.v2-stat-value{font-size:22px;font-weight:700;color:#fff}
+.v2-stat-value.hi{color:var(--gold)}
+.v2-filter-row{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+.v2-filter-btn{padding:6px 12px;border:1px solid var(--border);background:var(--bg2);
   border-radius:18px;font-size:12px;cursor:pointer;color:var(--txt2)}
-#jackpot-v2-root .v2-filter-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-#jackpot-v2-root .v2-section-title{font-size:17px;font-weight:600;margin:28px 0 4px;color:#fff}
-#jackpot-v2-root .v2-section-desc{font-size:12px;color:var(--txt2);margin-bottom:14px}
-#jackpot-v2-root .v2-card{border-radius:12px;padding:14px 16px;margin-bottom:10px;
+.v2-filter-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.v2-card{border-radius:12px;padding:14px 16px;margin-bottom:10px;
   border:1px solid var(--border);background:var(--bg2);cursor:pointer;
   transition:transform .1s,box-shadow .1s}
-#jackpot-v2-root .v2-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4)}
-#jackpot-v2-root .v2-card.sss{border-color:var(--sss);background:rgba(236,72,153,0.08)}
-#jackpot-v2-root .v2-card.ss{border-color:var(--ss);background:rgba(245,158,11,0.08)}
-#jackpot-v2-root .v2-card.s{border-color:var(--s);background:rgba(59,130,246,0.08)}
-#jackpot-v2-root .v2-card.a{border-color:var(--a);background:rgba(132,204,22,0.06)}
-#jackpot-v2-root .v2-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
-#jackpot-v2-root .v2-name-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-#jackpot-v2-root .v2-name{font-weight:600;font-size:16px;color:#fff}
-#jackpot-v2-root .v2-code{font-size:11px;color:var(--txt3)}
-#jackpot-v2-root .v2-stars{font-size:13px;color:var(--gold);white-space:nowrap;font-weight:600}
-#jackpot-v2-root .v2-grade{display:inline-block;font-weight:700;font-size:11px;padding:2px 7px;border-radius:4px;color:#fff}
-#jackpot-v2-root .v2-grade.sss{background:var(--sss)}
-#jackpot-v2-root .v2-grade.ss{background:var(--ss);color:#000}
-#jackpot-v2-root .v2-grade.s{background:var(--s)}
-#jackpot-v2-root .v2-grade.a{background:var(--a);color:#000}
-#jackpot-v2-root .v2-grade.b{background:var(--b)}
-#jackpot-v2-root .v2-golden-tag{font-size:10px;font-weight:600;background:rgba(251,191,36,0.2);
+.v2-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.v2-card.sss{border-color:var(--sss);background:rgba(236,72,153,0.08)}
+.v2-card.ss{border-color:var(--ss);background:rgba(245,158,11,0.08)}
+.v2-card.s{border-color:var(--s);background:rgba(59,130,246,0.08)}
+.v2-card.a{border-color:var(--a);background:rgba(132,204,22,0.06)}
+.v2-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+.v2-name-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.v2-name{font-weight:600;font-size:16px;color:#fff}
+.v2-code{font-size:11px;color:var(--txt3)}
+.v2-stars{font-size:13px;color:var(--gold);white-space:nowrap;font-weight:600}
+.v2-grade{display:inline-block;font-weight:700;font-size:11px;padding:2px 7px;border-radius:4px;color:#fff}
+.v2-grade.sss{background:var(--sss)}
+.v2-grade.ss{background:var(--ss);color:#000}
+.v2-grade.s{background:var(--s)}
+.v2-grade.a{background:var(--a);color:#000}
+.v2-grade.b{background:var(--b)}
+.v2-golden-tag{font-size:10px;font-weight:600;background:rgba(251,191,36,0.2);
   color:var(--gold);padding:1px 6px;border-radius:3px}
-#jackpot-v2-root .v2-sub{font-size:12px;color:var(--txt2);margin-bottom:8px}
-#jackpot-v2-root .v2-meta{font-size:11px;color:var(--txt2);line-height:1.7}
-#jackpot-v2-root .v2-score{display:inline-block;font-weight:700;font-size:14px;
+.v2-sub{font-size:12px;color:var(--txt2);margin-bottom:8px}
+.v2-meta{font-size:11px;color:var(--txt2);line-height:1.7}
+.v2-score{display:inline-block;font-weight:700;font-size:14px;
   background:rgba(255,255,255,0.08);padding:2px 10px;border-radius:10px;margin-left:4px;color:#fff}
-#jackpot-v2-root .v2-mults{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;
-  margin-top:6px;font-size:11px}
-#jackpot-v2-root .v2-mult{display:flex;justify-content:space-between}
-#jackpot-v2-root .v2-mult-label{opacity:.7}
-#jackpot-v2-root .v2-mult-value{font-weight:600;color:#fff}
-#jackpot-v2-root .v2-hint{text-align:right;font-size:10px;opacity:.6;margin-top:4px}
-#jackpot-v2-root .v2-disclaimer{margin-top:32px;padding:16px;background:var(--bg2);
+.v2-mults{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;margin-top:6px;font-size:11px}
+.v2-mult{display:flex;justify-content:space-between}
+.v2-mult-label{opacity:.7}
+.v2-mult-value{font-weight:600;color:#fff}
+.v2-hint{text-align:right;font-size:10px;opacity:.6;margin-top:4px}
+.v2-disclaimer{margin-top:32px;padding:16px;background:var(--bg2);
   border-radius:8px;font-size:11px;color:var(--txt3);line-height:1.7}
-#jackpot-v2-root .v2-loading,#jackpot-v2-root .v2-error{text-align:center;padding:40px 20px;
-  color:var(--txt2);font-size:14px}
-#jackpot-v2-root .v2-error{color:#ef4444}
+.v2-loading,.v2-error{text-align:center;padding:40px 20px;color:var(--txt2);font-size:14px}
+.v2-error{color:#ef4444}
 
 #jackpot-v2-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;
   background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;padding:12px}
 #jackpot-v2-modal.open{display:flex}
-#jackpot-v2-modal .v2-modal{background:var(--bg);border:1px solid var(--border);
+.v2-modal{background:var(--bg);border:1px solid var(--border);
   border-radius:12px;max-width:1100px;width:100%;max-height:95vh;overflow-y:auto;
   padding:20px;position:relative;color:var(--txt)}
-#jackpot-v2-modal .v2-close{position:absolute;top:12px;right:16px;background:none;border:none;
+.v2-close{position:absolute;top:12px;right:16px;background:none;border:none;
   font-size:28px;color:var(--txt2);cursor:pointer;z-index:2;line-height:1}
-#jackpot-v2-modal h2{font-size:19px;padding-right:30px;margin:0;color:#fff}
-#jackpot-v2-modal .v2-modal-sub{font-size:12px;color:var(--txt2);margin:4px 0 14px}
-#jackpot-v2-modal .v2-tabs{display:flex;gap:6px;margin-bottom:10px}
-#jackpot-v2-modal .v2-tab{flex:1;padding:10px 12px;border:1px solid var(--border);
+.v2-modal h2{font-size:19px;padding-right:30px;margin:0;color:#fff}
+.v2-modal-sub{font-size:12px;color:var(--txt2);margin:4px 0 14px}
+.v2-tabs{display:flex;gap:6px;margin-bottom:10px}
+.v2-tab{flex:1;padding:10px 12px;border:1px solid var(--border);
   background:var(--bg2);border-radius:6px;font-size:13px;cursor:pointer;color:var(--txt);font-weight:500}
-#jackpot-v2-modal .v2-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-#jackpot-v2-modal .v2-ctrls{display:flex;gap:8px;margin-bottom:10px;align-items:center;justify-content:flex-end}
-#jackpot-v2-modal .v2-ctrl{padding:5px 12px;border:1px solid var(--border);background:var(--bg2);
+.v2-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.v2-ctrls{display:flex;gap:8px;margin-bottom:10px;align-items:center;justify-content:flex-end}
+.v2-ctrl{padding:5px 12px;border:1px solid var(--border);background:var(--bg2);
   border-radius:6px;font-size:11px;cursor:pointer;color:var(--txt)}
-#jackpot-v2-modal .v2-ctrl.on{background:var(--gold);color:#000;border-color:var(--gold)}
-#jackpot-v2-modal .v2-chart{height:480px;position:relative}
-#jackpot-v2-modal .v2-zoom-hint{font-size:10px;color:var(--txt3);text-align:center;margin-top:6px}
-#jackpot-v2-modal .v2-info{margin-top:14px;padding:14px;background:var(--bg2);
+.v2-ctrl.on{background:var(--gold);color:#000;border-color:var(--gold)}
+.v2-chart{height:480px;position:relative}
+.v2-zoom-hint{font-size:10px;color:var(--txt3);text-align:center;margin-top:6px}
+.v2-info{margin-top:14px;padding:14px;background:var(--bg2);
   border-radius:8px;font-size:12px;color:var(--txt2);line-height:1.9}
-#jackpot-v2-modal .v2-info strong{color:var(--txt)}
+.v2-info strong{color:var(--txt)}
 
 @media(max-width:480px){
-  #jackpot-v2-root h1.v2-title{font-size:22px}
-  #jackpot-v2-root .v2-stats{grid-template-columns:repeat(4,1fr);gap:5px}
-  #jackpot-v2-root .v2-stat{padding:8px 4px}
-  #jackpot-v2-root .v2-stat-value{font-size:16px}
-  #jackpot-v2-root .v2-mults{grid-template-columns:repeat(2,1fr)}
-  #jackpot-v2-modal .v2-chart{height:400px}
-  #jackpot-v2-modal .v2-modal{padding:14px}
-  #jackpot-v2-modal h2{font-size:16px}
+  h1.v2-title{font-size:22px}
+  .v2-stats{grid-template-columns:repeat(4,1fr);gap:5px}
+  .v2-stat{padding:8px 4px}
+  .v2-stat-value{font-size:16px}
+  .v2-mults{grid-template-columns:repeat(2,1fr)}
+  .v2-chart{height:400px}
+  .v2-modal{padding:14px}
+  .v2-modal h2{font-size:16px}
 }
 </style>
+</head>
+<body>
 
 <div class="v2-header">
   <div class="v2-brand">SIGVIEW · JACKPOT v2.0</div>
@@ -120,6 +111,7 @@
   <div class="v2-philosophy">"f(x)-g(x)=k(x-a)(x-b)(x-c)² 자동 검출 + 외인 동일 포지션 매집"</div>
   <div class="v2-updated" id="v2-updated">데이터 불러오는 중...</div>
 </div>
+
 <div class="v2-stats">
   <div class="v2-stat"><div class="v2-stat-label">🚀 SSS급</div><div class="v2-stat-value hi" id="v2-st-sss">-</div></div>
   <div class="v2-stat"><div class="v2-stat-label">⭐ SS급</div><div class="v2-stat-value" id="v2-st-ss">-</div></div>
@@ -128,34 +120,33 @@
 </div>
 
 <div class="v2-filter-row" id="v2-filters">
-  <button class="v2-filter-btn on" data-filter="all" onclick="window.v2Filter('all')">전체</button>
-  <button class="v2-filter-btn" data-filter="sss" onclick="window.v2Filter('sss')">🚀 SSS</button>
-  <button class="v2-filter-btn" data-filter="ss" onclick="window.v2Filter('ss')">⭐ SS</button>
-  <button class="v2-filter-btn" data-filter="5stars" onclick="window.v2Filter('5stars')">★★★★★</button>
-  <button class="v2-filter-btn" data-filter="4stars" onclick="window.v2Filter('4stars')">★★★★+</button>
-  <button class="v2-filter-btn" data-filter="golden" onclick="window.v2Filter('golden')">★ 골든</button>
+  <button class="v2-filter-btn on" data-filter="all" onclick="v2Filter('all')">전체</button>
+  <button class="v2-filter-btn" data-filter="sss" onclick="v2Filter('sss')">🚀 SSS</button>
+  <button class="v2-filter-btn" data-filter="ss" onclick="v2Filter('ss')">⭐ SS</button>
+  <button class="v2-filter-btn" data-filter="5stars" onclick="v2Filter('5stars')">★★★★★</button>
+  <button class="v2-filter-btn" data-filter="4stars" onclick="v2Filter('4stars')">★★★★+</button>
+  <button class="v2-filter-btn" data-filter="golden" onclick="v2Filter('golden')">★ 골든</button>
 </div>
 
 <div id="v2-content"><div class="v2-loading">데이터 불러오는 중...</div></div>
 
 <div class="v2-disclaimer">
-  <strong>잭팟 v2 점수 = 기러기 × PSR × 외인추세 × 거시갭 × 골든 × <span style="color:#fbbf24">4차함수 c자리</span></strong><br>
-  6중 곱셈 알고리즘 - 시즌1 (5중) + 4차함수 c자리 자동 검출.<br>
+  <strong>잭팟 v2 = 기러기 × PSR × 외인 × 거시갭 × 골든 × <span style="color:#fbbf24">4차함수 c자리</span></strong><br>
+  6중 곱셈 - 시즌1 (5중) + 4차함수 c자리 자동 검출.<br>
   ★★★★★ = 일/주/월 c자리 시간 일치 (최강), ★★★★ = 2개 일치, ★★★ = 1개 검출.<br>
   본 데이터는 분석 참고용이며 투자 권유가 아닙니다. 모든 투자 판단은 본인 책임.<br><br>
   <span id="v2-algo-info"></span>
 </div>
-</div>
 
 <div id="jackpot-v2-modal">
   <div class="v2-modal">
-    <button class="v2-close" onclick="window.v2CloseModal()">×</button>
+    <button class="v2-close" onclick="v2CloseModal()">×</button>
     <h2 id="v2-mt"></h2>
     <div class="v2-modal-sub" id="v2-ms"></div>
     <div class="v2-tabs" id="v2-tabs"></div>
     <div class="v2-ctrls">
-      <button class="v2-ctrl on" id="v2-btn-log" onclick="window.v2ToggleLog()">로그 스케일</button>
-      <button class="v2-ctrl" onclick="window.v2ZoomReset()">↺ 줌 리셋</button>
+      <button class="v2-ctrl on" id="v2-btn-log" onclick="v2ToggleLog()">로그 스케일</button>
+      <button class="v2-ctrl" onclick="v2ZoomReset()">↺ 줌 리셋</button>
     </div>
     <div class="v2-chart"><canvas id="v2-canvas"></canvas></div>
     <div class="v2-zoom-hint">💡 마우스 휠 = 확대/축소 · 드래그 = 좌우 이동</div>
@@ -163,297 +154,281 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 <script>
-(function(){
-  function loadScript(src){
-    return new Promise((res)=>{
-      if(document.querySelector('script[src="'+src+'"]')){res();return}
-      const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=res;
-      document.head.appendChild(s);
-    });
-  }
-  Promise.all([
-    loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js'),
-    loadScript('https://cdn.jsdelivr.net/npm/hammerjs@2.0.8'),
-  ]).then(()=>loadScript('https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js'))
-    .then(()=>{
-      if(window.Chart && window.ChartZoom) Chart.register(window.ChartZoom);
-      init();
-    });
-  
-  const JSON_URL = '/wp-content/data/jackpot-v2.json';
-  let DATA=null, ALL_STOCKS=[], currentChart=null, currentStock=null, currentFrame='w', useLog=true, currentFilter='all';
-  
-  function gradeOf(j){
-    if(j>=200) return 'sss';
-    if(j>=150) return 'ss';
-    if(j>=100) return 's';
-    if(j>=70) return 'a';
-    return 'b';
-  }
-  function gradeLabel(g){
-    return {sss:'🚀 SSS', ss:'⭐ SS', s:'S', a:'A', b:'B'}[g] || 'B';
-  }
-  
-  function renderCard(code, s){
-    const grade = gradeOf(s.j);
-    const stars = '★'.repeat(s.c_stars || 0);
-    const goldenTag = s.golden_2001 ? '<span class="v2-golden-tag">★ 골든</span>' : '';
-    return `<div class="v2-card ${grade}" onclick="window.v2OpenChart('${code}')">
-      <div class="v2-head">
-        <div class="v2-name-row">
-          <span class="v2-name">${s.n}</span>
-          <span class="v2-code">${code}</span>
-          ${goldenTag}
-          <span class="v2-grade ${grade}">${gradeLabel(grade)}</span>
-          <span class="v2-score">${s.j}점</span>
-        </div>
-        <span class="v2-stars">${stars}</span>
+if(window.Chart && window.ChartZoom) Chart.register(window.ChartZoom);
+
+// ★ GitHub Pages 상대 경로 (같은 저장소 루트)
+const JSON_URL = './jackpot-v2.json';
+
+let DATA=null, ALL_STOCKS=[], currentChart=null, currentStock=null, currentFrame='w', useLog=true, currentFilter='all';
+
+function gradeOf(j){
+  if(j>=200) return 'sss';
+  if(j>=150) return 'ss';
+  if(j>=100) return 's';
+  if(j>=70) return 'a';
+  return 'b';
+}
+function gradeLabel(g){
+  return {sss:'🚀 SSS', ss:'⭐ SS', s:'S', a:'A', b:'B'}[g] || 'B';
+}
+
+function renderCard(code, s){
+  const grade = gradeOf(s.j);
+  const stars = '★'.repeat(s.c_stars || 0);
+  const goldenTag = s.golden_2001 ? '<span class="v2-golden-tag">★ 골든</span>' : '';
+  return `<div class="v2-card ${grade}" onclick="v2OpenChart('${code}')">
+    <div class="v2-head">
+      <div class="v2-name-row">
+        <span class="v2-name">${s.n}</span>
+        <span class="v2-code">${code}</span>
+        ${goldenTag}
+        <span class="v2-grade ${grade}">${gradeLabel(grade)}</span>
+        <span class="v2-score">${s.j}점</span>
       </div>
-      <div class="v2-sub">현재가 ${(s.p||0).toLocaleString()}원 · 시총 ${(s.mc/10000).toFixed(1)}조 · 외인 ${s.fr!=null?s.fr+'%':'-'}</div>
-      <div class="v2-meta">
-        <div class="v2-mults">
-          <div class="v2-mult"><span class="v2-mult-label">기러기</span><span class="v2-mult-value">${s.t}점</span></div>
-          <div class="v2-mult"><span class="v2-mult-label">PSR</span><span class="v2-mult-value">×${s.psr_mult}</span></div>
-          <div class="v2-mult"><span class="v2-mult-label">외인</span><span class="v2-mult-value">×${s.accum_mult}</span></div>
-          <div class="v2-mult"><span class="v2-mult-label">거시갭</span><span class="v2-mult-value">×${s.macro_mult}</span></div>
-          <div class="v2-mult"><span class="v2-mult-label">골든</span><span class="v2-mult-value">×${s.golden_mult}</span></div>
-          <div class="v2-mult"><span class="v2-mult-label" style="color:#fbbf24">c자리</span><span class="v2-mult-value" style="color:#fbbf24">×${s.c_mult||1.0}</span></div>
-        </div>
+      <span class="v2-stars">${stars}</span>
+    </div>
+    <div class="v2-sub">현재가 ${(s.p||0).toLocaleString()}원 · 시총 ${(s.mc/10000).toFixed(1)}조 · 외인 ${s.fr!=null?s.fr+'%':'-'}</div>
+    <div class="v2-meta">
+      <div class="v2-mults">
+        <div class="v2-mult"><span class="v2-mult-label">기러기</span><span class="v2-mult-value">${s.t}점</span></div>
+        <div class="v2-mult"><span class="v2-mult-label">PSR</span><span class="v2-mult-value">×${s.psr_mult}</span></div>
+        <div class="v2-mult"><span class="v2-mult-label">외인</span><span class="v2-mult-value">×${s.accum_mult}</span></div>
+        <div class="v2-mult"><span class="v2-mult-label">거시갭</span><span class="v2-mult-value">×${s.macro_mult}</span></div>
+        <div class="v2-mult"><span class="v2-mult-label">골든</span><span class="v2-mult-value">×${s.golden_mult}</span></div>
+        <div class="v2-mult"><span class="v2-mult-label" style="color:#fbbf24">c자리</span><span class="v2-mult-value" style="color:#fbbf24">×${s.c_mult||1.0}</span></div>
       </div>
-      <div class="v2-hint">📈 클릭 → 차트</div>
-    </div>`;
-  }
-  
-  function renderList(){
-    const filtered = ALL_STOCKS.filter(([code,s])=>{
-      if(currentFilter==='all') return true;
-      if(currentFilter==='sss') return s.j>=200;
-      if(currentFilter==='ss') return s.j>=150 && s.j<200;
-      if(currentFilter==='5stars') return s.c_stars===5;
-      if(currentFilter==='4stars') return s.c_stars>=4;
-      if(currentFilter==='golden') return s.golden_2001;
-      return true;
-    });
-    if(filtered.length===0){
-      document.getElementById('v2-content').innerHTML='<div class="v2-loading">필터 조건에 맞는 종목 없음</div>';
-      return;
-    }
-    document.getElementById('v2-content').innerHTML=filtered.map(([code,s])=>renderCard(code,s)).join('');
-  }
-  
-  window.v2Filter = function(f){
-    currentFilter=f;
-    document.querySelectorAll('#v2-filters .v2-filter-btn').forEach(b=>b.classList.toggle('on',b.dataset.filter===f));
-    renderList();
-  };
-  
-  window.v2OpenChart = function(code){
-    const s = DATA.data[code];
-    if(!s) return;
-    currentStock={code:code, ...s};
-    document.getElementById('v2-mt').textContent=`${s.n} (${code})`;
-    document.getElementById('v2-ms').textContent=
-      `잭팟 ${s.j}점 (${gradeLabel(gradeOf(s.j))}) · ★${s.c_stars||0} · 외인 ${s.fr!=null?s.fr+'%':'-'}`;
-    
-    const frames=[];
-    if(s.cd && s.cd.length>0) frames.push(['d','일봉 1년']);
-    if(s.cw && s.cw.length>0) frames.push(['w','주봉 5년']);
-    if(s.cm && s.cm.length>0) frames.push(['m','월봉 10년']);
-    document.getElementById('v2-tabs').innerHTML=frames.map(([k,l])=>
-      `<button class="v2-tab ${currentFrame===k?'active':''}" onclick="window.v2SwitchFrame('${k}')">${l}</button>`
-    ).join('');
-    if(!frames.find(f=>f[0]===currentFrame)&&frames.length>0) currentFrame=frames[0][0];
-    renderChartFor(currentFrame);
-    document.getElementById('jackpot-v2-modal').classList.add('open');
-  };
-  
-  window.v2SwitchFrame = function(k){
-    currentFrame=k;
-    document.querySelectorAll('#v2-tabs .v2-tab').forEach(b=>b.classList.remove('active'));
-    if(event && event.target) event.target.classList.add('active');
-    renderChartFor(k);
-  };
-  
-  window.v2ToggleLog = function(){
-    useLog=!useLog;
-    document.getElementById('v2-btn-log').classList.toggle('on',useLog);
-    renderChartFor(currentFrame);
-  };
-  
-  window.v2ZoomReset = function(){
-    if(currentChart && currentChart.resetZoom) currentChart.resetZoom();
-  };
-  
-  window.v2CloseModal = function(){
-    document.getElementById('jackpot-v2-modal').classList.remove('open');
-    if(currentChart){currentChart.destroy();currentChart=null}
-  };
-  
-  document.getElementById('jackpot-v2-modal').addEventListener('click',function(e){
-    if(e.target===this) window.v2CloseModal();
+    </div>
+    <div class="v2-hint">📈 클릭 → 차트</div>
+  </div>`;
+}
+
+function renderList(){
+  const filtered = ALL_STOCKS.filter(([code,s])=>{
+    if(currentFilter==='all') return true;
+    if(currentFilter==='sss') return s.j>=200;
+    if(currentFilter==='ss') return s.j>=150 && s.j<200;
+    if(currentFilter==='5stars') return s.c_stars===5;
+    if(currentFilter==='4stars') return s.c_stars>=4;
+    if(currentFilter==='golden') return s.golden_2001;
+    return true;
   });
-  document.addEventListener('keydown',e=>{if(e.key==='Escape') window.v2CloseModal()});
+  if(filtered.length===0){
+    document.getElementById('v2-content').innerHTML='<div class="v2-loading">필터 조건에 맞는 종목 없음</div>';
+    return;
+  }
+  document.getElementById('v2-content').innerHTML=filtered.map(([code,s])=>renderCard(code,s)).join('');
+}
+
+function v2Filter(f){
+  currentFilter=f;
+  document.querySelectorAll('#v2-filters .v2-filter-btn').forEach(b=>b.classList.toggle('on',b.dataset.filter===f));
+  renderList();
+}
+
+function v2OpenChart(code){
+  const s = DATA.data[code];
+  if(!s) return;
+  currentStock={code:code, ...s};
+  document.getElementById('v2-mt').textContent=`${s.n} (${code})`;
+  document.getElementById('v2-ms').textContent=
+    `잭팟 ${s.j}점 (${gradeLabel(gradeOf(s.j))}) · ★${s.c_stars||0} · 외인 ${s.fr!=null?s.fr+'%':'-'}`;
+  const frames=[];
+  if(s.cd && s.cd.length>0) frames.push(['d','일봉 1년']);
+  if(s.cw && s.cw.length>0) frames.push(['w','주봉 5년']);
+  if(s.cm && s.cm.length>0) frames.push(['m','월봉 10년']);
+  document.getElementById('v2-tabs').innerHTML=frames.map(([k,l])=>
+    `<button class="v2-tab ${currentFrame===k?'active':''}" onclick="v2SwitchFrame('${k}')">${l}</button>`
+  ).join('');
+  if(!frames.find(f=>f[0]===currentFrame)&&frames.length>0) currentFrame=frames[0][0];
+  renderChartFor(currentFrame);
+  document.getElementById('jackpot-v2-modal').classList.add('open');
+}
+
+function v2SwitchFrame(k){
+  currentFrame=k;
+  document.querySelectorAll('#v2-tabs .v2-tab').forEach(b=>b.classList.remove('active'));
+  if(event && event.target) event.target.classList.add('active');
+  renderChartFor(k);
+}
+
+function v2ToggleLog(){
+  useLog=!useLog;
+  document.getElementById('v2-btn-log').classList.toggle('on',useLog);
+  renderChartFor(currentFrame);
+}
+
+function v2ZoomReset(){
+  if(currentChart && currentChart.resetZoom) currentChart.resetZoom();
+}
+
+function v2CloseModal(){
+  document.getElementById('jackpot-v2-modal').classList.remove('open');
+  if(currentChart){currentChart.destroy();currentChart=null}
+}
+
+document.getElementById('jackpot-v2-modal').addEventListener('click',function(e){
+  if(e.target===this) v2CloseModal();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape') v2CloseModal()});
+
+function renderChartFor(frame){
+  if(!currentStock) return;
+  const closes = currentStock['c'+frame];
+  const dates = currentStock['c'+frame+'t'];
+  if(!closes || !dates || closes.length===0) return;
+  if(currentChart){currentChart.destroy();currentChart=null}
   
-  function renderChartFor(frame){
-    if(!currentStock) return;
-    const closes = currentStock['c'+frame];
-    const dates = currentStock['c'+frame+'t'];
-    if(!closes || !dates || closes.length===0) return;
-    if(currentChart){currentChart.destroy();currentChart=null}
-    
-    // 20일선 (간단 계산)
-    const ma20 = closes.map((_,i)=>{
-      if(i<19) return null;
-      const slice=closes.slice(i-19,i+1);
-      return slice.reduce((a,b)=>a+b,0)/20;
-    });
-    
-    // 52주 (1년) 신고/신저
-    const recentN = frame==='d'?252:frame==='w'?52:12;
-    const rec=closes.slice(-Math.min(recentN,closes.length)).filter(v=>v!=null&&v>0);
-    const hi52=rec.length>0?Math.max.apply(null,rec):null;
-    const lo52=rec.length>0?Math.min.apply(null,rec):null;
-    
-    const datasets=[
-      {label:'주가',data:closes,borderColor:'#e8e9ed',backgroundColor:'rgba(232,233,237,0.05)',
-        borderWidth:1.8,pointRadius:0,tension:0.1,fill:false},
-      {label:'20일선',data:ma20,borderColor:'#3b82f6',backgroundColor:'transparent',
-        borderWidth:1.3,pointRadius:0,tension:0.2,fill:false},
-    ];
-    if(hi52) datasets.push({
-      label:`52주 신고 ${hi52.toLocaleString()}`,
-      data:new Array(closes.length).fill(hi52),
-      borderColor:'rgba(239,68,68,0.55)',backgroundColor:'transparent',
-      borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
-    });
-    if(lo52) datasets.push({
-      label:`52주 신저 ${lo52.toLocaleString()}`,
-      data:new Array(closes.length).fill(lo52),
-      borderColor:'rgba(132,204,22,0.55)',backgroundColor:'transparent',
-      borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
-    });
-    
-    // c자리 마커 (해당 프레임 c가 있으면)
-    const cInfo = currentStock.c_info;
-    if(cInfo){
-      const cMap = {d:'daily',w:'weekly',m:'monthly'};
-      const cData = cInfo[cMap[frame]];
-      if(cData && cData.c_date){
-        const cIdx = dates.indexOf(cData.c_date);
-        // 정확 매칭 안 되면 가장 가까운 날짜
-        let targetIdx = cIdx;
-        if(targetIdx<0){
-          const target = new Date(cData.c_date).getTime();
-          let bestIdx=-1, bestDiff=Infinity;
-          for(let i=0;i<dates.length;i++){
-            const t=new Date(dates[i]).getTime();
-            const d=Math.abs(t-target);
-            if(d<bestDiff){bestDiff=d;bestIdx=i}
-          }
-          targetIdx=bestIdx;
+  const ma20 = closes.map((_,i)=>{
+    if(i<19) return null;
+    const slice=closes.slice(i-19,i+1);
+    return slice.reduce((a,b)=>a+b,0)/20;
+  });
+  
+  const recentN = frame==='d'?252:frame==='w'?52:12;
+  const rec=closes.slice(-Math.min(recentN,closes.length)).filter(v=>v!=null&&v>0);
+  const hi52=rec.length>0?Math.max.apply(null,rec):null;
+  const lo52=rec.length>0?Math.min.apply(null,rec):null;
+  
+  const datasets=[
+    {label:'주가',data:closes,borderColor:'#e8e9ed',backgroundColor:'rgba(232,233,237,0.05)',
+      borderWidth:1.8,pointRadius:0,tension:0.1,fill:false},
+    {label:'20일선',data:ma20,borderColor:'#3b82f6',backgroundColor:'transparent',
+      borderWidth:1.3,pointRadius:0,tension:0.2,fill:false},
+  ];
+  if(hi52) datasets.push({
+    label:`52주 신고 ${hi52.toLocaleString()}`,
+    data:new Array(closes.length).fill(hi52),
+    borderColor:'rgba(239,68,68,0.55)',backgroundColor:'transparent',
+    borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
+  });
+  if(lo52) datasets.push({
+    label:`52주 신저 ${lo52.toLocaleString()}`,
+    data:new Array(closes.length).fill(lo52),
+    borderColor:'rgba(132,204,22,0.55)',backgroundColor:'transparent',
+    borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
+  });
+  
+  const cInfo = currentStock.c_info;
+  if(cInfo){
+    const cMap = {d:'daily',w:'weekly',m:'monthly'};
+    const cData = cInfo[cMap[frame]];
+    if(cData && cData.c_date){
+      let targetIdx = dates.indexOf(cData.c_date);
+      if(targetIdx<0){
+        const target = new Date(cData.c_date).getTime();
+        let bestIdx=-1, bestDiff=Infinity;
+        for(let i=0;i<dates.length;i++){
+          const t=new Date(dates[i]).getTime();
+          const d=Math.abs(t-target);
+          if(d<bestDiff){bestDiff=d;bestIdx=i}
         }
-        if(targetIdx>=0){
-          const cDataArr = closes.map((_,i)=>i===targetIdx?closes[i]:null);
-          datasets.push({
-            label:`c자리 ${cData.c_date}`,
-            data:cDataArr,
-            borderColor:'#ec4899',backgroundColor:'#ec4899',
-            pointRadius:12,pointStyle:'circle',showLine:false,
-          });
-        }
+        targetIdx=bestIdx;
+      }
+      if(targetIdx>=0){
+        const cDataArr = closes.map((_,i)=>i===targetIdx?closes[i]:null);
+        datasets.push({
+          label:`c자리 ${cData.c_date}`,
+          data:cDataArr,
+          borderColor:'#ec4899',backgroundColor:'#ec4899',
+          pointRadius:12,pointStyle:'circle',showLine:false,
+        });
       }
     }
-    
-    // 현재가
-    datasets.push({
-      label:`현재가 ${closes[closes.length-1].toLocaleString()}`,
-      data:closes.map((_,i)=>i===closes.length-1?closes[i]:null),
-      borderColor:'#fbbf24',backgroundColor:'#fbbf24',
-      pointRadius:8,pointStyle:'crossRot',showLine:false,
-    });
-    
-    const yScale=useLog?{
-      type:'logarithmic',
-      ticks:{font:{size:10},color:'#a0a3ad',callback:v=>{
-        const log=Math.log10(v);
-        if(log===Math.floor(log)) return v.toLocaleString();
-        if(Math.floor(log*2)===log*2) return v.toLocaleString();
-        return '';
-      }},
-      grid:{color:'rgba(255,255,255,0.05)'},
-    }:{
-      type:'linear',
-      ticks:{font:{size:10},color:'#a0a3ad',callback:v=>v.toLocaleString()},
-      grid:{color:'rgba(255,255,255,0.05)'},
-    };
-    
-    const ctx=document.getElementById('v2-canvas').getContext('2d');
-    currentChart=new Chart(ctx,{
-      type:'line',
-      data:{labels:dates,datasets:datasets},
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        layout:{padding:{right:30,left:5,top:10,bottom:5}},
-        interaction:{intersect:false,mode:'index'},
-        plugins:{
-          legend:{display:true,position:'top',labels:{font:{size:11},color:'#e8e9ed',boxWidth:14,padding:8}},
-          tooltip:{
-            callbacks:{label:c=>{
-              if(c.parsed.y===null) return null;
-              return `${c.dataset.label.split(' ')[0]}: ${c.parsed.y.toLocaleString()}원`;
-            }},
-          },
-          zoom:{
-            pan:{enabled:true,mode:'x'},
-            zoom:{wheel:{enabled:true,speed:0.1},pinch:{enabled:true},mode:'x'},
-          },
-        },
-        scales:{
-          x:{ticks:{maxTicksLimit:10,font:{size:10},color:'#a0a3ad'},grid:{color:'rgba(255,255,255,0.05)'}},
-          y:yScale,
-        },
-      },
-    });
-    
-    // 분석 요약
-    const s = currentStock;
-    let info=`<strong>📊 ${s.n} 분석 요약</strong><br>
-      잭팟 점수: <strong>${s.j}점 (${gradeLabel(gradeOf(s.j))})</strong>${s.golden_2001?' · <strong style="color:#fbbf24">★ 2001~2008 골든리스트</strong>':''}<br>
-      <br>
-      <strong>6중 곱셈 분해:</strong><br>
-      기러기 ${s.t}점 × PSR ×${s.psr_mult} × 외인 ×${s.accum_mult} × 거시갭 ×${s.macro_mult} × 골든 ×${s.golden_mult} × <strong style="color:#fbbf24">c자리 ×${s.c_mult||1.0}</strong> = <strong>${s.j}점</strong><br>
-      <br>
-      <strong>4차함수 c자리:</strong> ${s.c_stars>0?'★'.repeat(s.c_stars)+' ('+(s.c_info?.type||'')+')':'검출 안 됨'}<br>
-      <strong>PSR:</strong> ${s.psr||'-'} · <strong>ROE:</strong> ${s.roe!=null?s.roe+'%':'-'} · <strong>영업이익률:</strong> ${s.opm!=null?s.opm+'%':'-'}<br>
-      <strong>외인 보유율:</strong> ${s.fr!=null?s.fr+'%':'-'}<br>
-      <strong>거시갭:</strong> KOSPI 3년 ${s.kospi_3y}% vs 종목 3년 ${s.stock_3y}% (갭 ${s.macro_gap}%)
-    `;
-    document.getElementById('v2-info').innerHTML=info;
   }
   
-  function init(){
-    fetch(JSON_URL+'?t='+Date.now())
-      .then(r=>{if(!r.ok) throw new Error('JSON 로드 실패 (status '+r.status+')');return r.json()})
-      .then(data=>{
-        DATA=data;
-        document.getElementById('v2-updated').textContent=
-          `업데이트: ${DATA.updated} · ${DATA.count}종목 분석 (${DATA.version||'v2.0'})`;
-        const summary=DATA.summary||{};
-        document.getElementById('v2-st-sss').textContent=summary.sss_grade||0;
-        document.getElementById('v2-st-ss').textContent=summary.ss_grade||0;
-        document.getElementById('v2-st-5stars').textContent=summary.five_stars||0;
-        document.getElementById('v2-st-4stars').textContent=summary.four_stars||0;
-        document.getElementById('v2-algo-info').textContent=
-          `${DATA.algo_name||'SIGVIEW 시즌2 v2.0'} · ${DATA.algo_desc||''} · KOSPI 3년 ${DATA.kospi_3y_return||0}%`;
-        
-        // 종목 정렬 - 잭팟 점수 내림차순
-        ALL_STOCKS = Object.entries(DATA.data||{}).sort((a,b)=>b[1].j - a[1].j);
-        renderList();
-      })
-      .catch(e=>{
-        document.getElementById('v2-content').innerHTML=`<div class="v2-error">데이터 로드 실패: ${e.message}<br>(jackpot-v2.json이 /wp-content/data/ 에 있는지 확인)</div>`;
-      });
-  }
-})();
+  datasets.push({
+    label:`현재가 ${closes[closes.length-1].toLocaleString()}`,
+    data:closes.map((_,i)=>i===closes.length-1?closes[i]:null),
+    borderColor:'#fbbf24',backgroundColor:'#fbbf24',
+    pointRadius:8,pointStyle:'crossRot',showLine:false,
+  });
+  
+  const yScale=useLog?{
+    type:'logarithmic',
+    ticks:{font:{size:10},color:'#a0a3ad',callback:v=>{
+      const log=Math.log10(v);
+      if(log===Math.floor(log)) return v.toLocaleString();
+      if(Math.floor(log*2)===log*2) return v.toLocaleString();
+      return '';
+    }},
+    grid:{color:'rgba(255,255,255,0.05)'},
+  }:{
+    type:'linear',
+    ticks:{font:{size:10},color:'#a0a3ad',callback:v=>v.toLocaleString()},
+    grid:{color:'rgba(255,255,255,0.05)'},
+  };
+  
+  const ctx=document.getElementById('v2-canvas').getContext('2d');
+  currentChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:dates,datasets:datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      layout:{padding:{right:30,left:5,top:10,bottom:5}},
+      interaction:{intersect:false,mode:'index'},
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:11},color:'#e8e9ed',boxWidth:14,padding:8}},
+        tooltip:{
+          callbacks:{label:c=>{
+            if(c.parsed.y===null) return null;
+            return `${c.dataset.label.split(' ')[0]}: ${c.parsed.y.toLocaleString()}원`;
+          }},
+        },
+        zoom:{
+          pan:{enabled:true,mode:'x'},
+          zoom:{wheel:{enabled:true,speed:0.1},pinch:{enabled:true},mode:'x'},
+        },
+      },
+      scales:{
+        x:{ticks:{maxTicksLimit:10,font:{size:10},color:'#a0a3ad'},grid:{color:'rgba(255,255,255,0.05)'}},
+        y:yScale,
+      },
+    },
+  });
+  
+  const s = currentStock;
+  let info=`<strong>📊 ${s.n} 분석 요약</strong><br>
+    잭팟 점수: <strong>${s.j}점 (${gradeLabel(gradeOf(s.j))})</strong>${s.golden_2001?' · <strong style="color:#fbbf24">★ 2001~2008 골든리스트 (당시 '+s.golden_multi+'배)</strong>':''}<br>
+    <br>
+    <strong>6중 곱셈 분해:</strong><br>
+    기러기 ${s.t}점 × PSR ×${s.psr_mult} × 외인 ×${s.accum_mult} × 거시갭 ×${s.macro_mult} × 골든 ×${s.golden_mult} × <strong style="color:#fbbf24">c자리 ×${s.c_mult||1.0}</strong> = <strong>${s.j}점</strong><br>
+    <br>
+    <strong>4차함수 c자리:</strong> ${s.c_stars>0?'★'.repeat(s.c_stars)+' ('+(s.c_info&&s.c_info.type||'')+')':'검출 안 됨'}<br>
+    <strong>PSR:</strong> ${s.psr||'-'} · <strong>ROE:</strong> ${s.roe!=null?s.roe+'%':'-'} · <strong>영업이익률:</strong> ${s.opm!=null?s.opm+'%':'-'}<br>
+    <strong>외인 보유율:</strong> ${s.fr!=null?s.fr+'%':'-'}<br>
+    <strong>거시갭:</strong> KOSPI 3년 ${s.kospi_3y}% vs 종목 3년 ${s.stock_3y}% (갭 ${s.macro_gap}%)
+  `;
+  document.getElementById('v2-info').innerHTML=info;
+}
+
+function init(){
+  fetch(JSON_URL+'?t='+Date.now())
+    .then(r=>{if(!r.ok) throw new Error('JSON 로드 실패 (status '+r.status+')');return r.json()})
+    .then(data=>{
+      DATA=data;
+      document.getElementById('v2-updated').textContent=
+        `업데이트: ${DATA.updated} · ${DATA.count}종목 분석 (${DATA.version||'v2.0'})`;
+      const summary=DATA.summary||{};
+      document.getElementById('v2-st-sss').textContent=summary.sss_grade||0;
+      document.getElementById('v2-st-ss').textContent=summary.ss_grade||0;
+      document.getElementById('v2-st-5stars').textContent=summary.five_stars||0;
+      document.getElementById('v2-st-4stars').textContent=summary.four_stars||0;
+      document.getElementById('v2-algo-info').textContent=
+        `${DATA.algo_name||'SIGVIEW 시즌2 v2.0'} · ${DATA.algo_desc||''} · KOSPI 3년 ${DATA.kospi_3y_return||0}%`;
+      
+      ALL_STOCKS = Object.entries(DATA.data||{}).sort((a,b)=>b[1].j - a[1].j);
+      renderList();
+    })
+    .catch(e=>{
+      document.getElementById('v2-content').innerHTML=`<div class="v2-error">데이터 로드 실패: ${e.message}<br>(jackpot-v2.json이 저장소 루트에 있는지 확인)</div>`;
+    });
+}
+
+init();
 </script>
+</body>
+</html>
