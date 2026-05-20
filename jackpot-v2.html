@@ -1,503 +1,459 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGVIEW 잭팟 도구 시즌2 | 외인 매집 포착</title>
-<meta name="description" content="SIGVIEW 잭팟 도구 시즌2 - 외인 매집 추적 도구.">
-<meta name="robots" content="index, follow">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+<!-- ============================================================
+  SIGVIEW 잭팟 시즌2 v2.0 - WPCode 위젯
+  
+  설치:
+  1. WPCode → + Add Snippet → Add Your Custom Code
+  2. Title: SIGVIEW 잭팟 시즌2 v2.0
+  3. Code Type: HTML Snippet
+  4. 아래 전체 붙여넣기
+  5. Insertion: Shortcode → Active ON → Save
+  6. 새 페이지 생성 → 슬러그: tools-jackpot-v2 → 단축코드만 → 게시
+============================================================ -->
+
+<div id="jackpot-v2-root">
 <style>
-:root {
-  --bg: #ffffff;
-  --bg-secondary: #f7f6f1;
-  --bg-tertiary: #f1efe8;
-  --text-primary: #1a1a1a;
-  --text-secondary: #5f5e5a;
-  --text-tertiary: #888780;
-  --border: rgba(0,0,0,0.08);
-  --color-stealth-bg: #FFF6E0;
-  --color-stealth-border: #D4A017;
-  --color-stealth-text: #5B4400;
-  --color-stealth-sub: #8B6914;
-  --color-quiet-bg: #FAEEDA;
-  --color-quiet-border: #BA7517;
-  --color-quiet-text: #633806;
-  --color-quiet-sub: #854F0B;
-  --color-likely-bg: #F4E5FA;
-  --color-likely-border: #9B4FC7;
-  --color-likely-text: #4A1D6B;
-  --color-likely-sub: #7234A0;
-  --color-breakout-bg: #EAF3DE;
-  --color-breakout-border: #639922;
-  --color-breakout-text: #27500A;
-  --color-breakout-sub: #3B6D11;
-  --color-progress-bg: #F1EFE8;
-  --color-progress-border: #B4B2A9;
-  --color-progress-text: #2C2C2A;
-  --color-progress-sub: #5F5E5A;
-  --color-verified-bg: #E6F1FB;
-  --color-verified-border: #378ADD;
-  --color-verified-text: #042C53;
-  --color-verified-sub: #185FA5;
-  --color-risky-bg: #FBE6E6;
-  --color-risky-border: #C0392B;
-  --color-risky-text: #531A14;
-  --color-risky-sub: #A5371F;
-  --color-china-bg: #FCE4EC;
-  --color-china-text: #B71C1C;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+#jackpot-v2-root *,#jackpot-v2-root *::before,#jackpot-v2-root *::after{box-sizing:border-box}
+#jackpot-v2-root{
+  --bg:#0f1117;--bg2:#1a1c25;--bg3:#252731;
+  --txt:#e8e9ed;--txt2:#a0a3ad;--txt3:#6e7280;
+  --border:rgba(255,255,255,0.08);--accent:#ec4899;
+  --sss:#ec4899;--ss:#f59e0b;--s:#3b82f6;--a:#84cc16;--b:#6e7280;
+  --gold:#fbbf24;
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+  color:var(--txt);background:var(--bg);max-width:1000px;margin:0 auto;
+  padding:24px 16px 80px;line-height:1.6;-webkit-font-smoothing:antialiased;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1a1a;
-    --bg-secondary: #242422;
-    --bg-tertiary: #2c2c2a;
-    --text-primary: #f1efe8;
-    --text-secondary: #b4b2a9;
-    --text-tertiary: #888780;
-    --border: rgba(255,255,255,0.08);
-  }
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-.container { max-width: 760px; margin: 0 auto; padding: 24px 16px 80px; }
-.header { margin-bottom: 20px; }
-.brand { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; margin-bottom: 4px; }
-h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
-.subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
-.philosophy { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
-.updated { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
-.notice { background: var(--bg-secondary); border-left: 3px solid #D4A017; padding: 10px 14px; margin: 12px 0; font-size: 12px; border-radius: 4px; color: var(--text-secondary); }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0; }
-.stat-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; }
-.stat-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
-.stat-value { font-size: 20px; font-weight: 600; }
-.stat-value.highlight { color: #D4A017; }
-.section-title { font-size: 17px; font-weight: 600; margin: 28px 0 4px; display: flex; align-items: center; gap: 8px; }
-.section-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
-.stock-card { border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; border: 1px solid; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease; }
-.stock-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.stock-card.stealth { background: var(--color-stealth-bg); border-color: var(--color-stealth-border); }
-.stock-card.quiet { background: var(--color-quiet-bg); border-color: var(--color-quiet-border); }
-.stock-card.likely { background: var(--color-likely-bg); border-color: var(--color-likely-border); }
-.stock-card.breakout { background: var(--color-breakout-bg); border-color: var(--color-breakout-border); }
-.stock-card.progress { background: var(--color-progress-bg); border-color: var(--color-progress-border); }
-.stock-card.verified { background: var(--color-verified-bg); border-color: var(--color-verified-border); }
-.stock-card.risky { background: var(--color-risky-bg); border-color: var(--color-risky-border); }
-.stealth .stock-name { color: var(--color-stealth-text); }
-.stealth .stock-sub, .stealth .stock-stars, .stealth .stock-meta { color: var(--color-stealth-sub); }
-.quiet .stock-name { color: var(--color-quiet-text); }
-.quiet .stock-sub, .quiet .stock-stars, .quiet .stock-meta { color: var(--color-quiet-sub); }
-.likely .stock-name { color: var(--color-likely-text); }
-.likely .stock-sub, .likely .stock-stars, .likely .stock-meta { color: var(--color-likely-sub); }
-.breakout .stock-name { color: var(--color-breakout-text); }
-.breakout .stock-sub, .breakout .stock-stars, .breakout .stock-meta { color: var(--color-breakout-sub); }
-.progress .stock-name { color: var(--color-progress-text); }
-.progress .stock-sub, .progress .stock-stars, .progress .stock-meta { color: var(--color-progress-sub); }
-.verified .stock-name { color: var(--color-verified-text); }
-.verified .stock-sub, .verified .stock-stars, .verified .stock-meta { color: var(--color-verified-sub); }
-.risky .stock-name { color: var(--color-risky-text); }
-.risky .stock-sub, .risky .stock-stars, .risky .stock-meta { color: var(--color-risky-sub); }
-.stock-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-.stock-name-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
-.stock-name { font-weight: 600; font-size: 15px; }
-.china-tag { display: inline-block; font-size: 10px; font-weight: 600; background: var(--color-china-bg); color: var(--color-china-text); padding: 1px 6px; border-radius: 3px; }
-.stock-stars { font-size: 13px; font-weight: 500; white-space: nowrap; }
-.stock-sub { font-size: 12px; margin-bottom: 8px; }
-.stock-meta { font-size: 11px; line-height: 1.7; opacity: 0.9; }
-.score-badge { display: inline-block; font-weight: 600; font-size: 13px; background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 10px; margin-left: 4px; }
-@media (prefers-color-scheme: dark) { .score-badge { background: rgba(255,255,255,0.08); } }
-.signals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 12px; margin-top: 6px; font-size: 11px; }
-.signal-row { display: flex; justify-content: space-between; }
-.signal-label { opacity: 0.75; }
-.signal-value { font-weight: 500; }
-.chart-hint { text-align: right; font-size: 10px; opacity: 0.6; margin-top: 4px; }
-.disclaimer { margin-top: 32px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 11px; color: var(--text-tertiary); line-height: 1.7; }
-.disclaimer strong { font-weight: 600; color: var(--text-secondary); }
-.loading, .error { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 14px; }
-.error { color: #c0392b; }
-.empty-section { font-size: 12px; color: var(--text-tertiary); padding: 8px 4px; font-style: italic; }
+#jackpot-v2-root .v2-header{margin-bottom:20px}
+#jackpot-v2-root .v2-brand{font-size:11px;color:var(--txt3);letter-spacing:1.5px;margin-bottom:4px}
+#jackpot-v2-root h1.v2-title{font-size:26px;font-weight:700;margin:0 0 4px;color:#fff}
+#jackpot-v2-root .v2-subtitle{font-size:13px;color:var(--txt2);margin-bottom:4px}
+#jackpot-v2-root .v2-philosophy{font-size:12px;color:var(--txt3);font-style:italic}
+#jackpot-v2-root .v2-updated{font-size:11px;color:var(--txt3);margin-top:6px}
+#jackpot-v2-root .v2-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0}
+#jackpot-v2-root .v2-stat{background:var(--bg2);border-radius:8px;padding:12px 8px;text-align:center}
+#jackpot-v2-root .v2-stat-label{font-size:10px;color:var(--txt2);margin-bottom:4px}
+#jackpot-v2-root .v2-stat-value{font-size:22px;font-weight:700;color:#fff}
+#jackpot-v2-root .v2-stat-value.hi{color:var(--gold)}
+#jackpot-v2-root .v2-filter-row{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+#jackpot-v2-root .v2-filter-btn{padding:6px 12px;border:1px solid var(--border);background:var(--bg2);
+  border-radius:18px;font-size:12px;cursor:pointer;color:var(--txt2)}
+#jackpot-v2-root .v2-filter-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+#jackpot-v2-root .v2-section-title{font-size:17px;font-weight:600;margin:28px 0 4px;color:#fff}
+#jackpot-v2-root .v2-section-desc{font-size:12px;color:var(--txt2);margin-bottom:14px}
+#jackpot-v2-root .v2-card{border-radius:12px;padding:14px 16px;margin-bottom:10px;
+  border:1px solid var(--border);background:var(--bg2);cursor:pointer;
+  transition:transform .1s,box-shadow .1s}
+#jackpot-v2-root .v2-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+#jackpot-v2-root .v2-card.sss{border-color:var(--sss);background:rgba(236,72,153,0.08)}
+#jackpot-v2-root .v2-card.ss{border-color:var(--ss);background:rgba(245,158,11,0.08)}
+#jackpot-v2-root .v2-card.s{border-color:var(--s);background:rgba(59,130,246,0.08)}
+#jackpot-v2-root .v2-card.a{border-color:var(--a);background:rgba(132,204,22,0.06)}
+#jackpot-v2-root .v2-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+#jackpot-v2-root .v2-name-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+#jackpot-v2-root .v2-name{font-weight:600;font-size:16px;color:#fff}
+#jackpot-v2-root .v2-code{font-size:11px;color:var(--txt3)}
+#jackpot-v2-root .v2-stars{font-size:13px;color:var(--gold);white-space:nowrap;font-weight:600}
+#jackpot-v2-root .v2-grade{display:inline-block;font-weight:700;font-size:11px;padding:2px 7px;border-radius:4px;color:#fff}
+#jackpot-v2-root .v2-grade.sss{background:var(--sss)}
+#jackpot-v2-root .v2-grade.ss{background:var(--ss);color:#000}
+#jackpot-v2-root .v2-grade.s{background:var(--s)}
+#jackpot-v2-root .v2-grade.a{background:var(--a);color:#000}
+#jackpot-v2-root .v2-grade.b{background:var(--b)}
+#jackpot-v2-root .v2-golden-tag{font-size:10px;font-weight:600;background:rgba(251,191,36,0.2);
+  color:var(--gold);padding:1px 6px;border-radius:3px}
+#jackpot-v2-root .v2-sub{font-size:12px;color:var(--txt2);margin-bottom:8px}
+#jackpot-v2-root .v2-meta{font-size:11px;color:var(--txt2);line-height:1.7}
+#jackpot-v2-root .v2-score{display:inline-block;font-weight:700;font-size:14px;
+  background:rgba(255,255,255,0.08);padding:2px 10px;border-radius:10px;margin-left:4px;color:#fff}
+#jackpot-v2-root .v2-mults{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 12px;
+  margin-top:6px;font-size:11px}
+#jackpot-v2-root .v2-mult{display:flex;justify-content:space-between}
+#jackpot-v2-root .v2-mult-label{opacity:.7}
+#jackpot-v2-root .v2-mult-value{font-weight:600;color:#fff}
+#jackpot-v2-root .v2-hint{text-align:right;font-size:10px;opacity:.6;margin-top:4px}
+#jackpot-v2-root .v2-disclaimer{margin-top:32px;padding:16px;background:var(--bg2);
+  border-radius:8px;font-size:11px;color:var(--txt3);line-height:1.7}
+#jackpot-v2-root .v2-loading,#jackpot-v2-root .v2-error{text-align:center;padding:40px 20px;
+  color:var(--txt2);font-size:14px}
+#jackpot-v2-root .v2-error{color:#ef4444}
 
-/* 모달 */
-.modal-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 12px; }
-.modal-backdrop.open { display: flex; }
-.modal { background: var(--bg); border-radius: 12px; max-width: 1000px; width: 100%; max-height: 95vh; overflow-y: auto; padding: 20px; position: relative; }
-.modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 26px; color: var(--text-secondary); cursor: pointer; z-index: 2; }
-.modal h2 { font-size: 19px; padding-right: 30px; }
-.modal-sub { font-size: 12px; color: var(--text-secondary); margin: 4px 0 14px; }
-.frame-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-.tab-btn { flex: 1; padding: 10px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-primary); font-weight: 500; }
-.tab-btn.active { background: var(--text-primary); color: var(--bg); }
-.chart-controls { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; justify-content: flex-end; }
-.ctrl-btn { padding: 5px 12px; border: 1px solid var(--border); background: var(--bg-secondary); border-radius: 6px; font-size: 11px; cursor: pointer; color: var(--text-primary); }
-.ctrl-btn.on { background: #D4A017; color: white; border-color: #D4A017; }
-.ctrl-btn:hover { opacity: 0.85; }
-.chart-wrap { height: 500px; position: relative; }
-.zoom-hint { font-size: 10px; color: var(--text-tertiary); text-align: center; margin-top: 6px; }
-.modal-info { margin-top: 14px; padding: 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.9; }
-.modal-info strong { color: var(--text-primary); }
+#jackpot-v2-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;padding:12px}
+#jackpot-v2-modal.open{display:flex}
+#jackpot-v2-modal .v2-modal{background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;max-width:1100px;width:100%;max-height:95vh;overflow-y:auto;
+  padding:20px;position:relative;color:var(--txt)}
+#jackpot-v2-modal .v2-close{position:absolute;top:12px;right:16px;background:none;border:none;
+  font-size:28px;color:var(--txt2);cursor:pointer;z-index:2;line-height:1}
+#jackpot-v2-modal h2{font-size:19px;padding-right:30px;margin:0;color:#fff}
+#jackpot-v2-modal .v2-modal-sub{font-size:12px;color:var(--txt2);margin:4px 0 14px}
+#jackpot-v2-modal .v2-tabs{display:flex;gap:6px;margin-bottom:10px}
+#jackpot-v2-modal .v2-tab{flex:1;padding:10px 12px;border:1px solid var(--border);
+  background:var(--bg2);border-radius:6px;font-size:13px;cursor:pointer;color:var(--txt);font-weight:500}
+#jackpot-v2-modal .v2-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#jackpot-v2-modal .v2-ctrls{display:flex;gap:8px;margin-bottom:10px;align-items:center;justify-content:flex-end}
+#jackpot-v2-modal .v2-ctrl{padding:5px 12px;border:1px solid var(--border);background:var(--bg2);
+  border-radius:6px;font-size:11px;cursor:pointer;color:var(--txt)}
+#jackpot-v2-modal .v2-ctrl.on{background:var(--gold);color:#000;border-color:var(--gold)}
+#jackpot-v2-modal .v2-chart{height:480px;position:relative}
+#jackpot-v2-modal .v2-zoom-hint{font-size:10px;color:var(--txt3);text-align:center;margin-top:6px}
+#jackpot-v2-modal .v2-info{margin-top:14px;padding:14px;background:var(--bg2);
+  border-radius:8px;font-size:12px;color:var(--txt2);line-height:1.9}
+#jackpot-v2-modal .v2-info strong{color:var(--txt)}
 
-@media (max-width: 480px) {
-  .container { padding: 16px 14px 60px; }
-  h1 { font-size: 20px; }
-  .stats { grid-template-columns: repeat(4, 1fr); gap: 5px; }
-  .stat-card { padding: 8px 4px; }
-  .stat-value { font-size: 16px; }
-  .signals-grid { grid-template-columns: 1fr; }
-  .chart-wrap { height: 400px; }
-  .modal { padding: 14px; }
-  .modal h2 { font-size: 16px; }
+@media(max-width:480px){
+  #jackpot-v2-root h1.v2-title{font-size:22px}
+  #jackpot-v2-root .v2-stats{grid-template-columns:repeat(4,1fr);gap:5px}
+  #jackpot-v2-root .v2-stat{padding:8px 4px}
+  #jackpot-v2-root .v2-stat-value{font-size:16px}
+  #jackpot-v2-root .v2-mults{grid-template-columns:repeat(2,1fr)}
+  #jackpot-v2-modal .v2-chart{height:400px}
+  #jackpot-v2-modal .v2-modal{padding:14px}
+  #jackpot-v2-modal h2{font-size:16px}
 }
 </style>
-</head>
-<body>
-<div class="container">
-<header class="header">
-  <div class="brand">SIGVIEW · JACKPOT v2.0.1</div>
-  <h1>잭팟 도구 시즌2</h1>
-  <div class="subtitle">외인 매집 포착 · 4차함수 c자리 + NAVER 외인 보유율</div>
-  <div class="philosophy">"외인과 동일 포지션 · 카드 클릭 → 차트 (휠 확대/드래그 이동)"</div>
-  <div class="updated" id="updated">데이터 불러오는 중...</div>
-</header>
-<div class="notice" id="data-notice" style="display:none;"></div>
-<div class="stats" id="stats">
-  <div class="stat-card"><div class="stat-label">🎯 외인매집</div><div class="stat-value highlight" id="stat-stealth">-</div></div>
-  <div class="stat-card"><div class="stat-label">🐢 조용매집</div><div class="stat-value" id="stat-quiet">-</div></div>
-  <div class="stat-card"><div class="stat-label">🔍 추정</div><div class="stat-value" id="stat-likely">-</div></div>
-  <div class="stat-card"><div class="stat-label">🇨🇳 중국</div><div class="stat-value" id="stat-china">-</div></div>
+
+<div class="v2-header">
+  <div class="v2-brand">SIGVIEW · JACKPOT v2.0</div>
+  <h1 class="v2-title">잭팟 도구 시즌2 — 4차함수 c자리</h1>
+  <div class="v2-subtitle">기러기 × PSR × 외인 × 거시갭 × 골든 × <strong style="color:#fbbf24">4차함수 c</strong> = 6중 곱셈</div>
+  <div class="v2-philosophy">"f(x)-g(x)=k(x-a)(x-b)(x-c)² 자동 검출 + 외인 동일 포지션 매집"</div>
+  <div class="v2-updated" id="v2-updated">데이터 불러오는 중...</div>
 </div>
-<div id="content"><div class="loading">데이터 불러오는 중...</div></div>
-<div class="disclaimer">
-  <strong>외인 매집 포착 도구 · 투자 권유 X</strong><br>
-  4차함수 c자리 + NAVER 외인 보유율 + 20일선 횡단 분석. 투자 판단과 책임은 본인.<br><br>
-  <span id="algo-info"></span>
+<div class="v2-stats">
+  <div class="v2-stat"><div class="v2-stat-label">🚀 SSS급</div><div class="v2-stat-value hi" id="v2-st-sss">-</div></div>
+  <div class="v2-stat"><div class="v2-stat-label">⭐ SS급</div><div class="v2-stat-value" id="v2-st-ss">-</div></div>
+  <div class="v2-stat"><div class="v2-stat-label">★★★★★ c자리</div><div class="v2-stat-value" id="v2-st-5stars">-</div></div>
+  <div class="v2-stat"><div class="v2-stat-label">★★★★ c자리</div><div class="v2-stat-value" id="v2-st-4stars">-</div></div>
+</div>
+
+<div class="v2-filter-row" id="v2-filters">
+  <button class="v2-filter-btn on" data-filter="all" onclick="window.v2Filter('all')">전체</button>
+  <button class="v2-filter-btn" data-filter="sss" onclick="window.v2Filter('sss')">🚀 SSS</button>
+  <button class="v2-filter-btn" data-filter="ss" onclick="window.v2Filter('ss')">⭐ SS</button>
+  <button class="v2-filter-btn" data-filter="5stars" onclick="window.v2Filter('5stars')">★★★★★</button>
+  <button class="v2-filter-btn" data-filter="4stars" onclick="window.v2Filter('4stars')">★★★★+</button>
+  <button class="v2-filter-btn" data-filter="golden" onclick="window.v2Filter('golden')">★ 골든</button>
+</div>
+
+<div id="v2-content"><div class="v2-loading">데이터 불러오는 중...</div></div>
+
+<div class="v2-disclaimer">
+  <strong>잭팟 v2 점수 = 기러기 × PSR × 외인추세 × 거시갭 × 골든 × <span style="color:#fbbf24">4차함수 c자리</span></strong><br>
+  6중 곱셈 알고리즘 - 시즌1 (5중) + 4차함수 c자리 자동 검출.<br>
+  ★★★★★ = 일/주/월 c자리 시간 일치 (최강), ★★★★ = 2개 일치, ★★★ = 1개 검출.<br>
+  본 데이터는 분석 참고용이며 투자 권유가 아닙니다. 모든 투자 판단은 본인 책임.<br><br>
+  <span id="v2-algo-info"></span>
 </div>
 </div>
 
-<!-- 모달 -->
-<div class="modal-backdrop" id="modal" onclick="if(event.target===this) closeModal()">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <h2 id="modal-title"></h2>
-    <div class="modal-sub" id="modal-sub"></div>
-    <div class="frame-tabs" id="frame-tabs"></div>
-    <div class="chart-controls">
-      <button class="ctrl-btn on" id="btn-log" onclick="toggleLog()">로그 스케일</button>
-      <button class="ctrl-btn" onclick="zoomReset()">↺ 줌 리셋</button>
+<div id="jackpot-v2-modal">
+  <div class="v2-modal">
+    <button class="v2-close" onclick="window.v2CloseModal()">×</button>
+    <h2 id="v2-mt"></h2>
+    <div class="v2-modal-sub" id="v2-ms"></div>
+    <div class="v2-tabs" id="v2-tabs"></div>
+    <div class="v2-ctrls">
+      <button class="v2-ctrl on" id="v2-btn-log" onclick="window.v2ToggleLog()">로그 스케일</button>
+      <button class="v2-ctrl" onclick="window.v2ZoomReset()">↺ 줌 리셋</button>
     </div>
-    <div class="chart-wrap"><canvas id="chart-canvas"></canvas></div>
-    <div class="zoom-hint">💡 마우스 휠 = 확대/축소 · 드래그 = 좌우 이동 · 모바일 핀치 줌</div>
-    <div class="modal-info" id="modal-info"></div>
+    <div class="v2-chart"><canvas id="v2-canvas"></canvas></div>
+    <div class="v2-zoom-hint">💡 마우스 휠 = 확대/축소 · 드래그 = 좌우 이동</div>
+    <div class="v2-info" id="v2-info"></div>
   </div>
 </div>
 
 <script>
-if (window.Chart && window.ChartZoom) Chart.register(window.ChartZoom);
-
-const JSON_URL = './jackpot-v2.json';
-let DATA = null;
-let currentChart = null;
-let currentStock = null;
-let currentFrame = 'daily';
-let useLog = true;
-
-function phaseToColor(phase) {
-  return ({
-    'stealth_accumulation': 'stealth', 'quiet_accumulation': 'quiet',
-    'likely_accumulation': 'likely', 'early_breakout': 'breakout',
-    'in_progress': 'progress', 'already_run': 'verified',
-    'risky': 'risky', 'failed': 'risky', 'neutral': 'progress',
-  })[phase] || 'progress';
-}
-function trendLabel(trend) {
-  return ({
-    'accumulating': '🟢 매집중', 'slight_up': '🟢 약매집',
-    'flat': '⚪ 평이', 'slight_down': '🟡 약감소',
-    'distributing': '🔴 매도중', 'gathering_data': '⏳ 누적중',
-    'no_data': '⚫ 없음',
-  })[trend] || '⚪';
-}
-
-function renderSignals(stock) {
-  const s = stock.signals || {};
-  const ft = trendLabel(s.foreign_trend);
-  const latestRatio = s.foreign_latest_ratio !== null && s.foreign_latest_ratio !== undefined
-    ? `${s.foreign_latest_ratio.toFixed(1)}%` : '-';
-  const change30 = s.foreign_change_30d !== null && s.foreign_change_30d !== undefined
-    ? `${s.foreign_change_30d >= 0 ? '+' : ''}${s.foreign_change_30d.toFixed(2)}%p` : '-';
-  return `
-    <div class="signals-grid">
-      <div class="signal-row"><span class="signal-label">🌐 외인 추세</span><span class="signal-value">${ft}</span></div>
-      <div class="signal-row"><span class="signal-label">📊 외인 보유율</span><span class="signal-value">${latestRatio}</span></div>
-      <div class="signal-row"><span class="signal-label">📈 30일 변화</span><span class="signal-value">${change30}</span></div>
-      <div class="signal-row"><span class="signal-label">📅 데이터 일수</span><span class="signal-value">${s.foreign_data_points || 0}일</span></div>
-      <div class="signal-row"><span class="signal-label">📈 20일선 횡단</span><span class="signal-value">${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '✓' : ''}</span></div>
-    </div>
-  `;
-}
-
-function renderCard(stock) {
-  const color = phaseToColor(stock.phase);
-  const starStr = '★'.repeat(stock.stars);
-  const chinaTag = stock.is_china_play ? '<span class="china-tag">🇨🇳 중국</span>' : '';
-  return `
-    <div class="stock-card ${color}" onclick="openChart('${stock.code}')">
-      <div class="stock-head">
-        <div class="stock-name-row">
-          <span class="stock-name">${stock.name}</span>
-          ${chinaTag}
-          <span class="score-badge">${stock.accumulation_score}점</span>
+(function(){
+  function loadScript(src){
+    return new Promise((res)=>{
+      if(document.querySelector('script[src="'+src+'"]')){res();return}
+      const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=res;
+      document.head.appendChild(s);
+    });
+  }
+  Promise.all([
+    loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js'),
+    loadScript('https://cdn.jsdelivr.net/npm/hammerjs@2.0.8'),
+  ]).then(()=>loadScript('https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js'))
+    .then(()=>{
+      if(window.Chart && window.ChartZoom) Chart.register(window.ChartZoom);
+      init();
+    });
+  
+  const JSON_URL = '/wp-content/data/jackpot-v2.json';
+  let DATA=null, ALL_STOCKS=[], currentChart=null, currentStock=null, currentFrame='w', useLog=true, currentFilter='all';
+  
+  function gradeOf(j){
+    if(j>=200) return 'sss';
+    if(j>=150) return 'ss';
+    if(j>=100) return 's';
+    if(j>=70) return 'a';
+    return 'b';
+  }
+  function gradeLabel(g){
+    return {sss:'🚀 SSS', ss:'⭐ SS', s:'S', a:'A', b:'B'}[g] || 'B';
+  }
+  
+  function renderCard(code, s){
+    const grade = gradeOf(s.j);
+    const stars = '★'.repeat(s.c_stars || 0);
+    const goldenTag = s.golden_2001 ? '<span class="v2-golden-tag">★ 골든</span>' : '';
+    return `<div class="v2-card ${grade}" onclick="window.v2OpenChart('${code}')">
+      <div class="v2-head">
+        <div class="v2-name-row">
+          <span class="v2-name">${s.n}</span>
+          <span class="v2-code">${code}</span>
+          ${goldenTag}
+          <span class="v2-grade ${grade}">${gradeLabel(grade)}</span>
+          <span class="v2-score">${s.j}점</span>
         </div>
-        <span class="stock-stars">${starStr}</span>
+        <span class="v2-stars">${stars}</span>
       </div>
-      <div class="stock-sub">${stock.verdict}</div>
-      <div class="stock-meta">${renderSignals(stock)}</div>
-      <div class="chart-hint">📈 클릭 → 차트</div>
-    </div>
-  `;
-}
-
-function renderSection(title, desc, stocks, emptyMsg) {
-  let inner = (!stocks || stocks.length === 0)
-    ? `<div class="empty-section">${emptyMsg || '없음'}</div>`
-    : stocks.map(renderCard).join('');
-  return `<h2 class="section-title">${title}</h2><div class="section-desc">${desc}</div>${inner}`;
-}
-
-// 모달
-function openChart(code) {
-  const stock = DATA.stocks.find(s => s.code === code);
-  if (!stock) return;
-  currentStock = stock;
-  document.getElementById('modal-title').textContent = `${stock.name} (${stock.code})`;
-  document.getElementById('modal-sub').textContent =
-    `${stock.verdict} · ★${stock.stars} · 매집점수 ${stock.accumulation_score}점`;
-  
-  const di = stock.data_info || {};
-  const availableFrames = [];
-  if (stock.chart?.daily) availableFrames.push(['daily', `일봉 ${di.daily_years || 5}년`]);
-  if (stock.chart?.weekly) availableFrames.push(['weekly', `주봉 ${di.weekly_years || 8}년`]);
-  if (stock.chart?.monthly) availableFrames.push(['monthly', `월봉 ${di.monthly_years || 20}년`]);
-  
-  document.getElementById('frame-tabs').innerHTML = availableFrames.map(([key, label]) =>
-    `<button class="tab-btn ${currentFrame === key ? 'active' : ''}" onclick="switchFrame('${key}')">${label}</button>`
-  ).join('');
-  
-  if (!availableFrames.find(([k]) => k === currentFrame) && availableFrames.length > 0) {
-    currentFrame = availableFrames[0][0];
+      <div class="v2-sub">현재가 ${(s.p||0).toLocaleString()}원 · 시총 ${(s.mc/10000).toFixed(1)}조 · 외인 ${s.fr!=null?s.fr+'%':'-'}</div>
+      <div class="v2-meta">
+        <div class="v2-mults">
+          <div class="v2-mult"><span class="v2-mult-label">기러기</span><span class="v2-mult-value">${s.t}점</span></div>
+          <div class="v2-mult"><span class="v2-mult-label">PSR</span><span class="v2-mult-value">×${s.psr_mult}</span></div>
+          <div class="v2-mult"><span class="v2-mult-label">외인</span><span class="v2-mult-value">×${s.accum_mult}</span></div>
+          <div class="v2-mult"><span class="v2-mult-label">거시갭</span><span class="v2-mult-value">×${s.macro_mult}</span></div>
+          <div class="v2-mult"><span class="v2-mult-label">골든</span><span class="v2-mult-value">×${s.golden_mult}</span></div>
+          <div class="v2-mult"><span class="v2-mult-label" style="color:#fbbf24">c자리</span><span class="v2-mult-value" style="color:#fbbf24">×${s.c_mult||1.0}</span></div>
+        </div>
+      </div>
+      <div class="v2-hint">📈 클릭 → 차트</div>
+    </div>`;
   }
-  renderChartFor(currentFrame);
-  document.getElementById('modal').classList.add('open');
-}
-
-function switchFrame(frameKey) {
-  currentFrame = frameKey;
-  document.querySelectorAll('.frame-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  renderChartFor(frameKey);
-}
-
-function toggleLog() {
-  useLog = !useLog;
-  document.getElementById('btn-log').classList.toggle('on', useLog);
-  renderChartFor(currentFrame);
-}
-
-function zoomReset() {
-  if (currentChart && currentChart.resetZoom) currentChart.resetZoom();
-}
-
-function renderChartFor(frameKey) {
-  if (!currentStock) return;
-  const chartData = currentStock.chart?.[frameKey];
-  if (!chartData) return;
-  if (currentChart) { currentChart.destroy(); currentChart = null; }
   
-  const labels = chartData.dates;
-  const closes = chartData.closes;
-  const ma20 = chartData.ma20;
-  
-  // 52주 신고/신저 (차트에 보이는 값 기준 = 시각적으로 정확히 일치)
-  // 일봉=252봉, 주봉=52봉, 월봉=12봉 (각각 약 1년치)
-  const recentN = (frameKey === 'daily') ? 252 : (frameKey === 'weekly') ? 52 : 12;
-  const recentSlice = closes.slice(-Math.min(recentN, closes.length));
-  const validRecent = recentSlice.filter(v => v != null && v > 0);
-  const hi52 = validRecent.length > 0 ? Math.max(...validRecent) : null;
-  const lo52 = validRecent.length > 0 ? Math.min(...validRecent) : null;
-  
-  const datasets = [
-    {
-      label: '주가',
-      data: closes,
-      borderColor: '#1a1a1a',
-      backgroundColor: 'rgba(26,26,26,0.05)',
-      borderWidth: 1.8, pointRadius: 0, tension: 0.1, fill: false,
-    },
-    {
-      label: '20일선',
-      data: ma20,
-      borderColor: '#378ADD',
-      backgroundColor: 'transparent',
-      borderWidth: 1.3, pointRadius: 0, tension: 0.2, fill: false,
-    },
-  ];
-  // 52주 신고/신저 수평선
-  if (hi52) {
-    datasets.push({
-      label: `52주 신고가 ${hi52.toLocaleString()}원`,
-      data: new Array(labels.length).fill(hi52),
-      borderColor: 'rgba(192,57,43,0.55)', backgroundColor: 'transparent',
-      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
+  function renderList(){
+    const filtered = ALL_STOCKS.filter(([code,s])=>{
+      if(currentFilter==='all') return true;
+      if(currentFilter==='sss') return s.j>=200;
+      if(currentFilter==='ss') return s.j>=150 && s.j<200;
+      if(currentFilter==='5stars') return s.c_stars===5;
+      if(currentFilter==='4stars') return s.c_stars>=4;
+      if(currentFilter==='golden') return s.golden_2001;
+      return true;
     });
+    if(filtered.length===0){
+      document.getElementById('v2-content').innerHTML='<div class="v2-loading">필터 조건에 맞는 종목 없음</div>';
+      return;
+    }
+    document.getElementById('v2-content').innerHTML=filtered.map(([code,s])=>renderCard(code,s)).join('');
   }
-  if (lo52) {
-    datasets.push({
-      label: `52주 신저가 ${lo52.toLocaleString()}원`,
-      data: new Array(labels.length).fill(lo52),
-      borderColor: 'rgba(99,153,34,0.55)', backgroundColor: 'transparent',
-      borderWidth: 1.2, pointRadius: 0, borderDash: [2, 4], fill: false,
-    });
-  }
-  // 현재가 마커
-  const nowData = labels.map((_, i) => i === labels.length - 1 ? closes[i] : null);
-  datasets.push({
-    label: `현재가 ${closes[closes.length-1].toLocaleString()}원`,
-    data: nowData,
-    borderColor: '#4169E1', backgroundColor: '#4169E1',
-    pointRadius: 8, pointStyle: 'circle', showLine: false,
-  });
   
-  const yScale = useLog ? {
-    type: 'logarithmic',
-    ticks: {
-      font: { size: 10 },
-      callback: (v) => {
-        const log = Math.log10(v);
-        if (log === Math.floor(log)) return v.toLocaleString();
-        if (Math.floor(log * 2) === log * 2) return v.toLocaleString();
-        return '';
-      },
-    },
-  } : {
-    type: 'linear',
-    ticks: { font: { size: 10 }, callback: (v) => v.toLocaleString() },
+  window.v2Filter = function(f){
+    currentFilter=f;
+    document.querySelectorAll('#v2-filters .v2-filter-btn').forEach(b=>b.classList.toggle('on',b.dataset.filter===f));
+    renderList();
   };
   
-  const ctx = document.getElementById('chart-canvas').getContext('2d');
-  currentChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      layout: { padding: { right: 30, left: 5, top: 10, bottom: 5 } },
-      interaction: { intersect: false, mode: 'index' },
-      plugins: {
-        legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 14, padding: 8 } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => {
-              if (ctx.parsed.y === null) return null;
-              return `${ctx.dataset.label.split(' ')[0]}: ${ctx.parsed.y?.toLocaleString() || '-'}원`;
-            },
-          },
-        },
-        zoom: {
-          pan: { enabled: true, mode: 'x' },
-          zoom: {
-            wheel: { enabled: true, speed: 0.1 },
-            pinch: { enabled: true },
-            mode: 'x',
-          },
-        },
-      },
-      scales: {
-        x: { 
-          ticks: { maxTicksLimit: 10, font: { size: 10 } },
-          afterFit: (scale) => { scale.paddingRight = 20; },
-        },
-        y: yScale,
-      },
-    },
-  });
-
-  // 자연어 설명
-  const s = currentStock.signals || {};
-  let info = `
-    <strong>📊 ${currentStock.name} 분석 요약</strong><br>
-    상태: <strong>${currentStock.verdict}</strong> · 매집점수 <strong>${currentStock.accumulation_score}/100점</strong><br>
-    ${currentStock.is_china_play ? '🇨🇳 <strong>중국 경기 회복 시 수혜 종목</strong><br>' : ''}
-    <br>
-    <strong>외인 동향:</strong> ${trendLabel(s.foreign_trend)} (보유율 ${s.foreign_latest_ratio?.toFixed(1) || '-'}%)<br>
-    <strong>20일선 횡단:</strong> 최근 1년 ${s.ma20_crossings || 0}회 ${s.ma20_stealth ? '<strong>(스텔스 매집 패턴 ✓)</strong>' : ''}
-  `;
-  document.getElementById('modal-info').innerHTML = info;
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  if (currentChart) { currentChart.destroy(); currentChart = null; }
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-async function loadAndRender() {
-  try {
-    const res = await fetch(JSON_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error('JSON 로드 실패');
-    DATA = await res.json();
-    const dt = new Date(DATA.generated_at);
-    document.getElementById('updated').textContent =
-      `업데이트: ${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} · ${DATA.n_matched}/${DATA.n_scanned} 매칭 (v${DATA.algo_version || '2.0'})`;
-    const summary = DATA.summary || {};
-    document.getElementById('stat-stealth').textContent = summary.stealth_accumulation || 0;
-    document.getElementById('stat-quiet').textContent = summary.quiet_accumulation || 0;
-    document.getElementById('stat-likely').textContent = summary.likely_accumulation || 0;
-    document.getElementById('stat-china').textContent = summary.china_plays || 0;
-    document.getElementById('algo-info').textContent =
-      `${DATA.algorithm?.name || 'SIGVIEW 시즌2 v2.0'} · ${DATA.algorithm?.description || ''}`;
+  window.v2OpenChart = function(code){
+    const s = DATA.data[code];
+    if(!s) return;
+    currentStock={code:code, ...s};
+    document.getElementById('v2-mt').textContent=`${s.n} (${code})`;
+    document.getElementById('v2-ms').textContent=
+      `잭팟 ${s.j}점 (${gradeLabel(gradeOf(s.j))}) · ★${s.c_stars||0} · 외인 ${s.fr!=null?s.fr+'%':'-'}`;
     
-    let totalDataPoints = 0;
-    (DATA.stocks || []).forEach(s => { totalDataPoints = Math.max(totalDataPoints, s.signals?.foreign_data_points || 0); });
-    if (totalDataPoints < 30) {
-      const notice = document.getElementById('data-notice');
-      notice.style.display = 'block';
-      const fd = DATA.foreign_data || {};
-      notice.innerHTML = `
-        <strong>📅 외인 데이터 누적 진행중</strong><br>
-        현재 최대 ${totalDataPoints}일치 누적. 매일 자정 자동 추가. 30일+ 누적 시 외인 추세 정확해져요.
-        (오늘 ${fd.fetch_success_today || 0}/${DATA.n_scanned}개 수집, ${fd.new_records_today || 0}건 신규)
-      `;
+    const frames=[];
+    if(s.cd && s.cd.length>0) frames.push(['d','일봉 1년']);
+    if(s.cw && s.cw.length>0) frames.push(['w','주봉 5년']);
+    if(s.cm && s.cm.length>0) frames.push(['m','월봉 10년']);
+    document.getElementById('v2-tabs').innerHTML=frames.map(([k,l])=>
+      `<button class="v2-tab ${currentFrame===k?'active':''}" onclick="window.v2SwitchFrame('${k}')">${l}</button>`
+    ).join('');
+    if(!frames.find(f=>f[0]===currentFrame)&&frames.length>0) currentFrame=frames[0][0];
+    renderChartFor(currentFrame);
+    document.getElementById('jackpot-v2-modal').classList.add('open');
+  };
+  
+  window.v2SwitchFrame = function(k){
+    currentFrame=k;
+    document.querySelectorAll('#v2-tabs .v2-tab').forEach(b=>b.classList.remove('active'));
+    if(event && event.target) event.target.classList.add('active');
+    renderChartFor(k);
+  };
+  
+  window.v2ToggleLog = function(){
+    useLog=!useLog;
+    document.getElementById('v2-btn-log').classList.toggle('on',useLog);
+    renderChartFor(currentFrame);
+  };
+  
+  window.v2ZoomReset = function(){
+    if(currentChart && currentChart.resetZoom) currentChart.resetZoom();
+  };
+  
+  window.v2CloseModal = function(){
+    document.getElementById('jackpot-v2-modal').classList.remove('open');
+    if(currentChart){currentChart.destroy();currentChart=null}
+  };
+  
+  document.getElementById('jackpot-v2-modal').addEventListener('click',function(e){
+    if(e.target===this) window.v2CloseModal();
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') window.v2CloseModal()});
+  
+  function renderChartFor(frame){
+    if(!currentStock) return;
+    const closes = currentStock['c'+frame];
+    const dates = currentStock['c'+frame+'t'];
+    if(!closes || !dates || closes.length===0) return;
+    if(currentChart){currentChart.destroy();currentChart=null}
+    
+    // 20일선 (간단 계산)
+    const ma20 = closes.map((_,i)=>{
+      if(i<19) return null;
+      const slice=closes.slice(i-19,i+1);
+      return slice.reduce((a,b)=>a+b,0)/20;
+    });
+    
+    // 52주 (1년) 신고/신저
+    const recentN = frame==='d'?252:frame==='w'?52:12;
+    const rec=closes.slice(-Math.min(recentN,closes.length)).filter(v=>v!=null&&v>0);
+    const hi52=rec.length>0?Math.max.apply(null,rec):null;
+    const lo52=rec.length>0?Math.min.apply(null,rec):null;
+    
+    const datasets=[
+      {label:'주가',data:closes,borderColor:'#e8e9ed',backgroundColor:'rgba(232,233,237,0.05)',
+        borderWidth:1.8,pointRadius:0,tension:0.1,fill:false},
+      {label:'20일선',data:ma20,borderColor:'#3b82f6',backgroundColor:'transparent',
+        borderWidth:1.3,pointRadius:0,tension:0.2,fill:false},
+    ];
+    if(hi52) datasets.push({
+      label:`52주 신고 ${hi52.toLocaleString()}`,
+      data:new Array(closes.length).fill(hi52),
+      borderColor:'rgba(239,68,68,0.55)',backgroundColor:'transparent',
+      borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
+    });
+    if(lo52) datasets.push({
+      label:`52주 신저 ${lo52.toLocaleString()}`,
+      data:new Array(closes.length).fill(lo52),
+      borderColor:'rgba(132,204,22,0.55)',backgroundColor:'transparent',
+      borderWidth:1.2,pointRadius:0,borderDash:[2,4],fill:false,
+    });
+    
+    // c자리 마커 (해당 프레임 c가 있으면)
+    const cInfo = currentStock.c_info;
+    if(cInfo){
+      const cMap = {d:'daily',w:'weekly',m:'monthly'};
+      const cData = cInfo[cMap[frame]];
+      if(cData && cData.c_date){
+        const cIdx = dates.indexOf(cData.c_date);
+        // 정확 매칭 안 되면 가장 가까운 날짜
+        let targetIdx = cIdx;
+        if(targetIdx<0){
+          const target = new Date(cData.c_date).getTime();
+          let bestIdx=-1, bestDiff=Infinity;
+          for(let i=0;i<dates.length;i++){
+            const t=new Date(dates[i]).getTime();
+            const d=Math.abs(t-target);
+            if(d<bestDiff){bestDiff=d;bestIdx=i}
+          }
+          targetIdx=bestIdx;
+        }
+        if(targetIdx>=0){
+          const cDataArr = closes.map((_,i)=>i===targetIdx?closes[i]:null);
+          datasets.push({
+            label:`c자리 ${cData.c_date}`,
+            data:cDataArr,
+            borderColor:'#ec4899',backgroundColor:'#ec4899',
+            pointRadius:12,pointStyle:'circle',showLine:false,
+          });
+        }
+      }
     }
     
-    const stocks = DATA.stocks || [];
-    const stealth = stocks.filter(s => s.phase === 'stealth_accumulation');
-    const quiet = stocks.filter(s => s.phase === 'quiet_accumulation');
-    const likely = stocks.filter(s => s.phase === 'likely_accumulation');
-    const breakout = stocks.filter(s => s.phase === 'early_breakout');
-    const progress = stocks.filter(s => s.phase === 'in_progress');
-    const verified = stocks.filter(s => s.phase === 'already_run');
-    const risky = stocks.filter(s => s.phase === 'risky');
+    // 현재가
+    datasets.push({
+      label:`현재가 ${closes[closes.length-1].toLocaleString()}`,
+      data:closes.map((_,i)=>i===closes.length-1?closes[i]:null),
+      borderColor:'#fbbf24',backgroundColor:'#fbbf24',
+      pointRadius:8,pointStyle:'crossRot',showLine:false,
+    });
     
-    const content =
-      renderSection('🎯 외인 매집 확정', '외인 보유율 ↑ + 가격 횡보 + 20일선 횡단. <strong>최우선.</strong>', stealth, '아직 없음. 외인 데이터 30일+ 누적 시 등장.') +
-      renderSection('🐢 외인 조용한 매집', '외인 보유율 ↑ + 가격 횡보.', quiet, '없음') +
-      renderSection('🔍 매집 추정 (데이터 부족)', '가격 횡보 + 20일선 횡단 ✓.', likely, '없음') +
-      renderSection('🌱 막 깨고 나오는 중', 'c자리 통과 후 +10~30% 초기.', breakout, '없음') +
-      renderSection('🇨🇳 중국 회복 베팅', '철강·화학·조선·해운·중공업 등.', stocks.filter(s => s.is_china_play).slice(0, 10), '없음') +
-      renderSection('⚪ 진행 중', '추격 부담. 눌림목 대기.', progress.slice(0, 5), '없음') +
-      renderSection('🔥 이미 폭발 (검증)', '알고리즘 적중 입증용. 진입 X.', verified.slice(0, 5), '없음') +
-      (risky.length > 0 ? renderSection('⚠️ 외인 매도중', '회피 권장.', risky.slice(0, 5), '없음') : '');
+    const yScale=useLog?{
+      type:'logarithmic',
+      ticks:{font:{size:10},color:'#a0a3ad',callback:v=>{
+        const log=Math.log10(v);
+        if(log===Math.floor(log)) return v.toLocaleString();
+        if(Math.floor(log*2)===log*2) return v.toLocaleString();
+        return '';
+      }},
+      grid:{color:'rgba(255,255,255,0.05)'},
+    }:{
+      type:'linear',
+      ticks:{font:{size:10},color:'#a0a3ad',callback:v=>v.toLocaleString()},
+      grid:{color:'rgba(255,255,255,0.05)'},
+    };
     
-    document.getElementById('content').innerHTML = content;
-  } catch (e) {
-    document.getElementById('content').innerHTML = `<div class="error">데이터 로드 실패: ${e.message}</div>`;
-    console.error(e);
+    const ctx=document.getElementById('v2-canvas').getContext('2d');
+    currentChart=new Chart(ctx,{
+      type:'line',
+      data:{labels:dates,datasets:datasets},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        layout:{padding:{right:30,left:5,top:10,bottom:5}},
+        interaction:{intersect:false,mode:'index'},
+        plugins:{
+          legend:{display:true,position:'top',labels:{font:{size:11},color:'#e8e9ed',boxWidth:14,padding:8}},
+          tooltip:{
+            callbacks:{label:c=>{
+              if(c.parsed.y===null) return null;
+              return `${c.dataset.label.split(' ')[0]}: ${c.parsed.y.toLocaleString()}원`;
+            }},
+          },
+          zoom:{
+            pan:{enabled:true,mode:'x'},
+            zoom:{wheel:{enabled:true,speed:0.1},pinch:{enabled:true},mode:'x'},
+          },
+        },
+        scales:{
+          x:{ticks:{maxTicksLimit:10,font:{size:10},color:'#a0a3ad'},grid:{color:'rgba(255,255,255,0.05)'}},
+          y:yScale,
+        },
+      },
+    });
+    
+    // 분석 요약
+    const s = currentStock;
+    let info=`<strong>📊 ${s.n} 분석 요약</strong><br>
+      잭팟 점수: <strong>${s.j}점 (${gradeLabel(gradeOf(s.j))})</strong>${s.golden_2001?' · <strong style="color:#fbbf24">★ 2001~2008 골든리스트</strong>':''}<br>
+      <br>
+      <strong>6중 곱셈 분해:</strong><br>
+      기러기 ${s.t}점 × PSR ×${s.psr_mult} × 외인 ×${s.accum_mult} × 거시갭 ×${s.macro_mult} × 골든 ×${s.golden_mult} × <strong style="color:#fbbf24">c자리 ×${s.c_mult||1.0}</strong> = <strong>${s.j}점</strong><br>
+      <br>
+      <strong>4차함수 c자리:</strong> ${s.c_stars>0?'★'.repeat(s.c_stars)+' ('+(s.c_info?.type||'')+')':'검출 안 됨'}<br>
+      <strong>PSR:</strong> ${s.psr||'-'} · <strong>ROE:</strong> ${s.roe!=null?s.roe+'%':'-'} · <strong>영업이익률:</strong> ${s.opm!=null?s.opm+'%':'-'}<br>
+      <strong>외인 보유율:</strong> ${s.fr!=null?s.fr+'%':'-'}<br>
+      <strong>거시갭:</strong> KOSPI 3년 ${s.kospi_3y}% vs 종목 3년 ${s.stock_3y}% (갭 ${s.macro_gap}%)
+    `;
+    document.getElementById('v2-info').innerHTML=info;
   }
-}
-loadAndRender();
+  
+  function init(){
+    fetch(JSON_URL+'?t='+Date.now())
+      .then(r=>{if(!r.ok) throw new Error('JSON 로드 실패 (status '+r.status+')');return r.json()})
+      .then(data=>{
+        DATA=data;
+        document.getElementById('v2-updated').textContent=
+          `업데이트: ${DATA.updated} · ${DATA.count}종목 분석 (${DATA.version||'v2.0'})`;
+        const summary=DATA.summary||{};
+        document.getElementById('v2-st-sss').textContent=summary.sss_grade||0;
+        document.getElementById('v2-st-ss').textContent=summary.ss_grade||0;
+        document.getElementById('v2-st-5stars').textContent=summary.five_stars||0;
+        document.getElementById('v2-st-4stars').textContent=summary.four_stars||0;
+        document.getElementById('v2-algo-info').textContent=
+          `${DATA.algo_name||'SIGVIEW 시즌2 v2.0'} · ${DATA.algo_desc||''} · KOSPI 3년 ${DATA.kospi_3y_return||0}%`;
+        
+        // 종목 정렬 - 잭팟 점수 내림차순
+        ALL_STOCKS = Object.entries(DATA.data||{}).sort((a,b)=>b[1].j - a[1].j);
+        renderList();
+      })
+      .catch(e=>{
+        document.getElementById('v2-content').innerHTML=`<div class="v2-error">데이터 로드 실패: ${e.message}<br>(jackpot-v2.json이 /wp-content/data/ 에 있는지 확인)</div>`;
+      });
+  }
+})();
 </script>
-</body>
-</html>
