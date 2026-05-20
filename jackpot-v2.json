@@ -2,7 +2,7 @@
   "version": "2.0",
   "season": 2,
   "algo_version": "2.1",
-  "generated_at": "2026-05-20T13:58:55.886854+09:00",
+  "generated_at": "2026-05-20T14:22:03.645490+09:00",
   "n_scanned": 41,
   "n_matched": 33,
   "foreign_data": {
@@ -34,7 +34,7 @@
       "verdict": "🌱 막 깨고 나옴",
       "accumulation_score": 60,
       "is_china_play": true,
-      "avg_ratio_pct": 24.2,
+      "avg_ratio_pct": 24.4,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 7.49,
@@ -2234,7 +2234,7 @@
             21350.0,
             19570.0,
             20500.0,
-            19520.0
+            19550.0
           ],
           "ma20": [
             null,
@@ -2384,7 +2384,7 @@
             19691.5,
             19760.0,
             19936.5,
-            19986.0
+            19987.5
           ]
         }
       },
@@ -2403,7 +2403,7 @@
       "verdict": "🔍 매집 추정",
       "accumulation_score": 60,
       "is_china_play": true,
-      "avg_ratio_pct": 9.2,
+      "avg_ratio_pct": 9.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 20.1,
@@ -4603,7 +4603,7 @@
             28100.0,
             23550.0,
             24550.0,
-            24850.0
+            24900.0
           ],
           "ma20": [
             null,
@@ -4753,7 +4753,7 @@
             23125.0,
             23240.0,
             23365.0,
-            23480.0
+            23482.5
           ]
         }
       },
@@ -4772,7 +4772,7 @@
       "verdict": "⚪ 진행 중",
       "accumulation_score": 50,
       "is_china_play": true,
-      "avg_ratio_pct": 47.3,
+      "avg_ratio_pct": 47.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 31.28,
@@ -6972,7 +6972,7 @@
             413000.0,
             332500.0,
             462000.0,
-            413000.0
+            414500.0
           ],
           "ma20": [
             null,
@@ -7122,7 +7122,7 @@
             304325.0,
             303375.0,
             309475.0,
-            310875.0
+            310950.0
           ]
         }
       },
@@ -7141,7 +7141,7 @@
       "verdict": "🌱 막 깨고 나옴",
       "accumulation_score": 50,
       "is_china_play": true,
-      "avg_ratio_pct": 10.5,
+      "avg_ratio_pct": 11.4,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 17.05,
@@ -9341,7 +9341,7 @@
             46500.0,
             33650.0,
             42550.0,
-            35750.0
+            36050.0
           ],
           "ma20": [
             null,
@@ -9491,7 +9491,7 @@
             28947.5,
             29247.5,
             30105.0,
-            30497.5
+            30512.5
           ]
         }
       },
@@ -9510,7 +9510,7 @@
       "verdict": "★4",
       "accumulation_score": 45,
       "is_china_play": true,
-      "avg_ratio_pct": -4.2,
+      "avg_ratio_pct": -4.0,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 27.32,
@@ -11710,7 +11710,7 @@
             153400.0,
             117900.0,
             146600.0,
-            130600.0
+            131000.0
           ],
           "ma20": [
             null,
@@ -11860,7 +11860,7 @@
             121770.0,
             120730.0,
             121215.0,
-            119850.0
+            119870.0
           ]
         }
       },
@@ -11879,7 +11879,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 45,
       "is_china_play": false,
-      "avg_ratio_pct": 322.4,
+      "avg_ratio_pct": 330.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 24.94,
@@ -14079,7 +14079,7 @@
             164700.0,
             142100.0,
             161800.0,
-            132800.0
+            135400.0
           ],
           "ma20": [
             null,
@@ -14229,7 +14229,7 @@
             55990.0,
             61422.5,
             67912.5,
-            73027.5
+            73157.5
           ]
         }
       },
@@ -14248,7 +14248,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 381.0,
+      "avg_ratio_pct": 381.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 34.0,
@@ -16448,7 +16448,7 @@
             450000.0,
             344000.0,
             461500.0,
-            395000.0
+            395500.0
           ],
           "ma20": [
             null,
@@ -16598,7 +16598,7 @@
             306725.0,
             313575.0,
             327080.0,
-            337445.0
+            337470.0
           ]
         }
       },
@@ -18986,7 +18986,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 388.5,
+      "avg_ratio_pct": 389.0,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 10.69,
@@ -21186,7 +21186,7 @@
             141200.0,
             120200.0,
             131800.0,
-            109900.0
+            110000.0
           ],
           "ma20": [
             null,
@@ -21336,7 +21336,7 @@
             80127.5,
             84610.0,
             89472.5,
-            93440.0
+            93445.0
           ]
         }
       },
@@ -21355,7 +21355,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 162.9,
+      "avg_ratio_pct": 160.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 27.93,
@@ -23555,7 +23555,7 @@
             2030000.0,
             1422000.0,
             1579000.0,
-            1311000.0
+            1301000.0
           ],
           "ma20": [
             null,
@@ -23705,7 +23705,7 @@
             986550.0,
             1033450.0,
             1085650.0,
-            1116800.0
+            1116300.0
           ]
         }
       },
@@ -23724,7 +23724,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 40,
       "is_china_play": true,
-      "avg_ratio_pct": 493.9,
+      "avg_ratio_pct": 492.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 24.8,
@@ -25924,7 +25924,7 @@
             106300.0,
             91800.0,
             127100.0,
-            100400.0
+            100200.0
           ],
           "ma20": [
             null,
@@ -26074,7 +26074,7 @@
             47567.0,
             51215.5,
             56665.5,
-            60790.0
+            60780.0
           ]
         }
       },
@@ -26093,7 +26093,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 376.3,
+      "avg_ratio_pct": 378.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 48.42,
@@ -28293,7 +28293,7 @@
             216500.0,
             167200.0,
             220500.0,
-            269500.0
+            271000.0
           ],
           "ma20": [
             null,
@@ -28443,7 +28443,7 @@
             82620.0,
             86785.0,
             94095.0,
-            104495.0
+            104570.0
           ]
         }
       },
@@ -28462,7 +28462,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 822.6,
+      "avg_ratio_pct": 823.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 51.87,
@@ -30662,7 +30662,7 @@
             1061000.0,
             807000.0,
             1286000.0,
-            1738000.0
+            1740000.0
           ],
           "ma20": [
             null,
@@ -30812,7 +30812,7 @@
             345855.0,
             376475.0,
             432090.0,
-            510260.0
+            510360.0
           ]
         }
       },
@@ -30831,7 +30831,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 146.6,
+      "avg_ratio_pct": 148.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 21.74,
@@ -33031,7 +33031,7 @@
             106200.0,
             94400.0,
             119300.0,
-            96000.0
+            96800.0
           ],
           "ma20": [
             null,
@@ -33181,7 +33181,7 @@
             50827.8,
             53540.4,
             57546.2,
-            60454.1
+            60494.1
           ]
         }
       },
@@ -33200,7 +33200,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 241.1,
+      "avg_ratio_pct": 243.3,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 22.21,
@@ -35400,7 +35400,7 @@
             418500.0,
             384500.0,
             468000.0,
-            450500.0
+            453500.0
           ],
           "ma20": [
             null,
@@ -35550,7 +35550,7 @@
             198895.0,
             209335.0,
             224140.0,
-            239005.0
+            239155.0
           ]
         }
       },
@@ -35569,7 +35569,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 64.7,
+      "avg_ratio_pct": 65.8,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 9.54,
@@ -37769,7 +37769,7 @@
             247000.0,
             203500.0,
             252000.0,
-            213500.0
+            215000.0
           ],
           "ma20": [
             null,
@@ -37919,7 +37919,7 @@
             171894.9,
             171819.4,
             174023.5,
-            172582.1
+            172657.1
           ]
         }
       },
@@ -37938,7 +37938,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 63.7,
+      "avg_ratio_pct": 64.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 13.67,
@@ -39631,7 +39631,7 @@
             206000.0,
             237500.0,
             190500.0,
-            176900.0
+            177900.0
           ],
           "ma20": [
             null,
@@ -40010,7 +40010,7 @@
             189055.0,
             193180.0,
             194890.0,
-            196650.0
+            196700.0
           ]
         },
         "monthly": {
@@ -40190,7 +40190,7 @@
             221500.0,
             192200.0,
             206000.0,
-            176900.0
+            177900.0
           ],
           "ma20": [
             null,
@@ -40279,7 +40279,7 @@
             142080.0,
             142695.0,
             144580.0,
-            144200.0
+            144250.0
           ]
         }
       },
@@ -40298,7 +40298,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 123.4,
+      "avg_ratio_pct": 125.1,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 18.8,
@@ -42498,7 +42498,7 @@
             185000.0,
             139500.0,
             152900.0,
-            117800.0
+            118700.0
           ],
           "ma20": [
             null,
@@ -42648,7 +42648,7 @@
             76939.8,
             79387.4,
             82833.6,
-            84377.8
+            84422.8
           ]
         }
       },
@@ -42667,7 +42667,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 214.0,
+      "avg_ratio_pct": 215.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 26.38,
@@ -44867,7 +44867,7 @@
             674000.0,
             445500.0,
             531000.0,
-            586000.0
+            589000.0
           ],
           "ma20": [
             null,
@@ -45017,7 +45017,7 @@
             261980.0,
             271805.0,
             285580.0,
-            302680.0
+            302830.0
           ]
         }
       },
@@ -45036,7 +45036,7 @@
       "verdict": "⚪ 진행 중",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 59.0,
+      "avg_ratio_pct": 59.6,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 38.19,
@@ -47236,7 +47236,7 @@
             205500.0,
             145200.0,
             151800.0,
-            148000.0
+            148600.0
           ],
           "ma20": [
             null,
@@ -47386,7 +47386,7 @@
             109525.0,
             111180.0,
             113465.0,
-            115870.0
+            115900.0
           ]
         }
       },
@@ -47405,7 +47405,7 @@
       "verdict": "⚪ 진행 중",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 33.6,
+      "avg_ratio_pct": 34.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 16.11,
@@ -49605,7 +49605,7 @@
             22400.0,
             25100.0,
             38050.0,
-            28450.0
+            28700.0
           ],
           "ma20": [
             null,
@@ -49755,7 +49755,7 @@
             19101.5,
             19364.0,
             20241.5,
-            20747.0
+            20759.5
           ]
         }
       },
@@ -49774,7 +49774,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 35,
       "is_china_play": false,
-      "avg_ratio_pct": 575.2,
+      "avg_ratio_pct": 576.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 10.3,
@@ -51974,7 +51974,7 @@
             10140.0,
             15550.0,
             35000.0,
-            26250.0
+            26300.0
           ],
           "ma20": [
             null,
@@ -52124,7 +52124,7 @@
             4073.2,
             4642.2,
             6190.8,
-            7311.8
+            7314.2
           ]
         }
       },
@@ -52143,7 +52143,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 30,
       "is_china_play": true,
-      "avg_ratio_pct": 201.8,
+      "avg_ratio_pct": 202.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 10.84,
@@ -54343,7 +54343,7 @@
             115800.0,
             86700.0,
             99200.0,
-            83600.0
+            83800.0
           ],
           "ma20": [
             null,
@@ -54493,7 +54493,7 @@
             87087.5,
             88502.5,
             90242.5,
-            91357.5
+            91367.5
           ]
         }
       },
@@ -54512,7 +54512,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 30,
       "is_china_play": true,
-      "avg_ratio_pct": 113.1,
+      "avg_ratio_pct": 113.7,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 77.86,
@@ -56712,7 +56712,7 @@
             110000.0,
             105300.0,
             134500.0,
-            109100.0
+            109400.0
           ],
           "ma20": [
             null,
@@ -56862,7 +56862,7 @@
             66700.0,
             68570.0,
             72175.0,
-            74570.0
+            74585.0
           ]
         }
       },
@@ -56881,7 +56881,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 30,
       "is_china_play": true,
-      "avg_ratio_pct": 60.2,
+      "avg_ratio_pct": 60.4,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 16.35,
@@ -59081,7 +59081,7 @@
             5280.0,
             4895.0,
             5540.0,
-            5750.0
+            5760.0
           ],
           "ma20": [
             null,
@@ -59231,7 +59231,7 @@
             3825.8,
             3876.8,
             3968.5,
-            4056.2
+            4056.8
           ]
         }
       },
@@ -59250,7 +59250,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 30,
       "is_china_play": true,
-      "avg_ratio_pct": 329.5,
+      "avg_ratio_pct": 327.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 26.16,
@@ -61131,7 +61131,7 @@
             310500.0,
             289000.0,
             269500.0,
-            259000.0
+            258000.0
           ],
           "ma20": [
             null,
@@ -61604,7 +61604,7 @@
             249725.0,
             254235.0,
             258285.0,
-            262025.0
+            261975.0
           ]
         },
         "monthly": {
@@ -61828,7 +61828,7 @@
             292500.0,
             239000.0,
             310500.0,
-            259000.0
+            258000.0
           ],
           "ma20": [
             null,
@@ -61939,7 +61939,7 @@
             128905.0,
             136660.0,
             148140.0,
-            157265.0
+            157215.0
           ]
         }
       },
@@ -61958,7 +61958,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 2018.5,
+      "avg_ratio_pct": 2025.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 6.62,
@@ -64158,7 +64158,7 @@
             323500.0,
             251000.0,
             368000.0,
-            286000.0
+            287000.0
           ],
           "ma20": [
             null,
@@ -64308,7 +64308,7 @@
             117055.0,
             123045.0,
             135720.0,
-            144605.0
+            144655.0
           ]
         }
       },
@@ -64327,7 +64327,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 133.6,
+      "avg_ratio_pct": 134.5,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 41.05,
@@ -66527,7 +66527,7 @@
             517000.0,
             378000.0,
             425000.0,
-            522000.0
+            524000.0
           ],
           "ma20": [
             null,
@@ -66677,7 +66677,7 @@
             291700.0,
             299575.0,
             309950.0,
-            325175.0
+            325275.0
           ]
         }
       },
@@ -66696,7 +66696,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 222.4,
+      "avg_ratio_pct": 225.9,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 26.78,
@@ -68896,7 +68896,7 @@
             191500.0,
             164700.0,
             169000.0,
-            156700.0
+            158400.0
           ],
           "ma20": [
             null,
@@ -69046,7 +69046,7 @@
             88350.0,
             93735.0,
             99470.0,
-            104700.0
+            104785.0
           ]
         }
       },
@@ -69065,7 +69065,7 @@
       "verdict": "🔥 이미 폭발",
       "accumulation_score": 25,
       "is_china_play": false,
-      "avg_ratio_pct": 912.3,
+      "avg_ratio_pct": 917.3,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 23.32,
@@ -71114,7 +71114,7 @@
             941000.0,
             840000.0,
             834000.0,
-            821000.0
+            825000.0
           ],
           "ma20": [
             null,
@@ -71671,7 +71671,7 @@
             638100.0,
             659300.0,
             681100.0,
-            700200.0
+            700400.0
           ]
         },
         "monthly": {
@@ -71933,7 +71933,7 @@
             509000.0,
             611000.0,
             941000.0,
-            821000.0
+            825000.0
           ],
           "ma20": [
             null,
@@ -72063,7 +72063,7 @@
             362505.0,
             383055.0,
             420355.0,
-            450855.0
+            451055.0
           ]
         }
       },
@@ -72082,7 +72082,7 @@
       "verdict": "❌ 약함",
       "accumulation_score": 15,
       "is_china_play": true,
-      "avg_ratio_pct": -46.6,
+      "avg_ratio_pct": -46.4,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 20.83,
@@ -74282,7 +74282,7 @@
             95900.0,
             80600.0,
             113900.0,
-            78100.0
+            78400.0
           ],
           "ma20": [
             null,
@@ -74432,7 +74432,7 @@
             72945.0,
             71905.0,
             73465.0,
-            72295.0
+            72310.0
           ]
         }
       },
@@ -76651,7 +76651,7 @@
             127700.0,
             108700.0,
             146200.0,
-            115400.0
+            115500.0
           ],
           "ma20": [
             null,
@@ -76801,7 +76801,7 @@
             112065.0,
             112290.0,
             114100.0,
-            114015.0
+            114020.0
           ]
         }
       },
@@ -76820,7 +76820,7 @@
       "verdict": "❌ 약함",
       "accumulation_score": 10,
       "is_china_play": false,
-      "avg_ratio_pct": -48.6,
+      "avg_ratio_pct": -48.1,
       "signals": {
         "foreign_trend": "gathering_data",
         "foreign_latest_ratio": 36.65,
@@ -79020,7 +79020,7 @@
             417500.0,
             299000.0,
             397000.0,
-            329000.0
+            332000.0
           ],
           "ma20": [
             null,
@@ -79170,7 +79170,7 @@
             293115.0,
             292790.0,
             296565.0,
-            295190.0
+            295340.0
           ]
         }
       },
